@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,10 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "install": "^0.13.0",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.1",
+    "vite": "^8.0.3"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
   }
 }
