@@ -1,0 +1,73 @@
+🕵️ Time-Jam (Working Title)
+📖 Overview
+
+This project is a 2D isometric mystery game where players must solve a procedurally generated case within a strict time limit.
+
+Players explore dynamically generated rooms, uncover clues, and complete time-sensitive objectives in order to solve the mystery before time runs out. Every playthrough is designed to be unique through the use of grammar-driven generation systems.
+
+🎮 Core Concept
+You are placed in a mystery scenario with limited time.
+The world is generated dynamically based on narrative rules.
+Objectives must be completed at specific times or conditions.
+Failure to solve the mystery before time expires results in a game over.
+
+🔑 Key Features (Planned)
+
+⏳ Time-Based Gameplay
+Global countdown timer drives urgency.
+Certain actions and objectives are only available at specific times.
+Missed opportunities can lock the player out of solving the mystery.
+
+🧩 Procedural Mystery Generation
+Mysteries are generated using a grammar-based system.
+Objectives, clues, and events are dynamically created.
+Each run produces a different sequence of events.
+
+🏠 Dynamic Room Generation
+Rooms are generated based on the outcome of the grammar system.
+Layouts adapt to the current mystery scenario.
+Exploration is a core mechanic tied to uncovering clues.
+
+🧠 Objective System
+Objectives are not static.
+Tasks are generated and scheduled dynamically.
+Players must interpret and act on clues to determine what to do and when.
+
+🎨 2D Isometric Perspective
+Game is presented in a 2D isometric view.
+Emphasis on spatial exploration and environmental storytelling.
+
+🏗️ Current Project Status
+
+🚧 Early Development
+
+Project structure established
+Core systems planned:
+Grammar-based generation
+Objective system
+Room generation
+Time system
+No gameplay code implemented yet
+
+🧰 Tech Stack
+JavaScript
+HTML / CSS
+Phaser (planned)
+ESLint + Prettier for code quality
+
+🚀 Future Goals
+Implement grammar-based objective generation
+Build dynamic room creation system
+Add player movement and interaction
+Develop time-based event system
+Create win/lose conditions
+Expand replayability through procedural variation
+
+💡 Design Philosophy
+
+This game focuses on:
+
+Replayability through procedural generation
+Player deduction rather than hand-holding
+Time pressure as a core mechanic
+Emergent storytelling from systems, not scripts
