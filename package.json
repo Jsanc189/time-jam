@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -16,12 +18,13 @@
   "bugs": {
     "url": "https://github.com/Jsanc189/time-jam/issues"
   },
-  "homepage": "https://github.com/Jsanc189/time-jam#readme",
+  "homepage": "https://Jsanc189.github.io/time-jam",
   "description": "",
   "devDependencies": {
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "gh-pages": "^6.3.0",
     "install": "^0.13.0",
     "prettier": "^3.8.1",
     "vite": "^8.0.3"
