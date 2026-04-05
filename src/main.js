@@ -1,3 +1,4 @@
+import './styles/main.css';
 import Phaser from 'phaser';
 import BootScene from './scenes/Boot.js';
 
