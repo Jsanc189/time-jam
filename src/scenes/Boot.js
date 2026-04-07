@@ -1,23 +1,32 @@
+/* Created by: Jackie Sanchez
+   Date: 4/7/2026
+   Description: This is the BootScene class for a Phaser game. 
+   It displays a loading progress bar and loads assets for the game
+*/
+
 import Phaser from 'phaser';
 
 export default class BootScene extends Phaser.Scene {
   constructor() {
     super('BootScene');
-    this.colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
-    this.currentColor = 0;
+  }
+
+  preload() {
+    let progressBar = this.add.graphics();
+    this.load.on('progress', (value) =>{
+      progressBar.clear();
+      progressBar.fillStyle(0xffffff, 1);
+      progressBar.fillRect(0, this.game.renderer.height / 2, this.game.renderer.width * value, 50);
+    })
+
+    this.load.on('Complete', ()=>{
+      progressBar.destroy();
+    })
+
+    //space to load assets
   }
 
   create() {
-    this.cameras.main.setBackgroundColor(this.colors[this.currentColor]);
-
-    // Change background color every second
-    this.time.addEvent({
-      delay: 1000,
-      callback: () => {
-        this.currentColor = (this.currentColor + 1) % this.colors.length;
-        this.cameras.main.setBackgroundColor(this.colors[this.currentColor]);
-      },
-      loop: true,
-    });
+    this.scene.start('LoadScene');
   }
 }
