@@ -4,9 +4,13 @@ import BootScene from './scenes/Boot.js';
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
-  parent: 'game-container',
+  width: 1920,
+  height: 1080,
+  parent: 'game-container',  
+  scale:{
+    mode:Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
   scene: [BootScene],
   physics: {
     default: 'arcade',
