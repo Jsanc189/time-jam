@@ -1,0 +1,5 @@
+{
+    "archetype": [
+        "fairy", "goblin", "elf", "human", "orc"
+    ]
+}
