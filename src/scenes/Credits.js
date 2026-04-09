@@ -6,26 +6,53 @@
         or go to options menu.
 */
 
+import GameText from "../prefabs/GameText";
+
 export default class CreditsScene extends Phaser.Scene{
     constructor() {
         super('CreditsScene');
     }
-    
+
 
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
+
+        //credits to display in the credits scene
+        this.credits = [
+            'Producer:\n\nWatchOutJackie',
+            'Game Designers:\n\nRaven Cruz\n\nWatchOutJackie',
+            'Level Designers:\n\nRaven Cruz\n\nWatchOutJackie',
+            'Lead Artist:\n\nSunnysquid',
+            'Background Artist:\n\nSunnysquid',
+            'Assets Artist:\n\nSunnysquid',
+            'Character Artist:\n\nMarstheluminary',
+            'Music Designer:\n\nSimon Blidener',
+            'SFX Designer:\n\nSimon Blidener',
+            'UI Designer:\n\nSunnysquid',
+            'Fonts:\n\nCinzel\nDesigned by Astigmatic\n\nUsed under the SIL Open Font License',            
+            'Special Thanks:\n\nEveryone who supported the development of this game!'
+        ]
+
+        this.currentCreditIndex = 0;
+        
+        this.creditScrollText = new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, this.credits[this.currentCreditIndex],
+            { 
+                fontSize: '96px', 
+                color: '#fff', 
+                align: 'center' 
+            }).setOrigin(0.5).setAlpha(0);
+        
+        this.showNextCredit();
+        
+        
+        
         //button to get back to MenuScene
         const BUTTON_SPACING = 100;
-        const TITLE_TEXT = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Credits',
-            { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
-        const MENU_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING, 'Back to Menu', 
-            { 
-                fontSize: '32px',
-                backgroundColor: '#fff', 
-                color: '#338de1',
-                padding: {x:20 , y: 10} 
-            }).setOrigin(0.5).setInteractive();
-        
+        const MENU_BUTTON = new GameText(this, this.cameras.main.centerX * 1.5, this.cameras.main.centerY * 1.5 + BUTTON_SPACING, 'Back to Menu', {
+            fontSize: '64px',
+            color: '#338de1'
+        }).setOrigin(0.5).setInteractive();
+
         MENU_BUTTON.on('pointerover', () =>{
             MENU_BUTTON.setStyle({ backgroundColor: '#338de1', color: '#fff' });
         });
@@ -34,6 +61,36 @@ export default class CreditsScene extends Phaser.Scene{
         });
         MENU_BUTTON.on('pointerdown', () =>{
             this.scene.start('MenuScene');
+        });
+    }
+
+    showNextCredit() {
+        //go back to menu scene after all credits have been shown
+        if (this.currentCreditIndex >= this.credits.length) {
+            this.scene.start('MenuScene');
+            return;
+        }
+
+        const text = this.credits[this.currentCreditIndex];
+        this.creditScrollText.setText(text);
+
+        this.tweens.add({
+            targets: this.creditScrollText,
+            alpha: 1,
+            duration: 2000,
+            onComplete: () => {
+                this.time.delayedCall(2000, () => {
+                     this.tweens.add({
+                        targets: this.creditScrollText,
+                        alpha: 0,
+                        duration: 2000,
+                        onComplete: () => {
+                            this.currentCreditIndex++;
+                            this.showNextCredit();
+                        }
+                    });
+                });
+            }
         });
     }
 }

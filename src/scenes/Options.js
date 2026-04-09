@@ -5,6 +5,8 @@
     such as audio and controls.
 */
 
+import GameText from "../prefabs/GameText";
+
 export default class OptionsScene extends Phaser.Scene{
     constructor() {
         super('OptionsScene');
@@ -12,13 +14,15 @@ export default class OptionsScene extends Phaser.Scene{
 
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
-        const BUTTON_SPACING = 100;
-        this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Mystery Game', 
-            { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+        const BUTTON_SPACING = 200;
+        new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, 'Mystery Game Options', {
+            fontSize: '128px',
+            color: '#fff'
+        }).setOrigin(0.5);
         //button to get back to MenuScene
         const MENU_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING, 'Back to Menu', 
             { 
-                fontSize: '32px',
+                fontSize: '64px',
                 backgroundColor: '#fff', 
                 color: '#338de1',
                 padding: {x:20 , y: 10} 

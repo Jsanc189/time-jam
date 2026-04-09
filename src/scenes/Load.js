@@ -4,6 +4,7 @@
     Description: This is the Load Scene class for a Phaser game to allow the 
     audio to load before the game starts.  It displays a the Title and Start button.
 */
+import GameText from "../prefabs/GameText";
 
 export default class LoadScene extends Phaser.Scene{
     constructor() {
@@ -12,12 +13,18 @@ export default class LoadScene extends Phaser.Scene{
     
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
-        this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Mystery Game', 
-            { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+        new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, 'Mystery Game', {
+            fontFamily: 'Special Elite',
+            fontSize: '128px',
+            color: '#fff'
+        }).setOrigin(0.5);
         
-        const START_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 100, 'Start Game', 
+        
+        const BUTTON_SPACING = 200;
+        const START_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING, 'Start Game', 
             { 
-                fontSize: '32px',
+                fontFamily: 'Special Elite',
+                fontSize: '64px',
                 backgroundColor: '#fff', 
                 color: '#338de1',
                 padding: {x:20 , y: 10} 
