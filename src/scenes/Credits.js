@@ -29,7 +29,8 @@ export default class CreditsScene extends Phaser.Scene{
             'Music Designer:\n\nSimon Blidener',
             'SFX Designer:\n\nSimon Blidener',
             'UI Designer:\n\nSunnysquid',
-            'Special Thanks: '
+            'Fonts:\n\nCinzel\nDesigned by Astigmatic\n\nUsed under the SIL Open Font License',            
+            'Special Thanks:\n\nEveryone who supported the development of this game!'
         ]
 
         this.currentCreditIndex = 0;
