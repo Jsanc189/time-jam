@@ -2,7 +2,7 @@
     Created by: Jackie Sanchez
     Date Created: 4/7/2026
     Updated by: Jackie Sanchez
-    Updated: 4/8/2026
+    Updated: 4/9/2026 - player movement added and clock logic added to MapScene
     Description: This is the map scene.  This is where the Mindpalace map will be displayed.  The
     player will be ablt to navigate their mind palace and interact with objects to learn more about the 
     story and progress through the game.
@@ -10,6 +10,7 @@
 
 import GameText from "../prefabs/GameText";
 import Player from "../prefabs/Player";
+import Clock from "../prefabs/Clock";
 
 export default class MapScene extends Phaser.Scene{
     constructor() {
@@ -19,6 +20,13 @@ export default class MapScene extends Phaser.Scene{
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
         this.player = new Player(this, this.cameras.main.centerX / 2, this.cameras.main.centerY/2, 'player');
+        
+        const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
+        const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
+        this.clockStartTime = 0; //start time in seconds
+        const CLOCK_ITERATION_TIME = 300; // 5 minutes in seconds
+        this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
+
         //button to get back to MainScene
         const BUTTON_SPACING = 100;
         const TITLE_TEXT = new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY - BUTTON_SPACING, 'Mind Palace Map', {
@@ -43,10 +51,57 @@ export default class MapScene extends Phaser.Scene{
         MAIN_BUTTON.on('pointerdown', () =>{
             this.scene.start('MainScene');
         });
+
+        //button to click to move clock up into view
+        const CLOCK_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING * 2, 'Reveal Clock',
+            {
+                fontSize: '64px',
+                backgroundColor: '#fff',
+                color: '#338de1',
+                padding: {x:20 , y: 10}
+            }).setOrigin(0.5).setInteractive();
+
+        CLOCK_BUTTON.on('pointerover', () =>{
+            CLOCK_BUTTON.setStyle({ backgroundColor: '#338de1', color: '#fff' });
+        });
+        CLOCK_BUTTON.on('pointerout', () =>{
+            CLOCK_BUTTON.setStyle({ backgroundColor: '#fff', color: '#338de1' });
+        });
+        CLOCK_BUTTON.on('pointerdown', () =>{
+            if(this.clock.y > this.cameras.main.centerY){
+                this.clock.moveTo(this.cameras.main.centerX/3, this.cameras.main.centerY/2);
+            } else {
+                this.clock.moveTo(CLOCK_POSITIONX, CLOCK_POSITIONY);
+            }
+
+        });
+        
+        //button to increment time on the clock by 5 minutes
+        const TIME_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING * 3, 'Advance Time',
+            {
+                fontSize: '64px',
+                backgroundColor: '#fff',
+                color: '#338de1',
+                padding: {x:20 , y: 10}
+            }).setOrigin(0.5).setInteractive();
+        TIME_BUTTON.on('pointerover', () =>{
+            TIME_BUTTON.setStyle({ backgroundColor: '#338de1', color: '#fff' });
+        });
+        TIME_BUTTON.on('pointerout', () =>{
+            TIME_BUTTON.setStyle({ backgroundColor: '#fff', color: '#338de1' });
+        });
+        TIME_BUTTON.on('pointerdown', () =>{
+            this.clockStartTime += CLOCK_ITERATION_TIME;
+            console.log('Clock Start Time: ' + this.clockStartTime);
+            this.clock.updateTime(this.clockStartTime);
+        });
+
+
     }
 
     update(){
         this.player.update();
+        this.clock.update();
     };
     
 }
