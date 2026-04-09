@@ -8,6 +8,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: 'Special+Elite';
 }
 
 /* maintains 16:9 aspect ratio for the game container */

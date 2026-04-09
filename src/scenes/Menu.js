@@ -6,6 +6,8 @@
     or go to options menu.
 */
 
+import GameText from "../prefabs/GameText";
+
 export default class MenuScene extends Phaser.Scene{
     constructor() {
         super('MenuScene');
@@ -14,18 +16,21 @@ export default class MenuScene extends Phaser.Scene{
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
 
-        const BUTTON_SPACING = 100;
-        this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Mystery Game', 
-            { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+        const BUTTON_SPACING = 150;
+        new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY - BUTTON_SPACING, 'Mystery Game Menu', {
+            fontSize: '128px',
+            color: '#fff'
+        }).setOrigin(0.5);
 
-             const PLAY_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING, 'Start Game', 
+             const PLAY_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY , 'Start Game', 
             { 
-                fontSize: '32px',
+                fontSize: '64px',
                 backgroundColor: '#fff', 
                 color: '#338de1',
                 padding: {x:20 , y: 10} 
             }).setOrigin(0.5).setInteractive();
 
+        
         PLAY_BUTTON.on('pointerover', () =>{
             PLAY_BUTTON.setStyle({ backgroundColor: '#338de1', color: '#fff' });
         });
@@ -36,9 +41,9 @@ export default class MenuScene extends Phaser.Scene{
             this.scene.start('MainScene');
         });
 
-        const OPTIONS_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING * 2, 'Options', 
+        const OPTIONS_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING, 'Options', 
             { 
-                fontSize: '32px',
+                fontSize: '64px',
                 backgroundColor: '#fff', 
                 color: '#338de1',
                 padding: {x:20 , y: 10} 
@@ -54,9 +59,9 @@ export default class MenuScene extends Phaser.Scene{
             this.scene.start('OptionsScene');
         });
 
-        const CREDITS_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING * 3, 'Credits',
+        const CREDITS_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING * 2, 'Credits',
             { 
-                fontSize: '32px',
+                fontSize: '64px',
                 backgroundColor: '#fff', 
                 color: '#338de1',
                 padding: {x:20 , y: 10} 

@@ -1,10 +1,14 @@
 /*
     Created by: Jackie Sanchez
-    Date: 4/7/2026
+    Date Created: 4/7/2026
+    Updated by: Jackie Sanchez
+    Updated: 4/8/2026
     Description: This is the map scene.  This is where the Mindpalace map will be displayed.  The
     player will be ablt to navigate their mind palace and interact with objects to learn more about the 
     story and progress through the game.
 */
+
+import GameText from "../prefabs/GameText";
 
 export default class MapScene extends Phaser.Scene{
     constructor() {
@@ -15,14 +19,14 @@ export default class MapScene extends Phaser.Scene{
         this.cameras.main.setBackgroundColor('#6e3318');
         //button to get back to MainScene
         const BUTTON_SPACING = 100;
-        const TITLE_TEXT = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - BUTTON_SPACING, 'Mind Palace Map',
-            {
-                fontSize: '32px',
-                fill: '#fff'
-            }).setOrigin(0.5);
+        const TITLE_TEXT = new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY - BUTTON_SPACING, 'Mind Palace Map', {
+            fontSize: '128px',
+            color: '#fff'
+        }).setOrigin(0.5);
+
         const MAIN_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING, 'Back to Main', 
             { 
-                fontSize: '32px',
+                fontSize: '64px',
                 backgroundColor: '#fff', 
                 color: '#338de1',
                 padding: {x:20 , y: 10} 

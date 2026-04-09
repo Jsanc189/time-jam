@@ -6,33 +6,38 @@
         or go to options menu.
 */
 
+import GameText from "../prefabs/GameText";
+
 export default class CreditsScene extends Phaser.Scene{
     constructor() {
         super('CreditsScene');
     }
-    
+
 
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
 
         //credits to display in the credits scene
         this.credits = [
-            'Producer:\n\nJackie Sanchez',
-            'Game Designers:\n\nRaven Cruz\n\nJackie Sanchez',
-            'Programmers:\n\nRaven Cruz\n\nJackie Sanchez',
-            'Lead Artist:\n\nSunny Lee',
-            'Character Artist:\n\nMars',
+            'Producer:\n\nWatchOutJackie',
+            'Game Designers:\n\nRaven Cruz\n\nWatchOutJackie',
+            'Level Designers:\n\nRaven Cruz\n\nWatchOutJackie',
+            'Lead Artist:\n\nSunnysquid',
+            'Background Artist:\n\nSunnysquid',
+            'Assets Artist:\n\nSunnysquid',
+            'Character Artist:\n\nMarstheluminary',
             'Music Designer:\n\nSimon Blidener',
             'SFX Designer:\n\nSimon Blidener',
+            'UI Designer:\n\nSunnysquid',
             'Special Thanks: '
         ]
 
         this.currentCreditIndex = 0;
         
-        this.creditScrollText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, this.credits[this.currentCreditIndex],
+        this.creditScrollText = new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, this.credits[this.currentCreditIndex],
             { 
-                fontSize: '48px', 
-                fill: '#fff', 
+                fontSize: '96px', 
+                color: '#fff', 
                 align: 'center' 
             }).setOrigin(0.5).setAlpha(0);
         
@@ -42,14 +47,11 @@ export default class CreditsScene extends Phaser.Scene{
         
         //button to get back to MenuScene
         const BUTTON_SPACING = 100;
-        const MENU_BUTTON = this.add.text(this.cameras.main.centerX * 1.5, this.cameras.main.centerY * 1.5 + BUTTON_SPACING, 'Back to Menu', 
-            { 
-                fontSize: '32px',
-                backgroundColor: '#fff', 
-                color: '#338de1',
-                padding: {x:20 , y: 10} 
-            }).setOrigin(0.5).setInteractive();
-        
+        const MENU_BUTTON = new GameText(this, this.cameras.main.centerX * 1.5, this.cameras.main.centerY * 1.5 + BUTTON_SPACING, 'Back to Menu', {
+            fontSize: '64px',
+            color: '#338de1'
+        }).setOrigin(0.5).setInteractive();
+
         MENU_BUTTON.on('pointerover', () =>{
             MENU_BUTTON.setStyle({ backgroundColor: '#338de1', color: '#fff' });
         });
