@@ -9,6 +9,7 @@
 */
 
 import GameText from "../prefabs/GameText";
+import Player from "../prefabs/Player";
 
 export default class MapScene extends Phaser.Scene{
     constructor() {
@@ -17,6 +18,7 @@ export default class MapScene extends Phaser.Scene{
 
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
+        this.player = new Player(this, this.cameras.main.centerX / 2, this.cameras.main.centerY/2, 'player');
         //button to get back to MainScene
         const BUTTON_SPACING = 100;
         const TITLE_TEXT = new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY - BUTTON_SPACING, 'Mind Palace Map', {
@@ -42,5 +44,9 @@ export default class MapScene extends Phaser.Scene{
             this.scene.start('MainScene');
         });
     }
+
+    update(){
+        this.player.update();
+    };
     
 }

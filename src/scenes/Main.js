@@ -6,6 +6,7 @@
 */
 
 import GameText from "../prefabs/GameText";
+import Player from "../prefabs/Player";
 
 export default class MainScene extends Phaser.Scene{
     constructor() {
@@ -58,6 +59,9 @@ export default class MainScene extends Phaser.Scene{
             this.scene.start('MapScene');
         });
 
+    }
+
+    update(){
     }
     
 }
