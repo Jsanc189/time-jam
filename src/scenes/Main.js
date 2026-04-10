@@ -9,6 +9,7 @@ import GameText from "../prefabs/GameText";
 import Grammar from '../prefabs/Grammars';
 import Case from '../prefabs/Case';
 
+
 export default class MainScene extends Phaser.Scene{
     constructor() {
         super('MainScene');
@@ -70,6 +71,9 @@ export default class MainScene extends Phaser.Scene{
             this.scene.start('MapScene');
         });
 
+    }
+
+    update(){
     }
     
 }

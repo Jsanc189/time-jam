@@ -20,8 +20,8 @@ export default class CreditsScene extends Phaser.Scene{
         //credits to display in the credits scene
         this.credits = [
             'Producer:\n\nWatchOutJackie',
-            'Game Designers:\n\nRaven Cruz\n\nWatchOutJackie',
-            'Level Designers:\n\nRaven Cruz\n\nWatchOutJackie',
+            'Game Designers:\n\nRaven Ruiz\n\nWatchOutJackie',
+            'Level Designers:\n\nRaven Ruiz\n\nWatchOutJackie',
             'Lead Artist:\n\nSunnysquid',
             'Background Artist:\n\nSunnysquid',
             'Assets Artist:\n\nSunnysquid',
