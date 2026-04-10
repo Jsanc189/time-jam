@@ -1,19 +1,16 @@
 /*
     created by Raven Ruiz
     Dates: 4/9/2026
-    Description: [WIP] Stores NPC stats. Currently records their archetype.
+    Description: [WIP] Stores NPC stats.
 */
 export default class NPC {
-    relationships;
-    crimeHistory;
-    career;
-    hobbies;
+    constructor(characterData, role) {
+        this.name = characterData.name
+        this.archetype = characterData.archetype
+        this.role = role
+        this.locations = characterData.locations
+        this.activities = [characterData.occupation, ...characterData.hobbies]
 
-    constructor(archetype) {
-        this.archetype = archetype
-    }
-
-    assign(category, value){
-        
+        this.relationships = characterData.relationships
     }
 }

@@ -8,17 +8,25 @@
 export default class Grammar {
     constructor(lexicon) {
         this.lexicon = lexicon;
-        console.log(this.lexicon)
-
     }
 
-    listPick(list){
-        return list[Math.floor(Math.random() * list.length)];
+    getList(symbol) {
+        return this.lexicon[symbol];
+    }
+
+    listPick(list, deleteChoice = true) {
+        const pickIndex = Math.floor(Math.random() * list.length);
+        const pick = list[pickIndex];
+
+        // remove choice from list to prevent double-picking
+        if (deleteChoice) list.splice(pickIndex, 1);
+        return pick;
     }
 
     lexiconPick(symbol) {
-        const list = this.lexicon[symbol];
-        if (!list?.length) throw new Error(`Grammar: unknown symbol "${symbol}"`);
+        const list = this.getList(symbol);
+        if (!list?.length) throw new Error(`[Grammar] Unknown symbol "${symbol}"`);
+        if (list.length == 0) throw new Error(`[Grammar] Empty list at symbol "${symbol}"`);
         return this.listPick(list);
     }
 
@@ -26,11 +34,40 @@ export default class Grammar {
         return this.lexiconPick('archetype');
     }
 
-    getCrime(){
+    getCrime() {
         const crimeType = this.lexiconPick('crime');
         return {
             type: crimeType.name,
-            object: this.listPick(crimeType.object)
+            object: '', // filled in after characters are selected
+        };
+    }
+
+    getCastCharacter() {
+        return this.lexiconPick('cast');
+    }
+
+    getMotives(relationships) {
+        const motiveList = this.getList('motives');
+        let motives = [];
+
+        for (const relationship of relationships) {
+            motives.push(...motiveList[relationship.tag]);
         }
+
+        return motives;
+    }
+
+    getObjectFromActivities(activities) {
+        const allObjects = this.getList('objects');
+        const crimeObjects = [];
+
+        // collects all possible objects for this set of activities
+        for (const activity of activities) {
+            if (allObjects[activity]) {
+                crimeObjects.push(...allObjects[activity]);
+            }
+        }
+
+        return this.listPick(crimeObjects);
     }
 }
