@@ -1,0 +1,24 @@
+{
+    "motives": {
+        "enemy": [
+            "hatred"
+        ],
+        "neighbor": [
+            "property_dispute"
+        ],
+        "friend": [
+            "!argument", "!betrayal"
+        ],
+        "romance_unrequited": [
+            "jealousy"
+        ],
+        "romance": [
+            "!argument", "!betrayal", "jealousy", "crime_of_passion"
+        ]
+    },
+    "events": {
+        "argument": [],
+        "betrayal": []
+    }
+    
+}
