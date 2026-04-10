@@ -6,6 +6,8 @@
 */
 
 import GameText from "../prefabs/GameText";
+import Grammar from '../prefabs/Grammars';
+import Case from '../prefabs/Case';
 
 export default class MainScene extends Phaser.Scene{
     constructor() {
@@ -14,6 +16,16 @@ export default class MainScene extends Phaser.Scene{
 
     
     create() {
+        /////////// TESTNIG CODE: TBD DELETED!!! //////////////////
+        const NUM_SUSPECTS = 2;
+
+        const grammar = this.registry.get('grammar');
+        const theCase = new Case(grammar, NUM_SUSPECTS);
+
+        console.log(theCase)
+        //////////////////////////////////////////////////////////
+
+
         this.cameras.main.setBackgroundColor('#6e3318');
         //button to get back to MenuScene
         const BUTTON_SPACING = 150;
