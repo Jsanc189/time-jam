@@ -9,6 +9,7 @@
 */
 
 import Phaser from 'phaser';
+import Grammar from '../prefabs/Grammars';
 
 export default class BootScene extends Phaser.Scene {
   constructor() {
@@ -31,6 +32,8 @@ export default class BootScene extends Phaser.Scene {
     // grammar filler JSONs
     this.load.json('crimeData', 'src/assets/JSON/crime.json');
     this.load.json('characterData', 'src/assets/JSON/characters.json');
+    this.load.json('motiveData', 'src/assets/JSON/motives.json');
+    this.load.json('objectData', 'src/assets/JSON/objects.json');
   }
 
   create() {
@@ -38,10 +41,12 @@ export default class BootScene extends Phaser.Scene {
     const lexicon = {
       ...this.cache.json.get('crimeData'),
       ...this.cache.json.get('characterData'),
+      ...this.cache.json.get('motiveData'),
+      ...this.cache.json.get('objectData'),
     };
 
     // store merged data on registry for global access
-    this.registry.set('lexicon', lexicon);
+    this.registry.set('grammar', new Grammar(lexicon));
 
     this.scene.start('LoadScene');
   }
