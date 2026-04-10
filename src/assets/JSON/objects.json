@@ -1,0 +1,22 @@
+{
+    "objects": {
+        "cobbler": [
+            "cobbler's hammer", "awl"
+        ],
+        "fishing": [
+            "fishing wire", "harpoon"
+        ],
+        "carpentry": [
+            "claw hammer", "power drill"
+        ],
+        "archery": [
+            "arrow", "bow"
+        ],
+        "medicine": [
+            "checmicals", "poison"
+        ],
+        "pyromancy": [
+            "fire", "explosion"
+        ]
+    }
+}
