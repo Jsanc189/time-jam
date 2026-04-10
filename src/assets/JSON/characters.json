@@ -1,5 +1,76 @@
 {
-    "archetype": [
-        "fairy", "goblin", "elf", "human", "orc"
-    ]
+    "cast": [
+        {
+            "name": "Enfrin",
+            "archetype": "fairy",
+            "occupation": "cobbler",
+            "hobbies": ["fishing", "trickery"],
+            "locations": ["river", "cobbler_shop", "fairy_home"],
+            "relationships": {
+                "Chorg": [
+                    {
+                        "tag": "enemy",
+                        "duration": "2 years"
+                    },
+                    {
+                        "tag": "neighbor",
+                        "duration": "4 years"
+                    }
+                ],
+                "Sil": [
+                    {
+                        "tag": "friend",
+                        "duration": "5 years"
+                    },
+                    {
+                        "tag": "romance_unrequited",
+                        "duration": "3 years"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Chorg",
+            "archetype": "goblin",
+            "occupation": "medicine",
+            "hobbies": ["reading", "pyromancy"],
+            "locations": ["hospital", "library", "goblin_home"],
+            "relationships": {
+                "Enfrin": [
+                    {
+                        "tag": "neighbor",
+                        "duration": "4 years"
+                    }
+                ],
+                "Sil": [
+                    {
+                        "tag": "romance",
+                        "duration": "2 years"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Sil",
+            "archetype": "elf",
+            "occupation": "carpentry",
+            "hobbies": ["trickery", "archery"],
+            "locations": ["pasture", "carpentry_shop", "elf_home"],
+            "relationships": {
+                "Enfrin": [
+                    {
+                        "tag": "friend",
+                        "duration": "5 years"
+                    }
+                ],
+                "Chorg": [
+                    {
+                        "tag": "romance",
+                        "duration": "2 years"
+                    }
+                ]
+            }
+        }
+    ],
+    "archetype": ["fairy", "goblin", "elf", "human", "orc"]
 }
