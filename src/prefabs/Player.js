@@ -1,6 +1,8 @@
 /*
     Created by: Jackie Sanchez
     Date: 4/9/2026
+    updated by: Jackie Sanchez
+    Updated: 4/12/2026 - added player movement and animations to Player prefab
     Description: This is the player prefab for the Phaser game.  It will be used to create the player character and handle player 
     movement and interactions with the game world.
 */
@@ -19,7 +21,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setOrigin(0.5, 0.5);
         this.speed = 200;
         this.setScale(0.25);
-        this.play('playerIdle');
+
 
         //input for the player to move for WASD and arrow keys
         this.cursors = scene.input.keyboard.createCursorKeys();

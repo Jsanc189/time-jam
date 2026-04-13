@@ -11,6 +11,7 @@
 import GameText from "../prefabs/GameText";
 import Player from "../prefabs/Player";
 import Clock from "../prefabs/Clock";
+import Rooms from "../prefabs/Rooms";
 
 export default class MapScene extends Phaser.Scene{
     constructor() {
@@ -19,6 +20,10 @@ export default class MapScene extends Phaser.Scene{
 
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
+        const TILEWIDTH = 128;
+        const TILEHEIGHT = 128;
+        const TILER = new Rooms(this, 'tileFloor', TILEWIDTH, TILEHEIGHT);
+        TILER. tileRoom(0, 0, this.cameras.main.width, this.cameras.main.height);
         this.player = new Player(this, this.cameras.main.centerX / 2, this.cameras.main.centerY/2);
         this.anims.create({
             key: 'playerIdle',
