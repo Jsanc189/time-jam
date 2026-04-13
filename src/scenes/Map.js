@@ -19,7 +19,37 @@ export default class MapScene extends Phaser.Scene{
 
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
-        this.player = new Player(this, this.cameras.main.centerX / 2, this.cameras.main.centerY/2, 'player');
+        this.player = new Player(this, this.cameras.main.centerX / 2, this.cameras.main.centerY/2);
+        this.anims.create({
+            key: 'playerIdle',
+            frames: this.anims.generateFrameNumbers('playerSheet', {start:0, end: 0}),
+            frameRate: 1,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'playerWalkDown',
+            frames: this.anims.generateFrameNames('playerSheet', {start: 0, end: 2}),
+            frameRate: 4,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'playerWalkUp',
+            frames: this.anims.generateFrameNames('playerSheet', {start: 3, end: 5}),
+            frameRate: 4,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'playerWalkRight',
+            frames: this.anims.generateFrameNames('playerSheet', {start: 6, end: 8}),
+            frameRate: 4,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'playerWalkLeft',
+            frames: this.anims.generateFrameNames('playerSheet', {start: 9, end: 11}),
+            frameRate: 4,
+            repeat: -1
+        });
         
         const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
         const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
