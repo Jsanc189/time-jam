@@ -10,6 +10,10 @@ export default class LoadScene extends Phaser.Scene{
     constructor() {
         super('LoadScene');
     }
+
+    preload() {
+        
+    }
     
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');

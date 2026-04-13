@@ -23,7 +23,15 @@ export default class BootScene extends Phaser.Scene {
       progressBar.destroy();
     })
 
-    //space to load assets
+    //space to load assets and animations
+    //player
+    this.load.spritesheet('playerSheet', 'public/assets/images/player.png', {
+      frameWidth: 512,
+      frameHeight: 832
+    });
+    
+
+
   }
 
   create() {
