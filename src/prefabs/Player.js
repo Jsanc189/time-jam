@@ -1,6 +1,8 @@
 /*
     Created by: Jackie Sanchez
     Date: 4/9/2026
+    updated by: Jackie Sanchez
+    Updated: 4/12/2026 - added player movement and animations to Player prefab
     Description: This is the player prefab for the Phaser game.  It will be used to create the player character and handle player 
     movement and interactions with the game world.
 */
@@ -8,21 +10,18 @@
 import Phaser from 'phaser';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture = null, frame = null) {
-        super(scene, x, y, texture, frame);
-        //testing player with circle for now, will replace with sprite later
-        const gfx = scene.make.graphics({x:0, y:0, add: false});
-        gfx.fillStyle(0x00ff00, 1);
-        gfx.fillCircle(16, 16, 16);
-        const textureKey = 'player';
-        gfx.generateTexture(textureKey, 32, 32);
-        this.setTexture(textureKey);
-        gfx.destroy();
+    constructor(scene, x, y) {
+        super(scene, x, y, 'playerSheet', 0);
+        
+        
         //add the player to the scene and enable physics for world interactions
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(true);
+        this.setOrigin(0.5, 0.5);
         this.speed = 200;
+        this.setScale(0.25);
+
 
         //input for the player to move for WASD and arrow keys
         this.cursors = scene.input.keyboard.createCursorKeys();
@@ -58,6 +57,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         if (velocityX !== 0 && velocityY !== 0) {
             this.body.velocity.normalize().scale(this.speed);
         }
+
+        //play animations based on movement direction
+        if (velocityX === 0 && velocityY === 0) {
+            this.anims.play('playerIdle', true);
+        } else if (velocityX > 0) {
+            this.anims.play('playerWalkRight', true);
+        } else if (velocityX < 0) {
+            this.anims.play('playerWalkLeft', true);
+        } else if (velocityY < 0) {
+            this.anims.play('playerWalkUp', true);
+        } else if (velocityY > 0) {
+            this.anims.play('playerWalkDown', true);
+        }
+
     }
 
 

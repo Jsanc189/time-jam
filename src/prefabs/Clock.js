@@ -1,6 +1,8 @@
 /*
     Created by: Jackie Sanchez
     Date Created: 4/9/2026
+    Updated by: Jackie Sanchez
+    Updated: 4/13/2026 - Adds sprite for clock face
     Description: This is a clock with hands and face.  The clock will be used in the game to represent the passage of time.  Time 
     iteration is made when the player moves into a room.  The clock will be used to show the player how much time has passed and how much time they 
     have left to solve the mystery.
@@ -9,27 +11,25 @@
 import Phaser from 'phaser';
 
 export default class Clock extends Phaser.GameObjects.Container {
-    constructor(scene, x, y, texture = null, frame = null) {
+    constructor(scene, x, y) {
         super(scene, x, y);
         this.scene.add.existing(this);
-        //create clock face for now with a simple circle, will replace with sprite later
-        const gfx = scene.make.graphics({x:0, y:0, add: false});
+        
+        //create the clock face and hands as separate sprites and add them to the container
         const SIZE = 132;
-        const RADIUS = 32;
-        gfx.fillStyle(0xaabbcc, 1);
-        gfx.fillCircle(SIZE/2, SIZE/2, RADIUS);
-        gfx.generateTexture('clockFace', SIZE, SIZE);
-        const CLOCKFACE = scene.add.image(0, 0, 'clockFace');
+        const CLOCKFACE = scene.add.image(0, 0, 'clock');
+        CLOCKFACE.setScale(0.15);
+        CLOCKFACE.setOrigin(0.5, 0.5);
 
-
-        gfx.clear();
+        //hourhand creation
+        const gfx = scene.make.graphics({ x: 0, y: 0, add: false })
         gfx.fillStyle(0x000000, 1);
         gfx.fillRect(0, 0, 4, 20);
         gfx.generateTexture('hourHandTex', 4, 20);
         this.hourHand = scene.add.image(0, 0, 'hourHandTex');
         this.hourHand.setOrigin(0.5, 1);
 
-
+        //minute hand creation
         gfx.clear();
         gfx.fillStyle(0x000000, 1);
         gfx.fillRect(0, 0, 2, 30);
@@ -38,11 +38,10 @@ export default class Clock extends Phaser.GameObjects.Container {
         this.minuteHand.setOrigin(0.5, 1);
         gfx.destroy();
 
+        //hand placement and scaling
         this.add(CLOCKFACE);
         this.add(this.hourHand);
         this.add(this.minuteHand);
-
-
         this.setSize(SIZE, SIZE);
         this.setPosition(x, y);
         this.setScale(4);

@@ -11,6 +11,7 @@
 import Phaser from 'phaser';
 import Grammar from '../prefabs/Grammars';
 
+
 export default class BootScene extends Phaser.Scene {
   constructor() {
     super('BootScene');
@@ -34,6 +35,22 @@ export default class BootScene extends Phaser.Scene {
     this.load.json('characterData', 'src/assets/JSON/characters.json');
     this.load.json('motiveData', 'src/assets/JSON/motives.json');
     this.load.json('objectData', 'src/assets/JSON/objects.json');
+    //space to load assets and animations
+    //player
+    this.load.spritesheet('playerSheet', 'assets/images/player.png', {
+      frameWidth: 512,
+      frameHeight: 832
+    });
+
+    //clock
+    this.load.image('clock', 'assets/images/clockFace.png');
+
+    //tile floors
+    this.load.image('libraryFloor', 'assets/images/libraryFloor.png');
+    this.load.image('tileFloor', 'assets/images/tileFloor.png');
+    
+
+
   }
 
   create() {
