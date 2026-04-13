@@ -3,8 +3,9 @@
    Description: This is the BootScene class for a Phaser game. 
    It displays a loading progress bar and loads assets for the game
 */
-
+import payerSheet from('../assets/images/player.png');
 import Phaser from 'phaser';
+
 
 export default class BootScene extends Phaser.Scene {
   constructor() {
@@ -25,7 +26,7 @@ export default class BootScene extends Phaser.Scene {
 
     //space to load assets and animations
     //player
-    this.load.spritesheet('playerSheet', 'public/assets/images/player.png', {
+    this.load.spritesheet('playerSheet', 'assets/images/player.png', {
       frameWidth: 512,
       frameHeight: 832
     });
