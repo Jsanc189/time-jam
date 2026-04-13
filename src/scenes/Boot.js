@@ -30,6 +30,13 @@ export default class BootScene extends Phaser.Scene {
       frameWidth: 512,
       frameHeight: 832
     });
+
+    //clock
+    this.load.image('clock', 'assets/images/clockFace.png');
+
+    //tile floors
+    this.load.image('libraryFloor', 'assets/images/libraryFloor.png');
+    this.load.image('tileFloor', 'assets/images/tileFloor.png');
     
 
 
