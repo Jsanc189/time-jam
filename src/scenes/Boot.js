@@ -29,13 +29,14 @@ export default class BootScene extends Phaser.Scene {
       progressBar.destroy();
     })
 
-    //space to load assets
+    //space to load assets and animations
     // grammar filler JSONs
     this.load.json('crimeData', 'src/assets/JSON/crime.json');
     this.load.json('characterData', 'src/assets/JSON/characters.json');
     this.load.json('motiveData', 'src/assets/JSON/motives.json');
     this.load.json('objectData', 'src/assets/JSON/objects.json');
-    //space to load assets and animations
+    this.load.json('locationData', 'src/assets/JSON/locations.json');
+
     //player
     this.load.spritesheet('playerSheet', 'assets/images/player.png', {
       frameWidth: 512,
@@ -48,9 +49,6 @@ export default class BootScene extends Phaser.Scene {
     //tile floors
     this.load.image('libraryFloor', 'assets/images/libraryFloor.png');
     this.load.image('tileFloor', 'assets/images/tileFloor.png');
-    
-
-
   }
 
   create() {
@@ -60,6 +58,7 @@ export default class BootScene extends Phaser.Scene {
       ...this.cache.json.get('characterData'),
       ...this.cache.json.get('motiveData'),
       ...this.cache.json.get('objectData'),
+      ...this.cache.json.get('locationData'),
     };
 
     // store merged data on registry for global access

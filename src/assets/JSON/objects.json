@@ -1,5 +1,5 @@
 {
-    "objects": {
+    "crime_objects": {
         "cobbler": [
             "cobbler's hammer", "awl"
         ],
@@ -16,7 +16,46 @@
             "checmicals", "poison"
         ],
         "pyromancy": [
-            "fire", "explosion"
+            "fireball", "explosion"
+        ]
+    },
+    "activity_objects": {
+        "cobbler": [
+            "shoes", "cobbler_customer_invoices"
+        ],
+        "fishing": [
+            "rowboat", "cooler"
+        ],
+        "carpentry": [
+            "wood", "carpentry_customer_invoices"
+        ],
+        "archery": [
+            "target", "sheath"
+        ],
+        "medicine": [
+            "medicine", "medicine_customer_invoices"
+        ],
+        "pyromancy": [
+            "fireworks", "spellbook"
+        ],
+        "library": [
+            "books", "borrow_list"
+        ]
+    },
+    "character_objects": {
+        "chorg": [
+            "books", "sil_portrait", "doctors_bag"
+        ],
+        "enfrin": [
+            "sil_portrait", "fish_trophy", "flowers"
+        ],
+        "sil": [
+            "chorg_sculpture", "chorg_portrait", "anon_love_letter"
+        ]
+    },
+    "location_objects": {
+        "house": [
+            "bed", "sofa", "table"
         ]
     }
 }

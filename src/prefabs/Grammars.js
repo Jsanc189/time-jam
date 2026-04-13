@@ -2,7 +2,8 @@
     created by Raven Ruiz
     Dates: 4/9/2026
     Description: [WIP] Currently, Grammars class supports random content selector 
-    backed by a lexicon (a dictionary of concatenated JSON data). 
+    backed by a lexicon (a dictionary of concatenated JSON data). Interfaces with
+    lexicon data directly.
 */
 
 export default class Grammar {
@@ -57,8 +58,8 @@ export default class Grammar {
         return motives;
     }
 
-    getObjectFromActivities(activities) {
-        const allObjects = this.getList('objects');
+    getCrimeObjectFromActivities(activities) {
+        const allObjects = this.getList('crime_objects');
         const crimeObjects = [];
 
         // collects all possible objects for this set of activities
@@ -69,5 +70,9 @@ export default class Grammar {
         }
 
         return this.listPick(crimeObjects);
+    }
+
+    getLocations(){
+        return this.getList("locations");
     }
 }
