@@ -3,7 +3,7 @@
    Description: This is the BootScene class for a Phaser game. 
    It displays a loading progress bar and loads assets for the game
 */
-import payerSheet from('../assets/images/player.png');
+
 import Phaser from 'phaser';
 
 
