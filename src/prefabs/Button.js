@@ -26,6 +26,7 @@ export default class Button extends Phaser.GameObjects.Sprite {
 
         // create the button background
         const buttonBG = scene.make.graphics({ x: 0, y: 0, add: false });
+        // Base button texture
         buttonBG.lineStyle(16, finalBackgroundStyles.borderColor);
         buttonBG.strokeRoundedRect(PADDING / 2, PADDING / 2, width - PADDING, height - PADDING, {
             tl: 16,
@@ -36,17 +37,35 @@ export default class Button extends Phaser.GameObjects.Sprite {
         buttonBG.fillStyle(finalBackgroundStyles.backgroundColor, 1);
         buttonBG.fillRoundedRect(PADDING / 2, PADDING / 2, width - PADDING, height - PADDING, 16);
         buttonBG.generateTexture('Button', width, height);
-        // make lighter background for hover effect
+
+        // Hover texture — clear and redraw everything
+        buttonBG.clear();
         const hoverColor = Phaser.Display.Color.ValueToColor(
             finalBackgroundStyles.backgroundColor,
         ).brighten(8).color;
+        buttonBG.lineStyle(16, finalBackgroundStyles.borderColor);
+        buttonBG.strokeRoundedRect(PADDING / 2, PADDING / 2, width - PADDING, height - PADDING, {
+            tl: 16,
+            tr: 16,
+            bl: 16,
+            br: 16,
+        });
         buttonBG.fillStyle(hoverColor, 1);
         buttonBG.fillRoundedRect(PADDING / 2, PADDING / 2, width - PADDING, height - PADDING, 16);
         buttonBG.generateTexture('ButtonHover', width, height);
-        // make darker background for click effect
+
+        // Click texture — clear and redraw everything
+        buttonBG.clear();
         const clickColor = Phaser.Display.Color.ValueToColor(
             finalBackgroundStyles.backgroundColor,
         ).darken(32).color;
+        buttonBG.lineStyle(16, finalBackgroundStyles.borderColor);
+        buttonBG.strokeRoundedRect(PADDING / 2, PADDING / 2, width - PADDING, height - PADDING, {
+            tl: 16,
+            tr: 16,
+            bl: 16,
+            br: 16,
+        });
         buttonBG.fillStyle(clickColor, 1);
         buttonBG.fillRoundedRect(PADDING / 2, PADDING / 2, width - PADDING, height - PADDING, 16);
         buttonBG.generateTexture('ButtonClick', width, height);
