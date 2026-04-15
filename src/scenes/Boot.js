@@ -38,6 +38,8 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('libraryFloor', 'assets/images/libraryFloor.png');
     this.load.image('tileFloor', 'assets/images/tileFloor.png');
     
+    //SFX
+    this.load.audio('testVolume', 'assets/audio/select.wav');
 
 
   }
