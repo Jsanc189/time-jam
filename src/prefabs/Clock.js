@@ -67,7 +67,7 @@ export default class Clock extends Phaser.GameObjects.Container {
     updateTime(seconds) {
         //rotate the clock hands based on the time passed
         const hours = Math.floor(seconds / 3600) % 12;
-        console.log('Hours:', hours);
+
         const minutes = Math.floor((seconds % 3600) / 60);
 
         const hourAngle = (hours + minutes / 60) * Phaser.Math.PI2 / 12;

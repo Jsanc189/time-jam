@@ -125,7 +125,6 @@ export default class MapScene extends Phaser.Scene {
             undefined,
             () => {
                 this.clockStartTime += CLOCK_ITERATION_TIME;
-                console.log('Clock Start Time: ' + this.clockStartTime);
                 this.clock.updateTime(this.clockStartTime);
             },
         );

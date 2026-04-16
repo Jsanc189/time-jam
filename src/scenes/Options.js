@@ -18,69 +18,61 @@ export default class OptionsScene extends Phaser.Scene {
         const BUTTON_SPACING = 200;
         const POSITION_X= this.cameras.main.centerX;
         const POSITION_Y = this.cameras.main.centerY / 2.5;
+        const SLIDER_WIDTH = 450;
         new GameText(
             this,
             POSITION_X,
             POSITION_Y,
-            'Mystery Game Settings',
+            'Settings',
             {
                 fontSize: '128px',
                 color: '#fff',
             },
         ).setOrigin(0.5);
 
-        //volume Label
-        new GameText(
-            this,
-            POSITION_X / 2,
+
+        //Music Volume Slider
+        this.createSlider(
+            "Music Volume:",
+            POSITION_X + BUTTON_SPACING,
             POSITION_Y + BUTTON_SPACING,
-            "Volume:",
-            {
-                fontSize: '64px',
-                color: '#fff'
-            }
-        ).setOrigin(0.5);
-
-        //Volume Slider
-        const SLIDER_X = POSITION_X + BUTTON_SPACING;
-        const SLIDER_Y = POSITION_Y + BUTTON_SPACING;
-
-        const SLIDER_WIDTH = 450;
-        const SLIDER_LEFT = SLIDER_X - SLIDER_WIDTH / 2;
-        const SLIDER_RIGHT = SLIDER_X + SLIDER_WIDTH / 2;
-
-        const VOLUME_BAR = this.add.rectangle(
-            SLIDER_X,
-            SLIDER_Y,
             SLIDER_WIDTH,
-            10,
-            0xffffff
-        ).setOrigin(0.5);
+            this.game.audio.musicVolume,
+            percent => this.game.audio.setMusicVolume(percent),
+            null
+        )
 
-        const INITIAL_X = SLIDER_LEFT + (this.sound.volume * SLIDER_WIDTH);
-        const VOLUME_KNOB = this. add.circle(
-            INITIAL_X,
-            SLIDER_Y,
-            15,
-            0xffffff
-        ).setInteractive({draggable: true}).setOrigin(0.5);
+        //Music Mute
+        this.createCheckbox(
+            "Mute Music:",
+            POSITION_X + BUTTON_SPACING,
+            POSITION_Y + BUTTON_SPACING * 1.5,
+            SLIDER_WIDTH,
+            this.game.audio.musicMute,
+            state => this.game.audio.setMusicMute(state),
+            null
+        )
 
-        this.input.setDraggable(VOLUME_KNOB);
-        this.input.on("drag", (pointer, gameObject, dragX) =>{
-            dragX = Phaser.Math.Clamp(dragX, SLIDER_LEFT, SLIDER_RIGHT);
-            gameObject.x = dragX;
+        //SFX Volume Slider
+        this.createSlider(
+            "SFX Volume:",
+            POSITION_X + BUTTON_SPACING,
+            POSITION_Y + BUTTON_SPACING * 2,
+            SLIDER_WIDTH, this.game.audio.sfxMute,
+            percent => this.game.audio.setSFXVolume(percent),
+            () => this.game.audio.playSFX("gavel")
+        )
 
-            const PERCENT = (dragX - SLIDER_LEFT) / SLIDER_WIDTH;
-            this.sound.volume = PERCENT;
-            localStorage.setItem("volume", PERCENT);
-        });
-        this.input.on("dragend", (pointer, gameObject) =>{
-            if (gameObject === VOLUME_KNOB) {
-                this.sound.play("gavel", {volume: this.sound.volume});
-            }
-        });
+        //SFX Volume Mute
+        this.createCheckbox(
+            "Mute SFX:",
+            POSITION_X + BUTTON_SPACING,
+            POSITION_Y + BUTTON_SPACING * 2.5,
+            SLIDER_WIDTH, this.game.audio.sfxMute,
+            state => this.game.audio.setSFXMute(state),
+            () => this.game.audio.playSFX("gavel")
+        )
 
-        
         const MENU_BUTTON = new Button(
             this,
             this.cameras.main.centerX,
@@ -94,5 +86,188 @@ export default class OptionsScene extends Phaser.Scene {
                 this.scene.start('MenuScene');
             },
         );
+    }
+
+    createSlider(label, x, y, width, intialValue, onChange, onRelease) {
+        new GameText(
+            this, 
+            x - 1.5 * width, 
+            y, 
+            label, 
+            {
+                fontSize: '64px',
+                color: "#fff"
+            }).setOrigin(0.5);
+        const SLIDERCOLOR = 0xffffff;
+        const KNOBCOLOR = 0x6588ff;
+
+        const left = x -width / 2;
+        const right = x + width / 2;
+
+        this.add.rectangle(x, y, width, 10, SLIDERCOLOR).setOrigin(0.5);
+
+        const knobX = left + intialValue * width;
+
+        const knob = this.add.circle(knobX, y, 20, KNOBCOLOR)
+        .setInteractive({ draggable: true })
+        .setOrigin(0.5);
+
+        knob.on("pointerover", () => {
+            this.tweens.add({
+                targets:knob,
+                scale: 1.2,
+                duration: 100,
+                ease: "Quad.easeOut"
+            });
+        });
+
+        knob.on("pointerout", () => {
+            this.tweens.add({
+                targets: knob,
+                scale: 1,
+                duration: 100,
+                ease: "Quad.easeOut"
+            })
+        })
+
+        knob.on("pointerdown", () => {
+            this.tweens.add({
+                targets:knob,
+                scale: 0.9,
+                duration: 80,
+                ease:"Quad.easeIn"
+            })
+        })
+
+        knob.on("pointerup", () => {
+            this.tweens.add({
+                targets: knob,
+                scale: 1.2,
+                duration: 80,
+                ease: "Quad.easeOut"
+            })
+        })
+
+        this.input.setDraggable(knob);
+
+        this.input.on("drag", (pointer, gameObject, dragX) => {
+            if (gameObject !== knob) return;
+
+            dragX = Phaser.Math.Clamp(dragX, left, right);
+            gameObject.x = dragX;
+
+            const percent = (dragX - left) / width;
+            onChange(percent);
+        });
+
+        this.input.on("dragend", (pointer, gameObject) => {
+            if (gameObject === knob && onRelease) {
+                onRelease();
+            }
+        });
+        return knob;
+    }
+
+
+    createCheckbox (label, x, y, width, initialState, onToggle, onToggleSound) {
+        new GameText(
+            this,
+            x - 1.5 * width,
+            y,
+            label,
+            {
+                fontSize: '64px',
+                color: "#fff"
+            }).setOrigin(0.5);
+        
+        const BOXWIDTH = 40;
+        const BOXCOLOR = 0x000000
+        const BOXSTROKE = 0xffffff
+
+        const BOX = this.add.rectangle(x, y, BOXWIDTH, BOXWIDTH, BOXCOLOR)
+        .setStrokeStyle(4, BOXSTROKE)
+        .setInteractive();
+
+        // Hover glow
+        BOX.on("pointerover", () => {
+            this.tweens.add({
+                targets: BOX,
+                scale: 1.15,
+                duration: 120,
+                ease: "Quad.easeOut"
+            });
+        });
+
+        BOX.on("pointerout", () => {
+            this.tweens.add({
+                targets: BOX,
+                scale: 1,
+                duration: 120,
+                ease: "Quad.easeOut"
+            });
+        });
+
+        // Click bounce
+        BOX.on("pointerdown", () => {
+            this.tweens.add({
+                targets: BOX,
+                scale: 0.9,
+                duration: 80,
+                ease: "Quad.easeIn"
+            });
+        });
+
+        BOX.on("pointerup", () => {
+            this.tweens.add({
+                targets: BOX,
+                scale: 1.15,
+                duration: 80,
+                ease: "Quad.easeOut"
+            });
+        });
+
+        const CHECKMARK = this.add.text(
+            x, 
+            y, 
+            "✔",
+            {
+                fontSize: "48px",
+                color: "#74c4fd"
+        }).setOrigin(0.5);
+        
+        CHECKMARK.setVisible(initialState);
+
+        BOX.on("pointerdown", ()=>{
+            const newState = !CHECKMARK.visible;
+            if (newState) {
+                // Fade in checkmark
+                CHECKMARK.setAlpha(0);
+                CHECKMARK.setVisible(true);
+
+                this.tweens.add({
+                    targets: CHECKMARK,
+                    alpha: 1,
+                    duration: 150,
+                    ease: "Quad.easeOut"
+                });
+            } else {
+                // Fade out
+                this.tweens.add({
+                    targets: CHECKMARK,
+                    alpha: 0,
+                    duration: 150,
+                    ease: "Quad.easeOut",
+                    onComplete: () => CHECKMARK.setVisible(false)
+                });
+            }
+            onToggle(newState);
+
+            if (onToggleSound) {
+                onToggleSound();
+            }
+        })
+
+        return {BOX, CHECKMARK};
+        
     }
 }
