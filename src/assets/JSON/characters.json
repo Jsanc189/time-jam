@@ -33,7 +33,7 @@
             "name": "Chorg",
             "archetype": "goblin",
             "occupation": "medicine",
-            "hobbies": ["reading", "pyromancy"],
+            "hobbies": ["reading", "fishing"],
             "locations": ["hospital", "library", "goblin_home"],
             "relationships": {
                 "Enfrin": [

@@ -1,22 +1,22 @@
 {
     "crime_objects": {
+        "general": [
+            "blade"
+        ],
         "cobbler": [
-            "cobbler's hammer", "awl"
+            "cobbler_hammer"
         ],
         "fishing": [
-            "fishing wire", "harpoon"
+            "harpoon"
         ],
         "carpentry": [
-            "claw hammer", "power drill"
+            "claw_hammer"
         ],
         "archery": [
-            "arrow", "bow"
+            "arrow"
         ],
         "medicine": [
-            "checmicals", "poison"
-        ],
-        "pyromancy": [
-            "fireball", "explosion"
+            "poison"
         ]
     },
     "activity_objects": {
@@ -24,19 +24,16 @@
             "shoes", "cobbler_customer_invoices"
         ],
         "fishing": [
-            "rowboat", "cooler"
+            "rowboat"
         ],
         "carpentry": [
-            "wood", "carpentry_customer_invoices"
+            "lumber", "carpentry_customer_invoices"
         ],
         "archery": [
-            "target", "sheath"
+            "target"
         ],
         "medicine": [
             "medicine", "medicine_customer_invoices"
-        ],
-        "pyromancy": [
-            "fireworks", "spellbook"
         ],
         "library": [
             "books", "borrow_list"
@@ -44,13 +41,13 @@
     },
     "character_objects": {
         "chorg": [
-            "books", "sil_portrait", "doctors_bag"
+            "books", "sil_portrait"
         ],
         "enfrin": [
-            "sil_portrait", "fish_trophy", "flowers"
+            "sil_portrait", "fountain_pen"
         ],
         "sil": [
-            "chorg_sculpture", "chorg_portrait", "anon_love_letter"
+            "chorg_sculpture", "anon_love_letter"
         ]
     },
     "location_objects": {
