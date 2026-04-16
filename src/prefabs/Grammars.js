@@ -1,9 +1,9 @@
 /*
     created by Raven Ruiz
-    Dates: 4/9/2026
-    Description: [WIP] Currently, Grammars class supports random content selector 
-    backed by a lexicon (a dictionary of concatenated JSON data). Interfaces with
-    lexicon data directly.
+    Dates: 4/15/2026
+    Description: Grammars class supports random content selection backed by a lexicon 
+    (a dictionary of concatenated JSON data). Acts as an intermediary between game code
+    and lexicon (interfaces with lexicon data directly).
 */
 
 export default class Grammar {
@@ -27,8 +27,8 @@ export default class Grammar {
     lexiconPick(symbol) {
         const list = this.getList(symbol);
         if (!list?.length) throw new Error(`[Grammar] Unknown symbol "${symbol}"`);
-        if (list.length == 0) throw new Error(`[Grammar] Empty list at symbol "${symbol}"`);
-        return this.listPick(list);
+
+        return this.listPick(list, false);  // do not delete picks from lexicon; since it is on the registry, choices must be persistent
     }
 
     getArchetype() {
@@ -50,6 +50,11 @@ export default class Grammar {
     getMotives(relationships) {
         const motiveList = this.getList('motives');
         let motives = [];
+
+        // if relationships arg is empty, assume stranger relationship bit
+        if(!relationships){
+            relationships = [{tag: "strangers"}];
+        }
 
         for (const relationship of relationships) {
             motives.push(...motiveList[relationship.tag]);

@@ -1,9 +1,9 @@
 /*
     created by Raven Ruiz
-    Dates: 4/13/2026
-    Description: [WIP] Uses provided Grammar object to craft a character-driven case. Currently, it picks a crime, a victim, and two suspects.
-    Added character- and relationship-centric crime scenes, crime objects, and motive assignment. Gathers character key locations, which in turn 
-    contain relevant objects, to be used in map generation.
+    Dates: 4/15/2026
+    Description: Uses provided Grammar object to craft a character-driven case. Currently, it picks a crime, a victim, two suspects, 
+    and a defendant chosen from suspects. Added character- and relationship-centric crime scenes, crime objects, and motive assignment. 
+    Gathers character key locations, which in turn contain relevant objects, to be used in map/room generation.
 */
 
 import NPC from './NPC';
@@ -12,12 +12,19 @@ export default class Case {
     constructor(grammar, numSuspects) {
         this.crime = grammar.getCrime();
 
-        // parties
-        this.victim = new NPC(grammar.getCastCharacter(), 'victim');
+        // assign parties from cast characters
+        // creat a copy of pool to prevent duplicate picks (i.e. pick victim as suspect, double suspects)
+        const castPool = [...grammar.getList('cast')];
+
+        this.victim = new NPC(grammar.listPick(castPool), 'victim');
         this.suspects = Array.from(
             { length: numSuspects },
-            (c) => new NPC(grammar.getCastCharacter(), 'suspect'),
+            () => new NPC(grammar.listPick(castPool), 'suspect')
         );
+
+        const defendantIndex = Math.floor(Math.random() * this.suspects.length)
+        this.defendant = this.suspects[defendantIndex];
+        this.suspects[defendantIndex].defendant = true;
 
         this.crime.scene = this.getCrimeScene(grammar);
         this.crime.object = this.getObject(grammar);
@@ -68,7 +75,6 @@ export default class Case {
         for (const suspect of this.suspects) {
             const suspectName = suspect.name.toLowerCase()
             rooms[suspectName] = locations[suspectName];
-            console.log(rooms[suspectName])
 
             if (rooms[suspectName][this.crime.scene] !== undefined){
                 rooms[suspectName][this.crime.scene].crimeScene = true;
