@@ -19,6 +19,5 @@ export default class GameText extends Phaser.GameObjects.Text {
     super(scene, x, y, text, {...defaultStyle, ...style});
     scene.add.existing(this);
     this.setOrigin(0.5);
-    console.log('GameText created with text:', text);
     }
 }
