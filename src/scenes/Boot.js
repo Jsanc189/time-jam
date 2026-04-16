@@ -40,6 +40,14 @@ export default class BootScene extends Phaser.Scene {
     
     //SFX
     this.load.audio('testVolume', 'assets/audio/select.wav');
+    this.load.audio('clockCalm', 'assets/audio/sfx_clock-calm.mp3');
+    this.load.audio('clockUrgent', 'assets/audio/sfx_clock-urgent.wav');
+    this.load.audio('dialogue', 'assets/audio/sfx_dialogue.mp3');
+    this.load.audio('gavel', 'assets/audio/sfx_gavel.mp3');
+    this.load.audio('hatch', 'assets/audio/sfx_hatch.mp3');
+    this.load.audio('interact', 'assets/audio/sfx_interact.mp3');
+    this.load.audio('notebook', 'assets/audio/sfx_notebook.mp3');
+    this.load.audio('rope', 'assets/audio/sfx_rope.mp3');
 
 
   }

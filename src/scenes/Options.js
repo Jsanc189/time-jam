@@ -76,7 +76,7 @@ export default class OptionsScene extends Phaser.Scene {
         });
         this.input.on("dragend", (pointer, gameObject) =>{
             if (gameObject === VOLUME_KNOB) {
-                this.sound.play("testVolume", {volume: this.sound.volume});
+                this.sound.play("gavel", {volume: this.sound.volume});
             }
         });
 
