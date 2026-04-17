@@ -17,7 +17,7 @@ export default class Clock extends Phaser.GameObjects.Container {
         
         //create the clock face and hands as separate sprites and add them to the container
         const SIZE = 132;
-        const CLOCKFACE = scene.add.image(0, 0, 'clock');
+        const CLOCKFACE = scene.add.image(0, 0, 'clock').setScrollFactor(0);
         CLOCKFACE.setScale(0.15);
         CLOCKFACE.setOrigin(0.5, 0.5);
 
@@ -26,7 +26,7 @@ export default class Clock extends Phaser.GameObjects.Container {
         gfx.fillStyle(0x000000, 1);
         gfx.fillRect(0, 0, 4, 20);
         gfx.generateTexture('hourHandTex', 4, 20);
-        this.hourHand = scene.add.image(0, 0, 'hourHandTex');
+        this.hourHand = scene.add.image(0, 0, 'hourHandTex').setScrollFactor(0);
         this.hourHand.setOrigin(0.5, 1);
 
         //minute hand creation
@@ -34,7 +34,7 @@ export default class Clock extends Phaser.GameObjects.Container {
         gfx.fillStyle(0x000000, 1);
         gfx.fillRect(0, 0, 2, 30);
         gfx.generateTexture('minuteHandTex', 2, 30);
-        this.minuteHand = scene.add.image(0, 0, 'minuteHandTex');
+        this.minuteHand = scene.add.image(0, 0, 'minuteHandTex').setScrollFactor(0);
         this.minuteHand.setOrigin(0.5, 1);
         gfx.destroy();
 

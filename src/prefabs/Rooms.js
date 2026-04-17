@@ -17,12 +17,13 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
         this.roomType = roomType;
-        //this.tiles = [];
-        //this.objects = [];
 
     }
 
     tileRoom(x, y, roomWidth, roomHeight) {
+        this.roomWidth = roomWidth;
+        this.roomHeight = roomHeight;
+        
         const columns = Math.ceil(roomWidth / this.tileWidth);
         const rows = Math.ceil(roomHeight / this.tileHeight);
 
@@ -38,5 +39,26 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         }
     }
 
+    spawnRandomHatches(spriteKeys, labels, spawnChance = 0.01) {
+        const hatches = [];
+        for (let x = 0 ; x< this.roomWidth; x += this.tileWidth) {
+            for (let y = 0; y < this.roomHeight; y += this.tileHeight)
+                if (Math.random() < spawnChance) {
+                    const spriteKey = Phaser.Utils.Array.GetRandom(spriteKeys);
+                    const label = Phaser.Utils.Array.GetRandom(labels);
+                    const hatch = this.scene.physics.add.sprite(
+                        x + this.tileWidth / 2,
+                        y + this.tileHeight / 2,
+                        spriteKey
+                    ).setScale(0.25);
+
+                    hatches.push({
+                        sprite: hatch,
+                        label: label
+                    })
+                }
+        }
+        return hatches;
+    }
 
 }
