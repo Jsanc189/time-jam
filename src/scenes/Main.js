@@ -17,6 +17,8 @@ export default class MainScene extends Phaser.Scene {
     create() {
         /////////// TESTNIG CODE: TBD DELETED!!! //////////////////
         const NUM_SUSPECTS = 2;
+        const DEFENSE_ROLE = "defense"
+        const PROSECUTE_ROLE = "prosecution"
 
         if(!this.registry.get('case')){
             const grammar = this.registry.get('grammar');
@@ -53,6 +55,7 @@ export default class MainScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
+                this.registry.set('case', null);
                 this.scene.start('MenuScene');
             },
         );
@@ -70,54 +73,45 @@ export default class MainScene extends Phaser.Scene {
             },
         );
 
-        
-
+        // player chooses defense or prosecution 
         if(!this.case.playerRole){
-            MAP_BUTTON.setVisible(false);
+            MAP_BUTTON.hide();
             
-            const PICK_SIDE_DEFENSE = this.add.text(this.cameras.main.centerX - BUTTON_SPACING * 2, this.cameras.main.centerY + BUTTON_SPACING, 'DEFEND',
-                {
-                    fontSize: '64px',
-                    backgroundColor: '#fff',
-                    color: '#338de1',
-                    padding: { x: 20, y: 10 }
-                }).setOrigin(0.5).setInteractive();
+            const PICK_SIDE_DEFENSE = new Button(
+                this,
+                this.cameras.main.centerX - BUTTON_SPACING * 2,
+                this.cameras.main.centerY + BUTTON_SPACING * 2,
+                300,
+                100,
+                'DEFEND',
+                undefined,
+                undefined,
+                () => {
+                    this.case.playerRole = DEFENSE_ROLE
 
-            PICK_SIDE_DEFENSE.on('pointerover', () => {
-                PICK_SIDE_DEFENSE.setStyle({ backgroundColor: '#338de1', color: '#fff' });
-            });
-            PICK_SIDE_DEFENSE.on('pointerout', () => {
-                PICK_SIDE_DEFENSE.setStyle({ backgroundColor: '#fff', color: '#338de1' });
-            });
-            PICK_SIDE_DEFENSE.on('pointerdown', () => {
-                this.case.playerRole = "defense";
+                    PICK_SIDE_DEFENSE.hide();
+                    PICK_SIDE_PROSECUTION.hide();
+                    MAP_BUTTON.show();
+                },
+            );
 
-                PICK_SIDE_DEFENSE.setVisible(false);
-                PICK_SIDE_PROSECUTION.setVisible(false);
-                MAP_BUTTON.setVisible(true);
-            });
+            const PICK_SIDE_PROSECUTION = new Button(
+                this,
+                this.cameras.main.centerX + BUTTON_SPACING * 2,
+                this.cameras.main.centerY + BUTTON_SPACING * 2,
+                300,
+                100,
+                'PROSECUTE',
+                undefined,
+                undefined,
+                () => {
+                    this.case.playerRole = PROSECUTE_ROLE
 
-            const PICK_SIDE_PROSECUTION = this.add.text(this.cameras.main.centerX + BUTTON_SPACING * 2, this.cameras.main.centerY + BUTTON_SPACING, 'PROSECUTE',
-                {
-                    fontSize: '64px',
-                    backgroundColor: '#fff',
-                    color: '#338de1',
-                    padding: { x: 20, y: 10 }
-                }).setOrigin(0.5).setInteractive();
-
-            PICK_SIDE_PROSECUTION.on('pointerover', () => {
-                PICK_SIDE_PROSECUTION.setStyle({ backgroundColor: '#338de1', color: '#fff' });
-            });
-            PICK_SIDE_PROSECUTION.on('pointerout', () => {
-                PICK_SIDE_PROSECUTION.setStyle({ backgroundColor: '#fff', color: '#338de1' });
-            });
-            PICK_SIDE_PROSECUTION.on('pointerdown', () => {
-                this.case.playerRole = "prosecutor";
-
-                PICK_SIDE_DEFENSE.setVisible(false);
-                PICK_SIDE_PROSECUTION.setVisible(false);
-                MAP_BUTTON.setVisible(true);
-            });
+                    PICK_SIDE_DEFENSE.hide();
+                    PICK_SIDE_PROSECUTION.hide();
+                    MAP_BUTTON.show();
+                },
+            );
         }
     }
 
