@@ -23,13 +23,32 @@ export default class MapScene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#6e3318');
         const TILEWIDTH = 128;
         const TILEHEIGHT = 128;
+        const WORLDWIDTH = this.cameras.main.width * 3;
+        const WORLDHEIGHT = this.cameras.main.height * 3;
         const TILER = new Rooms(this, 'tileFloor', TILEWIDTH, TILEHEIGHT);
-        TILER.tileRoom(0, 0, this.cameras.main.width, this.cameras.main.height);
+        TILER.tileRoom(0, 0, WORLDWIDTH, WORLDHEIGHT);
+        const hatchSprites = ['libraryFloor'];
+        const hatchLabels = ['MenuScene'];
+        this.hatches = TILER.spawnRandomHatches(
+            hatchSprites,
+            hatchLabels,
+            0.02
+        );
         this.player = new Player(
             this,
             this.cameras.main.centerX / 2,
             this.cameras.main.centerY / 2,
         );
+
+        this.hatches.forEach(hatch => {
+            this.physics.add.overlap(this.player, hatch.sprite, () =>{
+                this.startHatchScene(hatch.label);
+            });
+        });
+        this.physics.world.setBounds(0, 0, WORLDWIDTH, WORLDHEIGHT);
+        
+        //Player animation
+
         this.anims.create({
             key: 'playerIdle',
             frames: this.anims.generateFrameNumbers('playerSheet', { start: 0, end: 0 }),
@@ -60,29 +79,30 @@ export default class MapScene extends Phaser.Scene {
             frameRate: 4,
             repeat: -1,
         });
+        this.cameras.main.startFollow(this.player);
+        this.cameras.main.setDeadzone(
+            this.cameras.main.width * 0.6,
+            this.cameras.main.height * 0.6
+        )
+        this.cameras.main.setBounds(0, 0, WORLDWIDTH, WORLDHEIGHT);
+
+
+
+
+        //Initalize clock and countdown
+        this.clockStartTime = 0; //start time in seconds
+        this.maxSeconds = 43200; //12 hours in seconds
 
         const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
         const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
-        this.clockStartTime = 0; //start time in seconds
-        const CLOCK_ITERATION_TIME = 300; // 5 minutes in seconds
+        const CLOCK_ITERATION_TIME = 1800; // 30 minutes in seconds
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
 
         //button to get back to MainScene
         const BUTTON_SPACING = 120;
-        const TITLE_TEXT = new GameText(
-            this,
-            this.cameras.main.centerX,
-            this.cameras.main.centerY - BUTTON_SPACING,
-            'Mind Palace Map',
-            {
-                fontSize: '128px',
-                color: '#fff',
-            },
-        ).setOrigin(0.5);
-
         const MAIN_BUTTON = new Button(
             this,
-            this.cameras.main.centerX,
+            this.cameras.main.centerX / 5,
             this.cameras.main.centerY + BUTTON_SPACING,
             300,
             100,
@@ -93,11 +113,12 @@ export default class MapScene extends Phaser.Scene {
                 this.scene.start('MainScene');
             },
         );
+        MAIN_BUTTON.setScrollFactor(0);
 
         //button to click to move clock up into view
         const CLOCK_BUTTON = new Button(
             this,
-            this.cameras.main.centerX,
+            this.cameras.main.centerX / 5,
             this.cameras.main.centerY + BUTTON_SPACING * 2,
             300,
             100,
@@ -112,11 +133,12 @@ export default class MapScene extends Phaser.Scene {
                 }
             },
         );
+        CLOCK_BUTTON.setScrollFactor(0);
 
         //button to increment time on the clock by 5 minutes
         const TIME_BUTTON = new Button(
             this,
-            this.cameras.main.centerX,
+            this.cameras.main.centerX / 5,
             this.cameras.main.centerY + BUTTON_SPACING * 3,
             300,
             100,
@@ -126,12 +148,31 @@ export default class MapScene extends Phaser.Scene {
             () => {
                 this.clockStartTime += CLOCK_ITERATION_TIME;
                 this.clock.updateTime(this.clockStartTime);
+                if(this.clockStartTime >= this.maxSeconds) {
+                    this.endGame();
+                }
             },
         );
+        TIME_BUTTON.setScrollFactor(0);
     }
 
     update() {
         this.player.update();
         this.clock.update();
+
     }
+
+    startHatchScene(label) {
+        this.scene.start(label);
+    }
+
+    endGame() {
+        console.log("Game Over - time ran out!");
+        this.time.delayedCall(50, () =>{
+            alert("GameOver!");
+            this.clockStartTime = 0;
+        });
+    }
+
+
 }
