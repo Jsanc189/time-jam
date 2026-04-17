@@ -6,9 +6,10 @@
     or go to options menu.
 */
 
-import GameText from "../prefabs/GameText";
+import GameText from '../prefabs/GameText';
+import Button from '../prefabs/Button';
 
-export default class MenuScene extends Phaser.Scene{
+export default class MenuScene extends Phaser.Scene {
     constructor() {
         super('MenuScene');
     }
@@ -17,66 +18,57 @@ export default class MenuScene extends Phaser.Scene{
         this.cameras.main.setBackgroundColor('#6e3318');
 
         const BUTTON_SPACING = 150;
-        new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY - BUTTON_SPACING, 'Mystery Game Menu', {
-            fontSize: '128px',
-            color: '#fff'
-        }).setOrigin(0.5);
+        new GameText(
+            this,
+            this.cameras.main.centerX,
+            this.cameras.main.centerY - BUTTON_SPACING,
+            'Mystery Game Menu',
+            {
+                fontSize: '128px',
+                color: '#fff',
+            },
+        ).setOrigin(0.5);
 
-             const PLAY_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY , 'Start Game', 
-            { 
-                fontSize: '64px',
-                backgroundColor: '#fff', 
-                color: '#338de1',
-                padding: {x:20 , y: 10} 
-            }).setOrigin(0.5).setInteractive();
+        const PLAY_BUTTON = new Button(
+            this,
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            300,
+            100,
+            'Start Game',
+            undefined,
+            undefined,
+            () => {
+                this.scene.start('MainScene');
+            },
+        );
 
-        
-        PLAY_BUTTON.on('pointerover', () =>{
-            PLAY_BUTTON.setStyle({ backgroundColor: '#338de1', color: '#fff' });
-        });
-        PLAY_BUTTON.on('pointerout', () =>{
-            PLAY_BUTTON.setStyle({ backgroundColor: '#fff', color: '#338de1' });
-        });
-        PLAY_BUTTON.on('pointerdown', () =>{
-            this.scene.start('MainScene');
-        });
+        const OPTIONS_BUTTON = new Button(
+            this,
+            this.cameras.main.centerX,
+            this.cameras.main.centerY + BUTTON_SPACING,
+            300,
+            100,
+            'Options',
+            undefined,
+            undefined,
+            () => {
+                this.scene.start('OptionsScene');
+            },
+        );
 
-        const OPTIONS_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING, 'Options', 
-            { 
-                fontSize: '64px',
-                backgroundColor: '#fff', 
-                color: '#338de1',
-                padding: {x:20 , y: 10} 
-            }).setOrigin(0.5).setInteractive();
-
-        OPTIONS_BUTTON.on('pointerover', () =>{
-            OPTIONS_BUTTON.setStyle({ backgroundColor: '#338de1', color: '#fff' });
-        });
-        OPTIONS_BUTTON.on('pointerout', () =>{
-            OPTIONS_BUTTON.setStyle({ backgroundColor: '#fff', color: '#338de1' });
-        });
-        OPTIONS_BUTTON.on('pointerdown', () =>{
-            this.scene.start('OptionsScene');
-        });
-
-        const CREDITS_BUTTON = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + BUTTON_SPACING * 2, 'Credits',
-            { 
-                fontSize: '64px',
-                backgroundColor: '#fff', 
-                color: '#338de1',
-                padding: {x:20 , y: 10} 
-            }).setOrigin(0.5).setInteractive();
-
-        CREDITS_BUTTON.on('pointerover', () =>{
-            CREDITS_BUTTON.setStyle({ backgroundColor: '#338de1', color: '#fff' });
-        });
-        CREDITS_BUTTON.on('pointerout', () =>{
-            CREDITS_BUTTON.setStyle({ backgroundColor: '#fff', color: '#338de1' });
-        });
-        CREDITS_BUTTON.on('pointerdown', () =>{
-            this.scene.start('CreditsScene');
-        });
-
+        const CREDITS_BUTTON = new Button(
+            this,
+            this.cameras.main.centerX,
+            this.cameras.main.centerY + BUTTON_SPACING * 2,
+            300,
+            100,
+            'Credits',
+            undefined,
+            undefined,
+            () => {
+                this.scene.start('CreditsScene');
+            },
+        );
     }
-
 }
