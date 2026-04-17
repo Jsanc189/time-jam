@@ -31,6 +31,8 @@ export default class Case {
         this.assignMotives(grammar);
 
         this.investigationLocations = this.getLocations(grammar);
+
+        this.playerRole = null; // selected by player on game start
     }
 
     getCrimeScene(grammar) {

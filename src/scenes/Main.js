@@ -20,10 +20,14 @@ export default class MainScene extends Phaser.Scene{
         /////////// TESTNIG CODE: TBD DELETED!!! //////////////////
         const NUM_SUSPECTS = 2;
 
-        const grammar = this.registry.get('grammar');
-        const theCase = new Case(grammar, NUM_SUSPECTS);
+        if(!this.registry.get('case')){
+            const grammar = this.registry.get('grammar');
+            this.case = new Case(grammar, NUM_SUSPECTS);
 
-        console.log(theCase)
+            this.registry.set('case', this.case);
+        }
+
+        console.log(this.case)
         //////////////////////////////////////////////////////////
 
 
@@ -50,6 +54,8 @@ export default class MainScene extends Phaser.Scene{
             MENU_BUTTON.setStyle({ backgroundColor: '#fff', color: '#338de1' });
         });
         MENU_BUTTON.on('pointerdown', () =>{
+            this.registry.set('case', null);    // clear case data
+
             this.scene.start('MenuScene');
         });
 
@@ -71,6 +77,55 @@ export default class MainScene extends Phaser.Scene{
             this.scene.start('MapScene');
         });
 
+        
+
+        if(!this.case.playerRole){
+            MAP_BUTTON.setVisible(false);
+            
+            const PICK_SIDE_DEFENSE = this.add.text(this.cameras.main.centerX - BUTTON_SPACING * 2, this.cameras.main.centerY + BUTTON_SPACING, 'DEFEND',
+                {
+                    fontSize: '64px',
+                    backgroundColor: '#fff',
+                    color: '#338de1',
+                    padding: { x: 20, y: 10 }
+                }).setOrigin(0.5).setInteractive();
+
+            PICK_SIDE_DEFENSE.on('pointerover', () => {
+                PICK_SIDE_DEFENSE.setStyle({ backgroundColor: '#338de1', color: '#fff' });
+            });
+            PICK_SIDE_DEFENSE.on('pointerout', () => {
+                PICK_SIDE_DEFENSE.setStyle({ backgroundColor: '#fff', color: '#338de1' });
+            });
+            PICK_SIDE_DEFENSE.on('pointerdown', () => {
+                this.case.playerRole = "defense";
+
+                PICK_SIDE_DEFENSE.setVisible(false);
+                PICK_SIDE_PROSECUTION.setVisible(false);
+                MAP_BUTTON.setVisible(true);
+            });
+
+            const PICK_SIDE_PROSECUTION = this.add.text(this.cameras.main.centerX + BUTTON_SPACING * 2, this.cameras.main.centerY + BUTTON_SPACING, 'PROSECUTE',
+                {
+                    fontSize: '64px',
+                    backgroundColor: '#fff',
+                    color: '#338de1',
+                    padding: { x: 20, y: 10 }
+                }).setOrigin(0.5).setInteractive();
+
+            PICK_SIDE_PROSECUTION.on('pointerover', () => {
+                PICK_SIDE_PROSECUTION.setStyle({ backgroundColor: '#338de1', color: '#fff' });
+            });
+            PICK_SIDE_PROSECUTION.on('pointerout', () => {
+                PICK_SIDE_PROSECUTION.setStyle({ backgroundColor: '#fff', color: '#338de1' });
+            });
+            PICK_SIDE_PROSECUTION.on('pointerdown', () => {
+                this.case.playerRole = "prosecutor";
+
+                PICK_SIDE_DEFENSE.setVisible(false);
+                PICK_SIDE_PROSECUTION.setVisible(false);
+                MAP_BUTTON.setVisible(true);
+            });
+        }
     }
 
     update(){
