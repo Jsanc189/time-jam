@@ -38,13 +38,13 @@ export default class HatchRoomScene extends Phaser.Scene {
             undefined,
             undefined,
             () =>{
-                this.returnToMap();
+                this.scene.stop();
+                this.scene.wake('MapScene');
             }
         );
     }
 
     returnToMap() {
-        this.scene.stop();
-        this.scene.wake('MapScene');
+
     }
 }

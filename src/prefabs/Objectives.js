@@ -28,8 +28,8 @@ export default class ObjectivesController {
             label: `Examine the ${this.fmt(crime.scene)}`,
             description: `Visit the scene of the ${crime.type} to find the ${this.fmt(crime.object)}.`,
             category: 'investigation',
-            roomType: crime.scene,
-            requiredObjects: [crime.object],
+            roomType: crime.scene,              // picks background art
+            requiredObjects: [crime.object],    // all must be interacted with; picks object sprites
             foundObjects : [],
             alwaysSpawn: true
         });
@@ -162,7 +162,7 @@ export default class ObjectivesController {
         
         return allFound ? this.completeById(objective.id) : null;
     }
-
+/*
     // call when motive evidence is confirmed (you decide the trigger).
     onMotiveUncovered(suspectName) {
         return this.resolve(
@@ -170,6 +170,13 @@ export default class ObjectivesController {
                 o.type === 'uncover_motive' &&
                 o.target.suspect.toLowerCase() === suspectName.toLowerCase(),
         );
+    }
+*/
+    isWinConditionMet() {
+        const crimeSceneDone = this.isComplete('crime_scene');
+        const suspectObjectiveDone = this.objectives.every(o => o.completed);
+
+        return crimeSceneDone && suspectObjectiveDone;
     }
 
     add(objective) {
