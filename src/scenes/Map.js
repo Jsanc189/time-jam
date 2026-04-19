@@ -27,12 +27,31 @@ export default class MapScene extends Phaser.Scene {
         const WORLDHEIGHT = this.cameras.main.height * 3;
         const TILER = new Rooms(this, 'tileFloor', TILEWIDTH, TILEHEIGHT);
         TILER.tileRoom(0, 0, WORLDWIDTH, WORLDHEIGHT);
-        const hatchSprites = ['libraryFloor'];
-        const hatchLabels = ['MenuScene'];
+        let sprite = ['libraryFloor'];
+        let rooms = [
+            {
+                type:'Library',
+                objectives: ['blade']
+            }, 
+            {
+                type: 'Interrigation',
+                objectives: ['arrow']
+            }, 
+            {
+                type:'Crime_Scene',
+                objectives:['harpoon']
+            }];
+
+        const HATCHINFO = {
+            sprite,
+            rooms
+        }
+
         this.hatches = TILER.spawnRandomHatches(
-            hatchSprites,
-            hatchLabels,
-            0.02
+            HATCHINFO.sprite,
+            HATCHINFO.rooms,
+
+            0.05
         );
         this.player = new Player(
             this,
@@ -40,9 +59,16 @@ export default class MapScene extends Phaser.Scene {
             this.cameras.main.centerY / 2,
         );
 
+        //list of gauranteed rooms (the actual interrigation room, murder scene, and library)
+        //list of red herring rooms (any amount of mimick rooms of the above)
+
         this.hatches.forEach(hatch => {
             this.physics.add.overlap(this.player, hatch.sprite, () =>{
-                this.startHatchScene(hatch.label);
+                const label = hatch.sprite.getData('label');
+                const objectives = hatch.sprite.getData('objectives')
+                const data = {label: label, objectives: objectives}
+                this.scene.sleep('MapScene')
+                this.startHatchScene(data);
             });
         });
         this.physics.world.setBounds(0, 0, WORLDWIDTH, WORLDHEIGHT);
@@ -87,15 +113,13 @@ export default class MapScene extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, WORLDWIDTH, WORLDHEIGHT);
 
 
-
-
         //Initalize clock and countdown
-        this.clockStartTime = 0; //start time in seconds
-        this.maxSeconds = 43200; //12 hours in seconds
+        this.registry.set('clockStartTime', 0); //start time in seconds
+        this.registry.set('maxSeconds', 43200); //12 hours in seconds
 
         const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
         const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
-        const CLOCK_ITERATION_TIME = 1800; // 30 minutes in seconds
+        this.registry.set('taskTime', 1800); // 30 minutes in seconds
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
 
         //button to get back to MainScene
@@ -162,8 +186,8 @@ export default class MapScene extends Phaser.Scene {
 
     }
 
-    startHatchScene(label) {
-        this.scene.start(label);
+    startHatchScene(data) {
+        this.scene.start("HatchRoomScene", data);
     }
 
     endGame() {

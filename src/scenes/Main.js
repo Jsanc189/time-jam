@@ -21,6 +21,7 @@ export default class MainScene extends Phaser.Scene {
 
     create() {
         const NUM_SUSPECTS = 2;
+        const NUM_OBJECTIVES = 10;
         const DEFENSE_ROLE = "defense"
         const PROSECUTE_ROLE = "prosecution"
 
@@ -29,9 +30,6 @@ export default class MainScene extends Phaser.Scene {
             this.case = new Case(grammar, NUM_SUSPECTS);
 
             this.registry.set('case', this.case);
-
-            this.objectives = new ObjectivesController(this.case);
-            this.registry.set('objectives', this.objectives);
         }
 
         console.log("[Main]: ", this.case)
@@ -94,7 +92,8 @@ export default class MainScene extends Phaser.Scene {
                 undefined,
                 () => {
                     this.case.playerRole = DEFENSE_ROLE
-                    this.objectives.applyRole(this.case.playerRole);
+                    this.objectives = new ObjectivesController(this.case, DEFENSE_ROLE, NUM_OBJECTIVES);
+                    this.registry.set('objectives', this.objectives);
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
@@ -115,13 +114,14 @@ export default class MainScene extends Phaser.Scene {
                 undefined,
                 () => {
                     this.case.playerRole = PROSECUTE_ROLE
-                    this.objectives.applyRole(this.case.playerRole);
+                    this.objectives = new ObjectivesController(this.case, PROSECUTE_ROLE, NUM_OBJECTIVES);
+                    this.registry.set('objectives', this.objectives);
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
                     MAP_BUTTON.show();
 
-                    this.testObjectives();
+                    //this.testObjectives();
                 },
             );
         }
