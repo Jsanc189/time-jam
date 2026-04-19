@@ -4,6 +4,10 @@
     Updated by: Sunny Han
     Description: This is a Button prefab to use for the game.  It takes in a scene, x and y coordinates,
     a key for the texture, and a callback function to execute when the button is clicked.  
+
+    Edited by: Raven Ruiz
+    Date: 4/16/2026
+    Description: Added helper functions to hide/show buttons from outside class.
 */
 
 import Phaser from 'phaser';
@@ -99,5 +103,15 @@ export default class Button extends Phaser.GameObjects.Sprite {
             .on('pointerover', () => {
                 if (!isDown) this.newButton.setTexture('ButtonHover');
             });
+    }
+
+    show() {
+        this.newButton.setVisible(true).setInteractive({ useHandCursor: true });
+        this.buttonText.setVisible(true);
+    }
+
+    hide() {
+        this.newButton.setVisible(false).disableInteractive();
+        this.buttonText.setVisible(false);
     }
 }
