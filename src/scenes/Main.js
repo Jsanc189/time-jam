@@ -1,7 +1,11 @@
 /*
     Created by: Jackie Sanchez
     Date: 4/7/2026
-    Description: This is the Main play scene.  This is where the main game will be played.  
+    Description: This is the Main play scene.  This is where the main game will be played. 
+    
+    Edited: Raven Ruiz
+    Date: 4/19/2026
+    Description: Added case generation, objectives generation, and role choice buttons (defense, prosecution).
     
 */
 
@@ -16,7 +20,6 @@ export default class MainScene extends Phaser.Scene {
     }
 
     create() {
-        /////////// TESTNIG CODE: TBD DELETED!!! //////////////////
         const NUM_SUSPECTS = 2;
         const DEFENSE_ROLE = "defense"
         const PROSECUTE_ROLE = "prosecution"
@@ -31,9 +34,7 @@ export default class MainScene extends Phaser.Scene {
             this.registry.set('objectives', this.objectives);
         }
 
-        console.log(this.case)
-        //////////////////////////////////////////////////////////
-
+        console.log("[Main]: ", this.case)
 
         this.cameras.main.setBackgroundColor('#6e3318');
         //button to get back to MenuScene
@@ -126,6 +127,8 @@ export default class MainScene extends Phaser.Scene {
         }
     }
 
+    /*
+    // TEMP TESTING CODE
     testObjectives(){
         const LOG_ID = "[Main] testObjectives()";
 
@@ -163,6 +166,7 @@ export default class MainScene extends Phaser.Scene {
         console.log(`\n${LOG_ID} ...  Final summary:`, ctrl.getSummary());
         console.log(`${LOG_ID} ... All objectives:`, ctrl.getAll());
     }
+    */
 
     update() {}
 }
