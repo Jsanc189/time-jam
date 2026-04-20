@@ -80,4 +80,13 @@ export default class Grammar {
     getLocations(){
         return this.getList("locations");
     }
+
+    getAllObjects() {
+        return {
+            crime_objects:    this.getList('crime_objects'),
+            activity_objects: this.getList('activity_objects'),
+            character_objects: this.getList('character_objects'),
+            location_objects: this.getList('location_objects'),
+        };
+    }
 }

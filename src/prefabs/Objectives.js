@@ -1,18 +1,29 @@
 /*
     Created by: Raven Ruiz
     Date: 4/17/2026
-    Description: Objectives builds and tracks a series of investigation
+    Description: ObjectivesController builds and tracks a series of investigation
     objectives derived from an active Case. Objectives are categorized by type
     (visit_room, find_item, uncover_motive) and can be triggered by game events
     via onRoomVisited() and onItemFound(). Role-specific objectives are appended
     once the player chooses defense or prosecution via applyRole().
+
+    Updated by: Raven Ruiz
+    Date: 4/19/2026
+    Description: Each objective is tied to a specific room, requires the player 
+    to interact with a set of objects inside that room to complete the objective.
+
+    Crime scene objective always spawns. Suspect investigation objectives are filtered
+    by role (defense skips the defendant rooms, prosecution only targets them).
+
+    Win condition: crime scene objective complete + all suspect objectives complete.
 */
 
 export default class ObjectivesController {
-    constructor(caseData, numObjectives) {
+    constructor(caseData, objectData, numObjectives) {
         this.case = caseData;
         this.objectives = [];
         this.role = caseData.playerRole;
+        this.objectsData = objectData;
         this.numObjectives = numObjectives;
 
         this.addCrimeSceneObjectives();
@@ -39,13 +50,17 @@ export default class ObjectivesController {
         const { suspects, investigationLocations, defendant } = this.case;
         const pool = [];
 
+        // resolves array of keys w/ a lookup table + flattens the results
+        // prevent listing keys as objects
+        const resolve = (keys = [], table = {}) => keys.flatMap((key) => table[key] ?? []);
+
         for (const suspect of suspects) {
             const isDefendant = (suspect.name === defendant.name);
             if(isDefendant && this.role === "defense"){
                 continue;   // defense is NOT looking for evidence against defendant
             }
 
-            if(isDefendant && this.role === "prosecution"){
+            if(!isDefendant && this.role === "prosecution"){
                 continue;   // prosecution is ONLY looking for evidence against defendant
             }
 
@@ -55,11 +70,12 @@ export default class ObjectivesController {
 
             for (const [roomName, roomData] of Object.entries(rooms)) {
                 // notable items inside each room
-                const allItems = [
-                    ...(roomData.crime_objects ?? []),
-                    ...(roomData.character_objects ?? []),
-                    ...(roomData.activity_objects ?? []),
+                const resolvedItems = [
+                    ...resolve(roomData.crime_objects, this.objectsData.crime_objects),
+                    ...resolve(roomData.character_objects, this.objectsData.character_objects),
+                    ...resolve(roomData.activity_objects, this.objectsData.activity_objects),
                 ];
+                const allItems = [...new Set(resolvedItems)]
 
                 pool.push({
                     id: `room_${key}_${roomName}`,
@@ -76,8 +92,7 @@ export default class ObjectivesController {
             }
 
             // randomly pick {numObjectives} from the pool
-            let selections = this.shuffle(pool);
-            selections = selections.slice(0, this.numObjectives);
+            const selections = this.shuffle(pool).slice(0, this.numObjectives);
 
             for(const obj of selections){
                 this.add(obj);
@@ -95,7 +110,7 @@ export default class ObjectivesController {
                 continue;   // defense is NOT looking for evidence against defendant
             }
 
-            if((suspect.name !== defendant.name) && this.role === "prosecution"){
+            if(!(suspect.name !== defendant.name) && this.role === "prosecution"){
                 continue;   // prosecution is ONLY looking for evidence against defendant
             }
 
@@ -245,5 +260,15 @@ export default class ObjectivesController {
         const completed = this.getCompleted().length;
         const total = this.objectives.length;
         return { total, completed, pending: total - completed };
+    }
+
+    getRoomProgress(roomType) {
+        const obj = this.objectives.find(o => o.roomType === roomType);
+        if (!obj) return null;
+        return {
+            found: obj.foundObjects.length,
+            required: obj.requiredObjects.length,
+            completed: obj.completed,
+        };
     }
 }
