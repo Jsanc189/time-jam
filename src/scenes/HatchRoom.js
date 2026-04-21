@@ -27,6 +27,7 @@ export default class HatchRoomScene extends Phaser.Scene {
             this.cameras.main.centerY,
             this.label + '\nObjectives are: ' + this.objectives
         )
+        // chose a sprite floor for tiler based on room type
 
         const MIND_PALACE = new Button(
             this,

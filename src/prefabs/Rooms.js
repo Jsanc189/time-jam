@@ -20,7 +20,7 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         
     }
 
-    tileRoom(x, y, roomWidth, roomHeight) {
+    tileRoom(x, y, roomWidth, roomHeight, framesToUse) {
         this.roomWidth = roomWidth;
         this.roomHeight = roomHeight;
         
@@ -30,11 +30,13 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < columns; col++) {
                 // Create and position tiles
+                const frame = Phaser.Utils.Array.GetRandom(framesToUse);
                 this.scene.add.image(
                     x + col * this.tileWidth,
                     y + row * this.tileHeight,
-                    this.tileKey
-                ).setOrigin(0, 0).setScale(0.25);
+                    this.tileKey,
+                    frame
+                ).setOrigin(0, 0).setScale(0.5);
             }
         }
     }
@@ -68,7 +70,7 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
                     const LABELTEXT = this.scene.add.text(
                         x,
                         y - 40,
-                        label
+                        type +"\n" + objectives
                     )
                     .setOrigin(0.5)
                     .setDepth(999)

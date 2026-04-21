@@ -45,12 +45,42 @@ export default class BootScene extends Phaser.Scene {
     });
 
     //clock
-    this.load.image('clock', 'assets/images/clockFace.png');
+    this.load.image('clock', 'assets/images/clock_face.png');
 
     //tile floors
     this.load.image('libraryFloor', 'assets/images/libraryFloor.png');
     this.load.image('tileFloor', 'assets/images/tileFloor.png');
-    
+    this.load.spritesheet('floorTiles', 'assets/images/floor_tiles.png', {
+      frameWidth: 256,
+      frameHeight: 256
+    });
+  
+
+    //object assets
+    this.load.spritesheet('stools', 'assets/images/stools.png',{
+      frameWidth: 256,
+      frameHeight: 256
+    });
+    this.load.spritesheet('chair', 'assets/images/chair.png',{
+        frameWidth: 256,
+        frameHeight: 384
+    });
+    this.load.spritesheet('lamps', 'assets/images/lamps.png', {
+      frameWidth: 256,
+      frameHeight: 256
+    });
+    this.load.spritesheet('tables', 'assets/images/tables.png',{
+      frameWidth: 512,
+      frameHeight: 325
+    });
+    this.load.spritesheet('rope_hatch', 'assets/images/travel_objects.png', {
+      frameWidth: 256,
+      frameHeight: 454
+    });
+
+    //ui assets
+    this.load.image('paper1', 'assets/images/paper_1.png');
+    this.load.image('paper2', 'assets/images/paper_2.png');
 
     //music
     this.load.audio('testMusic', 'assets/audio/music/boss_time_15.mp3');
