@@ -72,25 +72,25 @@ export default class MapScene extends Phaser.Scene {
         });
         this.anims.create({
             key: 'playerWalkDown',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 0, end: 2 }),
+            frames: this.anims.generateFrameNames('playerSheet', { start: 0, end: 3 }),
             frameRate: 4,
             repeat: -1,
         });
         this.anims.create({
             key: 'playerWalkUp',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 3, end: 5 }),
+            frames: this.anims.generateFrameNames('playerSheet', { start: 4, end:  7 }),
             frameRate: 4,
             repeat: -1,
         });
         this.anims.create({
             key: 'playerWalkRight',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 6, end: 8 }),
+            frames: this.anims.generateFrameNames('playerSheet', { start: 8, end: 11 }),
             frameRate: 4,
             repeat: -1,
         });
         this.anims.create({
             key: 'playerWalkLeft',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 9, end: 11 }),
+            frames: this.anims.generateFrameNames('playerSheet', { start: 12, end: 15 }),
             frameRate: 4,
             repeat: -1,
         });
@@ -265,7 +265,7 @@ export default class MapScene extends Phaser.Scene {
             );
         });
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 30; i++) {
             if (!isOverlapping) {
                 return { x: spawnX, y:spawnY };
             }
@@ -275,7 +275,7 @@ export default class MapScene extends Phaser.Scene {
             let newX = x;
             let newY = y;
 
-            if (dir === 0) newX += TILE; // right
+            if (dir === 0) newX += TILE; // rights
             if (dir === 1) newX -= TILE; // left
             if (dir === 2) newY += TILE; // down
             if (dir === 3) newY -= TILE; // up
