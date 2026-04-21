@@ -38,6 +38,7 @@ export default class HatchRoomScene extends Phaser.Scene {
             undefined,
             undefined,
             () =>{
+                this.scene.get('MapScene').events.emit('timeSpent', 1800);//30 minutes
                 this.scene.stop();
                 this.scene.wake('MapScene');
             }
