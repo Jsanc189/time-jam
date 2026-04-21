@@ -40,7 +40,7 @@ export default class BootScene extends Phaser.Scene {
 
     //player
     this.load.spritesheet('playerSheet', 'assets/images/player.png', {
-      frameWidth: 512,
+      frameWidth: 500,
       frameHeight: 832
     });
 
