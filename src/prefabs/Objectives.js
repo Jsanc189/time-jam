@@ -9,86 +9,96 @@
 */
 
 export default class ObjectivesController {
-    constructor(caseData) {
+    constructor(caseData, numObjectives) {
         this.case = caseData;
         this.objectives = [];
+        this.role = caseData.playerRole;
+        this.numObjectives = numObjectives;
 
         this.addCrimeSceneObjectives();
         this.addSuspectRoomObjectives();
-        this.addMotiveObjectives();
+        // this.addMotiveObjectives();
     }
 
     addCrimeSceneObjectives() {
         const { crime } = this.case;
 
-        // initial investigation stuff is the same for both player roles 
-
         this.add({
-            id: 'examine_crime_scene',
+            id: 'crime_scene',
             label: `Examine the ${this.fmt(crime.scene)}`,
-            description: `Visit the scene of the ${crime.type} to gather initial clues.`,
-            type: 'visit_room',
+            description: `Visit the scene of the ${crime.type} to find the ${this.fmt(crime.object)}.`,
             category: 'investigation',
-            target: { room: crime.scene },
-        });
-
-        this.add({
-            id: 'find_crime_object',
-            label: `Find the ${this.fmt(crime.object)}`,
-            description: `Locate the ${this.fmt(crime.object)} connected to the ${crime.type}.`,
-            type: 'find_item',
-            category: 'evidence',
-            target: { item: crime.object },
+            roomType: crime.scene,              // picks background art
+            requiredObjects: [crime.object],    // all must be interacted with; picks object sprites
+            foundObjects : [],
+            alwaysSpawn: true
         });
     }
 
     addSuspectRoomObjectives() {
-        const { suspects, investigationLocations } = this.case;
+        const { suspects, investigationLocations, defendant } = this.case;
+        const pool = [];
 
         for (const suspect of suspects) {
+            const isDefendant = (suspect.name === defendant.name);
+            if(isDefendant && this.role === "defense"){
+                continue;   // defense is NOT looking for evidence against defendant
+            }
+
+            if(isDefendant && this.role === "prosecution"){
+                continue;   // prosecution is ONLY looking for evidence against defendant
+            }
+
             const key = suspect.name.toLowerCase();
             const rooms = investigationLocations[key];
             if (!rooms) continue;
 
             for (const [roomName, roomData] of Object.entries(rooms)) {
-                this.add({
-                    id: `visit_${key}_${roomName}`,
-                    label: `Search ${suspect.name}'s ${this.fmt(roomName)}`,
-                    description: `Investigate the ${this.fmt(roomName)} for evidence connected to ${suspect.name}.`,
-                    type: 'visit_room',
-                    category: 'suspect_investigation',
-                    target: { room: roomName, suspect: suspect.name },
-                    meta: { isCrimeScene: !!roomData.crimeScene },
-                });
-
-                // objectives for notable items inside each room
+                // notable items inside each room
                 const allItems = [
                     ...(roomData.crime_objects ?? []),
                     ...(roomData.character_objects ?? []),
                     ...(roomData.activity_objects ?? []),
                 ];
-                for (const item of allItems) {
-                    const itemId = `find_${key}_${roomName}_${item}`;
-                    // avoid duplicates across rooms (e.g shared item keys)
-                    if (this.objectives.find((o) => o.id === itemId)) continue;
-                    this.add({
-                        id: itemId,
-                        label: `Examine the ${this.fmt(item)}`,
-                        description: `Look for the ${this.fmt(item)} in the ${this.fmt(roomName)}.`,
-                        type: 'find_item',
-                        category: 'evidence',
-                        target: { item, room: roomName, suspect: suspect.name },
-                    });
-                }
+
+                pool.push({
+                    id: `room_${key}_${roomName}`,
+                    label: `Search ${suspect.name}'s ${this.fmt(roomName)}`,
+                    description: `Investigate the ${this.fmt(roomName)} for evidence connected to ${suspect.name}.`,
+                    category: 'suspect_investigation',
+                    roomType: roomName,
+                    suspect: suspect.name,
+                    requiredObjects: allItems,
+                    foundObjects: [],
+                    alwaysSpawn: false,
+                    meta: { isCrimeScene: !!roomData.crimeScene },
+                });
+            }
+
+            // randomly pick {numObjectives} from the pool
+            let selections = this.shuffle(pool);
+            selections = selections.slice(0, this.numObjectives);
+
+            for(const obj of selections){
+                this.add(obj);
             }
         }
     }
-
+/*
     addMotiveObjectives() {
         const { suspects, crime } = this.case;
 
         for (const suspect of suspects) {
             if (!suspect.motives?.length) continue;
+
+            if((suspect.name === defendant.name) && this.role === "defense"){
+                continue;   // defense is NOT looking for evidence against defendant
+            }
+
+            if((suspect.name !== defendant.name) && this.role === "prosecution"){
+                continue;   // prosecution is ONLY looking for evidence against defendant
+            }
+
             this.add({
                 id: `uncover_motive_${suspect.name.toLowerCase()}`,
                 label: `Uncover ${suspect.name}'s motive`,
@@ -126,17 +136,33 @@ export default class ObjectivesController {
             });
         }
     }
+*/
 
     // call when player enters a room. returns newly completed objectives.
     onRoomVisited(roomName) {
-        return this.resolve((o) => o.type === 'visit_room' && o.target.room === roomName);
+        this.currentRoom = roomName;
+        return this.objectives.find((o) => !o.completed && o.roomType === roomName) ?? null;
     }
 
     // call when player examines an item. returns newly completed objectives.
     onItemFound(itemName) {
-        return this.resolve((o) => o.type === 'find_item' && o.target.item === itemName);
-    }
+        if(!this.currentRoom) return null;
 
+        const objective = this.objectives.find(
+            (o) => !o.completed && o.roomType === this.currentRoom
+        );
+        if(!objective || !objective.requiredObjects.includes(itemName)) return null;
+
+        if(!objective.foundObjects.includes(itemName)) {
+            objective.foundObjects.push(itemName);
+        }
+
+        // complete this objective once every required object has been found
+        const allFound = objective.requiredObjects.every((item) => objective.foundObjects.includes(item));
+        
+        return allFound ? this.completeById(objective.id) : null;
+    }
+/*
     // call when motive evidence is confirmed (you decide the trigger).
     onMotiveUncovered(suspectName) {
         return this.resolve(
@@ -144,6 +170,13 @@ export default class ObjectivesController {
                 o.type === 'uncover_motive' &&
                 o.target.suspect.toLowerCase() === suspectName.toLowerCase(),
         );
+    }
+*/
+    isWinConditionMet() {
+        const crimeSceneDone = this.isComplete('crime_scene');
+        const suspectObjectiveDone = this.objectives.every(o => o.completed);
+
+        return crimeSceneDone && suspectObjectiveDone;
     }
 
     add(objective) {
@@ -166,6 +199,18 @@ export default class ObjectivesController {
 
     fmt(str = '') {
         return str.replace(/_/g, ' ');
+    }
+
+    // fisher-yates shuffle
+    // https://coreui.io/answers/how-to-shuffle-an-array-in-javascript/
+    shuffle(arr){
+        const a = [...arr];
+        for(let i = a.length -1; i > 0; i--){
+            const j = Math.floor(Math.random() * (i+1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+
+        return a;
     }
 
     // helpers

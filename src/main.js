@@ -7,6 +7,7 @@ import LoadScene from './scenes/Load.js';
 import MainScene from './scenes/Main.js';
 import MapScene from './scenes/Map.js';
 import OptionsScene from './scenes/Options.js';
+import HatchRoomScene from './scenes/HatchRoom.js';
 
 const config = {
   type: Phaser.AUTO,
@@ -17,7 +18,7 @@ const config = {
     mode:Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [BootScene, MenuScene, CreditsScene, LoadScene, MainScene, MapScene, OptionsScene],
+  scene: [BootScene, MenuScene, CreditsScene, LoadScene, MainScene, MapScene, HatchRoomScene, OptionsScene],
   physics: {
     default: 'arcade',
     arcade: { debug: false },

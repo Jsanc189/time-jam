@@ -17,7 +17,7 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
         this.roomType = roomType;
-
+        
     }
 
     tileRoom(x, y, roomWidth, roomHeight) {
@@ -39,25 +39,63 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         }
     }
 
-    spawnRandomHatches(spriteKeys, labels, spawnChance = 0.01) {
+    spawnRandomHatches(spriteKeys, roomTypes, spawnChance = 0.01) {
         const hatches = [];
-        for (let x = 0 ; x< this.roomWidth; x += this.tileWidth) {
-            for (let y = 0; y < this.roomHeight; y += this.tileHeight)
+
+        for (let x = this.tileWidth / 2; x < this.roomWidth - this.tileWidth / 2; x += this.tileWidth) {
+            for (let y = this.tileHeight / 2; y < this.roomHeight - this.tileHeight / 2; y += this.tileHeight) {
+
                 if (Math.random() < spawnChance) {
                     const spriteKey = Phaser.Utils.Array.GetRandom(spriteKeys);
-                    const label = Phaser.Utils.Array.GetRandom(labels);
-                    const hatch = this.scene.physics.add.sprite(
-                        x + this.tileWidth / 2,
-                        y + this.tileHeight / 2,
-                        spriteKey
-                    ).setScale(0.25);
+                    const label = Phaser.Utils.Array.GetRandom(roomTypes);
+                    const type = label.type;
+                    const objectives = label.objectives;
 
+                    // x, y are already centers
+                    const hatch = this.scene.physics.add.sprite(
+                        x,
+                        y,
+                        spriteKey
+                    )
+                    .setScale(0.25)
+                    .setInteractive({ cursor: 'pointer' });
+
+                    // 🔹 Attach the label directly to the sprite
+                    hatch.setData('label', type);
+                    hatch.setData('objectives', objectives);
+
+                    // Label text above the hatch
+                    const LABELTEXT = this.scene.add.text(
+                        x,
+                        y - 40,
+                        label
+                    )
+                    .setOrigin(0.5)
+                    .setDepth(999)
+                    .setVisible(false);
+
+                    // Hover behavior
+                    hatch.on('pointerover', () => {
+                        LABELTEXT.setVisible(true);
+                        hatch.setTint(0xffff99);
+                        hatch.setScale(0.3);
+                    });
+
+                    hatch.on('pointerout', () => {
+                        LABELTEXT.setVisible(false);
+                        hatch.clearTint();
+                        hatch.setScale(0.25);
+                    });
+
+                    // Optional: keep wrapper object if you like
                     hatches.push({
                         sprite: hatch,
-                        label: label
-                    })
+
+                    });
                 }
+            }
         }
+
         return hatches;
     }
 

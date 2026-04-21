@@ -21,6 +21,7 @@ export default class MainScene extends Phaser.Scene {
 
     create() {
         const NUM_SUSPECTS = 2;
+        const NUM_OBJECTIVES = 10;
         const DEFENSE_ROLE = "defense"
         const PROSECUTE_ROLE = "prosecution"
 
@@ -29,9 +30,6 @@ export default class MainScene extends Phaser.Scene {
             this.case = new Case(grammar, NUM_SUSPECTS);
 
             this.registry.set('case', this.case);
-
-            this.objectives = new ObjectivesController(this.case);
-            this.registry.set('objectives', this.objectives);
         }
 
         console.log("[Main]: ", this.case)
@@ -94,7 +92,8 @@ export default class MainScene extends Phaser.Scene {
                 undefined,
                 () => {
                     this.case.playerRole = DEFENSE_ROLE
-                    this.objectives.applyRole(this.case.playerRole);
+                    this.objectives = new ObjectivesController(this.case, NUM_OBJECTIVES);
+                    this.registry.set('objectives', this.objectives);
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
@@ -115,36 +114,73 @@ export default class MainScene extends Phaser.Scene {
                 undefined,
                 () => {
                     this.case.playerRole = PROSECUTE_ROLE
-                    this.objectives.applyRole(this.case.playerRole);
+                    this.objectives = new ObjectivesController(this.case, NUM_OBJECTIVES);
+                    this.registry.set('objectives', this.objectives);
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
                     MAP_BUTTON.show();
 
-                    this.testObjectives();
+                    //this.testObjectives();
                 },
             );
         }
     }
 
-    /*
     // TEMP TESTING CODE
     testObjectives(){
-        const LOG_ID = "[Main] testObjectives()";
+        const PLAYER_ROLE_OG = this.case.playerRole;    // preserve
 
-        const ctrl = new ObjectivesController(this.case);
+        const LOG_ID = "[Main] testObjectives()";
         const pass = (msg) => console.log(`${LOG_ID} PASS: ${msg}`);
         const fail = (msg) => console.error(`${LOG_ID} FAIL: ${msg}`);
         const assert = (condition, msg) => condition ? pass(msg) : fail(msg);
         const header = (title) => console.log(`${'_'.repeat(40)}\n--- ${title}\n${'_'.repeat(40)}`);
 
-        header(`\n${LOG_ID} ... Initial Build`);
-        assert(ctrl.getAll().length > 0, `${LOG_ID} ... Generated ${ctrl.getAll().length} objectives`);
-        assert(ctrl.getPending().length === ctrl.getAll().length, `${LOG_ID} ... All start as pending`);
-        assert(ctrl.getByType('visit_room').length > 0, `${LOG_ID} ... ${ctrl.getByType('visit_room').length} room objectives`);
-        assert(ctrl.getByType('find_item').length > 0, `${LOG_ID} ... ${ctrl.getByType('find_item').length} item objectives`);
-        assert(ctrl.getByType('uncover_motive').length > 0, `${LOG_ID} ... ${ctrl.getByType('uncover_motive').length} motive objectives`);
-        console.log(`${LOG_ID} ... SUMMARY:`, ctrl.getSummary());
+        const testRole = (role) => {
+            header(`\n${LOG_ID} ... Initial Build ... testing ${role}`);
+            this.case.playerRole = role;
+            const ctrl = new ObjectivesController(this.case, NUM_OBJECTIVES);
+            const all = ctrl.getAll();
+
+            assert(all.length > 0, `${LOG_ID} ... Generated ${ctrl.getAll().length} ${this.case.role} objectives`);
+            assert(ctrl.getPending().length === all.length, `${LOG_ID} ... All ${all.length} start as pending`);
+
+            // should always generate crime scene objectives
+            const crimeSceneObj = all.find((o) => o.id === "crime_scene");
+            assert(!!crimeSceneObj, `Crime scene objective spawns`);
+
+            // suspect investigation objectives spawn, capped at NUM_OBJECTIVES
+            const susObjs = all.filter((o) => o.suspect);
+            assert(susObjs.length <= NUM_OBJECTIVES, `${LOG_ID} ... Suspect objectives (${susObjs.length}) do not exceed NUM_OBJECTIVES (${NUM_OBJECTIVES})`);
+
+            const defendant = this.case.defendant;         
+            if(role == PROSECUTE_ROLE){
+                // prosecution should only ever target defendant
+                //const wrongSuspect = roleObjs.find((o) => )
+            }
+
+            console.log(`${LOG_ID} ... SUMMARY (${this.case.playerRole}):`, ctrl.getSummary());
+        }
+
+        // testing roles
+        testRole(PROSECUTE_ROLE);
+        testRole(DEFENSE_ROLE);
+
+        // should always generate crime scene objectives
+        const crimeSceneObj = allD.find((o) => o.id === "crime_scene");
+        assert(!!crimeSceneObj, `Crime scene objective spawns`);
+
+        // suspect investigation objectives spawn, capped at NUM_OBJECTIVES
+        const susObjs = allD.filter((o) => o.suspect);
+        assert(susObjs.length <= NUM_OBJECTIVES, `${LOG_ID} ... Suspect objectives (${susObjs.length}) do not exceed NUM_OBJECTIVES (${NUM_OBJECTIVES})`);
+
+        console.log(`${LOG_ID} ... SUMMARY (${this.case.playerRole}):`, ctrlD.getSummary());
+
+
+
+
+
 
         header(`${LOG_ID} ... Triggers`);
         const roomHit = ctrl.onRoomVisited(this.case.crime.scene);
@@ -165,8 +201,9 @@ export default class MainScene extends Phaser.Scene {
 
         console.log(`\n${LOG_ID} ...  Final summary:`, ctrl.getSummary());
         console.log(`${LOG_ID} ... All objectives:`, ctrl.getAll());
+
+        this.case.playerRole = PLAYER_ROLE_OG;    // revert
     }
-    */
 
     update() {}
 }
