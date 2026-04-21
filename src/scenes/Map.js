@@ -27,8 +27,9 @@ export default class MapScene extends Phaser.Scene {
         this.worldWidth = this.cameras.main.width * 3;
         this.worldHeight = this.cameras.main.height * 3;
 
-        const TILER = new Rooms(this, 'tileFloor', this.tileWidth, this.tileHeight);
-        TILER.tileRoom(0, 0, this.worldWidth, this.worldHeight);
+        const FLOOR_FRAMES = [0, 1, 2, 3];
+        const TILER = new Rooms(this, 'floorTiles', this.tileWidth, this.tileHeight);
+        TILER.tileRoom(0, 0, this.worldWidth, this.worldHeight, FLOOR_FRAMES);
         
         //Room Data
         let rooms = [
@@ -257,6 +258,8 @@ export default class MapScene extends Phaser.Scene {
         const TILE = this.tileWidth;
         let spawnX = this.worldWidth / 2;
         let spawnY = this.worldHeight / 2;
+        let x = spawnX;
+        let y = spawnY;
 
         //if no hatches exist, just return center
         if (!this.hatches || this.hatches.length === 0) {
