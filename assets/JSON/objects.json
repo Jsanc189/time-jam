@@ -1,0 +1,58 @@
+{
+    "crime_objects": {
+        "general": [
+            "blade"
+        ],
+        "cobbler": [
+            "cobbler_hammer"
+        ],
+        "fishing": [
+            "harpoon"
+        ],
+        "carpentry": [
+            "claw_hammer"
+        ],
+        "archery": [
+            "arrow"
+        ],
+        "medicine": [
+            "poison"
+        ]
+    },
+    "activity_objects": {
+        "cobbler": [
+            "shoes", "cobbler_customer_invoices"
+        ],
+        "fishing": [
+            "rowboat"
+        ],
+        "carpentry": [
+            "lumber", "carpentry_customer_invoices"
+        ],
+        "archery": [
+            "target"
+        ],
+        "medicine": [
+            "medicine", "medicine_customer_invoices"
+        ],
+        "library": [
+            "books", "borrow_list"
+        ]
+    },
+    "character_objects": {
+        "chorg": [
+            "books", "sil_portrait"
+        ],
+        "enfrin": [
+            "sil_portrait", "fountain_pen"
+        ],
+        "sil": [
+            "chorg_sculpture", "anon_love_letter"
+        ]
+    },
+    "location_objects": {
+        "house": [
+            "bed", "sofa", "table"
+        ]
+    }
+}

@@ -1,0 +1,56 @@
+{
+    "locations": {
+        "enfrin": {
+            "river": {
+                "tileset": [],
+                "activity_objects": ["fishing"],
+                "crime_objects": ["fishing"]
+            },
+            "cobbler_shop": {
+                "tileset": [],
+                "activity_objects": ["cobbler"],
+                "crime_objects": ["cobbler"]
+            },
+            "fairy_home": {
+                "tileset": [],
+                "character_objects": ["enfrin"],
+                "location_objects": ["house"]
+            }
+        },
+        "chorg": {
+            "library": {
+                "tileset": [],
+                "activity_objects": ["library"]
+            },
+            "hospital": {
+                "tileset": [],
+                "activity_objects": ["medicine"],
+                "crime_objects": ["medicine"]
+            },
+            "goblin_home": {
+                "tileset": [],
+                "activity_objects": ["pyromancy"],
+                "crime_objects": ["pyromancy"],
+                "character_objects": ["chorg"],
+                "location_objects": ["house"]
+            }
+        },
+        "sil": {
+            "pasture": {
+                "tileset": [],
+                "activity_objects": ["archery"],
+                "crime_objects": ["archery"]
+            },
+            "carpentry_shop": {
+                "tileset": [],
+                "activity_objects": ["carpentry"],
+                "crime_objects": ["carpentry"]
+            },
+            "elf_home": {
+                "tileset": [],
+                "character_objects": ["sil"],
+                "location_objects": ["house"]
+            }
+        }
+    }
+}
