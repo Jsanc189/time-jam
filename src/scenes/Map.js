@@ -140,12 +140,20 @@ export default class MapScene extends Phaser.Scene {
         //clock logic
         const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
         const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
+        const CLOCK_ITERATION_TIME = 1800; //30 minutes in seconds
 
         this.registry.set('clockStartTime', 0); //start time in seconds
         this.registry.set('maxSeconds', 43200); //12 hours in seconds
         this.registry.set('taskTime', 1800); // 30 minutes in seconds
 
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
+
+        this.events.on('timeSpent', (seconds) =>{
+            let current = this.registry.get('clockStartTime');
+            current += seconds;
+            this.registry.set('clockStartTime', current)
+            this.clock.updateTime(current);
+        });
 
         //UI buttons
         const BUTTON_SPACING = 120;
@@ -208,7 +216,6 @@ export default class MapScene extends Phaser.Scene {
 
     update() {
         this.player.update();
-        this.clock.update();
 
         // --- CHECK IF PLAYER MOVED AWAY FROM HATCH ---
         if (this.currentHatch) {
@@ -272,8 +279,8 @@ export default class MapScene extends Phaser.Scene {
 
             // Random nudge direction
             const dir = Phaser.Math.Between(0, 3);
-            let newX = x;
-            let newY = y;
+            let newX = spawnX;
+            let newY = spawnY;
 
             if (dir === 0) newX += TILE; // rights
             if (dir === 1) newX -= TILE; // left
