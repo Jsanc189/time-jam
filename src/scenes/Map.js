@@ -192,26 +192,6 @@ export default class MapScene extends Phaser.Scene {
         );
         CLOCK_BUTTON.setScrollFactor(0);
 
-        //button to increment time on the clock by 5 minutes
-        const TIME_BUTTON = new Button(
-            this,
-            this.cameras.main.centerX / 5,
-            this.cameras.main.centerY + BUTTON_SPACING * 3,
-            300,
-            100,
-            'Advance Time',
-            undefined,
-            undefined,
-            () => {
-                this.clockStartTime += CLOCK_ITERATION_TIME;
-                this.clock.updateTime(this.clockStartTime);
-                if(this.clockStartTime >= this.maxSeconds) {
-                    this.endGame();
-                }
-            },
-        );
-        TIME_BUTTON.setScrollFactor(0);
-               
     }
 
     update() {
