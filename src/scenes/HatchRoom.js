@@ -25,7 +25,7 @@ export default class HatchRoomScene extends Phaser.Scene {
             this,
             this.cameras.main.centerX,
             this.cameras.main.centerY,
-            this.label + '\nObjectives are: ' + this.objectives
+            this.label + '\nObjective: ' + this.objectives.label + '\nObjects: ' + this.objectives.requiredObjects
         )
 
         const MIND_PALACE = new Button(

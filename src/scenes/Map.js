@@ -20,6 +20,8 @@ export default class MapScene extends Phaser.Scene {
     }
 
     create() {
+        this.objectivesControl = this.registry.get('objectivesControl');
+
         // World Setup
         this.cameras.main.setBackgroundColor('#6e3318');
         this.tileWidth = 128;
@@ -31,18 +33,19 @@ export default class MapScene extends Phaser.Scene {
         TILER.tileRoom(0, 0, this.worldWidth, this.worldHeight);
         
         //Room Data
+        // get required rooms from this.objectivesControl
+        // add red herring rooms
+        //      useless witnesses
+        //      irrelevant locations
+        //      evidence against your case (ie implicates defendant guilt if ur defense; implicated defendant innocence if ur prosecution)
         let rooms = [
             {
-                type:'Library',
-                objectives: ['blade']
-            }, 
-            {
-                type: 'Interrigation',
-                objectives: ['arrow']
+                type: 'Interrogation',
+                objectives: this.objectivesControl.getByRoomType('interrogation')
             }, 
             {
                 type:'Crime_Scene',
-                objectives:['harpoon']
+                objectives: this.objectivesControl.getByID('crime_scene')[0]
             }];
         let sprite = ['libraryFloor'];
          const HATCHINFO = {
