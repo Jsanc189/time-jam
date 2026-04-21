@@ -2,7 +2,7 @@
     Created by: Jackie Sanchez
     Date Created: 4/7/2026
     Updated by: Jackie Sanchez
-    Updated: 4/9/2026 - player movement added and clock logic added to MapScene
+    Updated: 4/21/2026 - Adding hatch interaction with "e" key
     Description: This is the map scene.  This is where the Mindpalace map will be displayed.  The
     player will be ablt to navigate their mind palace and interact with objects to learn more about the 
     story and progress through the game.
@@ -20,14 +20,17 @@ export default class MapScene extends Phaser.Scene {
     }
 
     create() {
+        // World Setup
         this.cameras.main.setBackgroundColor('#6e3318');
-        const TILEWIDTH = 128;
-        const TILEHEIGHT = 128;
-        const WORLDWIDTH = this.cameras.main.width * 3;
-        const WORLDHEIGHT = this.cameras.main.height * 3;
-        const TILER = new Rooms(this, 'tileFloor', TILEWIDTH, TILEHEIGHT);
-        TILER.tileRoom(0, 0, WORLDWIDTH, WORLDHEIGHT);
-        let sprite = ['libraryFloor'];
+        this.tileWidth = 128;
+        this.tileHeight = 128;
+        this.worldWidth = this.cameras.main.width * 3;
+        this.worldHeight = this.cameras.main.height * 3;
+
+        const TILER = new Rooms(this, 'tileFloor', this.tileWidth, this.tileHeight);
+        TILER.tileRoom(0, 0, this.worldWidth, this.worldHeight);
+        
+        //Room Data
         let rooms = [
             {
                 type:'Library',
@@ -41,40 +44,26 @@ export default class MapScene extends Phaser.Scene {
                 type:'Crime_Scene',
                 objectives:['harpoon']
             }];
-
-        const HATCHINFO = {
+        let sprite = ['libraryFloor'];
+         const HATCHINFO = {
             sprite,
             rooms
         }
-
-        this.hatches = TILER.spawnRandomHatches(
+         this.hatches = TILER.spawnRandomHatches(
             HATCHINFO.sprite,
             HATCHINFO.rooms,
 
             0.05
         );
+
+        //Player Data
+        const safeSpawn = this.findSafePlayerSpawn();
         this.player = new Player(
             this,
-            this.cameras.main.centerX / 2,
-            this.cameras.main.centerY / 2,
+            safeSpawn.x,
+            safeSpawn.y,
         );
-
-        //list of gauranteed rooms (the actual interrigation room, murder scene, and library)
-        //list of red herring rooms (any amount of mimick rooms of the above)
-
-        this.hatches.forEach(hatch => {
-            this.physics.add.overlap(this.player, hatch.sprite, () =>{
-                const label = hatch.sprite.getData('label');
-                const objectives = hatch.sprite.getData('objectives')
-                const data = {label: label, objectives: objectives}
-                this.scene.sleep('MapScene')
-                this.startHatchScene(data);
-            });
-        });
-        this.physics.world.setBounds(0, 0, WORLDWIDTH, WORLDHEIGHT);
-        
         //Player animation
-
         this.anims.create({
             key: 'playerIdle',
             frames: this.anims.generateFrameNumbers('playerSheet', { start: 0, end: 0 }),
@@ -83,46 +72,82 @@ export default class MapScene extends Phaser.Scene {
         });
         this.anims.create({
             key: 'playerWalkDown',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 0, end: 2 }),
+            frames: this.anims.generateFrameNames('playerSheet', { start: 0, end: 3 }),
             frameRate: 4,
             repeat: -1,
         });
         this.anims.create({
             key: 'playerWalkUp',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 3, end: 5 }),
+            frames: this.anims.generateFrameNames('playerSheet', { start: 4, end:  7 }),
             frameRate: 4,
             repeat: -1,
         });
         this.anims.create({
             key: 'playerWalkRight',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 6, end: 8 }),
+            frames: this.anims.generateFrameNames('playerSheet', { start: 8, end: 11 }),
             frameRate: 4,
             repeat: -1,
         });
         this.anims.create({
             key: 'playerWalkLeft',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 9, end: 11 }),
+            frames: this.anims.generateFrameNames('playerSheet', { start: 12, end: 15 }),
             frameRate: 4,
             repeat: -1,
         });
+
+        //input for rooms
+        this.interactKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+
+        //hatch interaction state
+        this.currentHatch = null;
+
+        //Hatch overlap detection
+        this.hatches.forEach(hatch => {
+            this.physics.add.overlap(this.player, hatch.sprite, () =>{
+                this.currentHatch = hatch.sprite;
+            });
+        });
+        this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
+
+        //Press E text for hatches
+        this.interactText =  new GameText(
+            this,
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            "Press E to Enter",
+            {
+                fontSize: '48px',
+                backgroundColor:'#43282b' 
+            }
+        )
+        .setOrigin(0.5)
+        .setScrollFactor(0)
+        .setVisible(false);
+
+        //resume physics world when returning to scene
+        this.events.on('wake', ()=> {
+            this.physics.world.resume();
+        })
+
+        //Camera follows player and bounded to world
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setDeadzone(
             this.cameras.main.width * 0.6,
             this.cameras.main.height * 0.6
         )
-        this.cameras.main.setBounds(0, 0, WORLDWIDTH, WORLDHEIGHT);
+        this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
 
-
-        //Initalize clock and countdown
-        this.registry.set('clockStartTime', 0); //start time in seconds
-        this.registry.set('maxSeconds', 43200); //12 hours in seconds
-
+        //clock logic
         const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
         const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
+
+        this.registry.set('clockStartTime', 0); //start time in seconds
+        this.registry.set('maxSeconds', 43200); //12 hours in seconds
         this.registry.set('taskTime', 1800); // 30 minutes in seconds
+
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
 
-        //button to get back to MainScene
+        //UI buttons
         const BUTTON_SPACING = 120;
         const MAIN_BUTTON = new Button(
             this,
@@ -178,16 +203,39 @@ export default class MapScene extends Phaser.Scene {
             },
         );
         TIME_BUTTON.setScrollFactor(0);
+               
     }
 
     update() {
         this.player.update();
         this.clock.update();
 
-    }
+        // --- CHECK IF PLAYER MOVED AWAY FROM HATCH ---
+        if (this.currentHatch) {
+            const touching = Phaser.Geom.Intersects.RectangleToRectangle(
+                this.player.getBounds(),
+                this.currentHatch.getBounds()
+            );
 
-    startHatchScene(data) {
-        this.scene.start("HatchRoomScene", data);
+            if (!touching) {
+                this.currentHatch = null;
+                this.interactText.setVisible(false);
+            }
+        }
+
+        if (this.currentHatch) {
+            this.interactText.setVisible(true);
+            
+            if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+                const label = this.currentHatch.getData('label');
+                const objectives = this.currentHatch.getData('objectives');
+                const data = {label: label, objectives: objectives};
+                this.scene.sleep('MapScene');
+                this.scene.launch("HatchRoomScene", data);
+                this.physics.world.pause();
+            }
+        }
+
     }
 
     endGame() {
@@ -198,5 +246,56 @@ export default class MapScene extends Phaser.Scene {
         });
     }
 
+    findSafePlayerSpawn() {
+        const TILE = this.tileWidth;
+        let spawnX = this.worldWidth / 2;
+        let spawnY = this.worldHeight / 2;
+
+        //if no hatches exist, just return center
+        if (!this.hatches || this.hatches.length === 0) {
+            return { x: spawnX, y:spawnY };
+        };
+        
+        //check if center overlaps any hatch
+        const tempRect = new Phaser.Geom.Rectangle(spawnX - 16, spawnY - 16, 32, 32,);
+        const isOverlapping = this.hatches.some(hatch => {
+            return Phaser.Geom.Intersects.RectangleToRectangle(
+                tempRect,
+                hatch.sprite.getBounds()
+            );
+        });
+
+        for (let i = 0; i < 30; i++) {
+            if (!isOverlapping) {
+                return { x: spawnX, y:spawnY };
+            }
+
+            // Random nudge direction
+            const dir = Phaser.Math.Between(0, 3);
+            let newX = x;
+            let newY = y;
+
+            if (dir === 0) newX += TILE; // rights
+            if (dir === 1) newX -= TILE; // left
+            if (dir === 2) newY += TILE; // down
+            if (dir === 3) newY -= TILE; // up
+
+            // Bounds check
+            const insideBounds =
+                newX > 0 && newX < this.WORLDWIDTH &&
+                newY > 0 && newY < this.WORLDHEIGHT;
+
+            if (insideBounds) {
+                x = newX;
+                y = newY;
+            }
+        }
+
+        return { x: spawnX, y:spawnY }
+
+    }
+
 
 }
+
+

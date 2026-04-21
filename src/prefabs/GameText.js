@@ -13,7 +13,8 @@ export default class GameText extends Phaser.GameObjects.Text {
             fontFamily: 'Special Elite',
             fontSize: '32px',
             color: '#ffffff',
-            align:'center'
+            align:'center',
+            backgroundColor: null
         };
 
     super(scene, x, y, text, {...defaultStyle, ...style});

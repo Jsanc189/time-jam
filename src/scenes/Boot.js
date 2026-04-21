@@ -32,15 +32,15 @@ export default class BootScene extends Phaser.Scene {
 
     //space to load assets and animations
     // grammar filler JSONs
-    this.load.json('crimeData', 'src/assets/JSON/crime.json');
-    this.load.json('characterData', 'src/assets/JSON/characters.json');
-    this.load.json('motiveData', 'src/assets/JSON/motives.json');
-    this.load.json('objectData', 'src/assets/JSON/objects.json');
-    this.load.json('locationData', 'src/assets/JSON/locations.json');
+    this.load.json('crimeData', 'assets/JSON/crime.json');
+    this.load.json('characterData', 'assets/JSON/characters.json');
+    this.load.json('motiveData', 'assets/JSON/motives.json');
+    this.load.json('objectData', 'assets/JSON/objects.json');
+    this.load.json('locationData', 'assets/JSON/locations.json');
 
     //player
     this.load.spritesheet('playerSheet', 'assets/images/player.png', {
-      frameWidth: 512,
+      frameWidth: 500,
       frameHeight: 832
     });
 
