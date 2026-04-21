@@ -124,7 +124,7 @@ export default class MapScene extends Phaser.Scene {
         this.interactText =  new GameText(
             this,
             this.cameras.main.centerX,
-            this.cameras.main.centerY,
+            this.cameras.main.centerY / 6,
             "Press E to Enter",
             {
                 fontSize: '48px',
@@ -133,6 +133,7 @@ export default class MapScene extends Phaser.Scene {
         )
         .setOrigin(0.5)
         .setScrollFactor(0)
+        .setDepth(9999)
         .setVisible(false);
 
         //resume physics world when returning to scene
@@ -309,6 +310,8 @@ export default class MapScene extends Phaser.Scene {
     onHatchOverlap(player, hatch) {
         hatch.setFrame(hatch.getData('activeFrame'));
         hatch.setData('isActive', true);
+        this.currentHatch = hatch;
+        this.interactText.setVisible(true);
     }
 
 }
