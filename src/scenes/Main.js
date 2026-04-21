@@ -61,7 +61,7 @@ export default class MainScene extends Phaser.Scene {
             undefined,
             () => {
                 this.registry.set('case', null);
-                this.registry.set('objectives', null);
+                this.registry.set('objectivesControl', null);
                 this.scene.start('MenuScene');
             },
         );
@@ -94,9 +94,9 @@ export default class MainScene extends Phaser.Scene {
                 undefined,
                 () => {
                     this.case.playerRole = this.DEFENSE_ROLE;
-                    this.objectives = new ObjectivesController(this.case, this.grammar.getAllObjects(), this.NUM_OBJECTIVES);
-                    this.registry.set('objectives', this.objectives);
-                    console.log("[Main]", this.objectives);
+                    this.objectivesControl = new ObjectivesController(this.case, this.grammar.getAllObjects(), this.NUM_OBJECTIVES);
+                    this.registry.set('objectivesControl', this.objectivesControl);
+                    console.log("[Main]", this.objectivesControl);
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
@@ -115,9 +115,9 @@ export default class MainScene extends Phaser.Scene {
                 undefined,
                 () => {
                     this.case.playerRole = this.PROSECUTE_ROLE;
-                    this.objectives = new ObjectivesController(this.case, this.grammar.getAllObjects(), this.NUM_OBJECTIVES);
-                    this.registry.set('objectives', this.objectives);
-                    console.log("[Main]", this.objectives);
+                    this.objectivesControl = new ObjectivesController(this.case, this.grammar.getAllObjects(), this.NUM_OBJECTIVES);
+                    this.registry.set('objectivesControl', this.objectivesControl);
+                    console.log("[Main]", this.objectivesControl);
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();

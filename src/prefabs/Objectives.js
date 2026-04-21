@@ -37,8 +37,8 @@ export default class ObjectivesController {
         this.add({
             id: 'crime_scene',
             label: `Examine the ${this.fmt(crime.scene)}`,
-            description: `Visit the scene of the ${crime.type} to find the ${this.fmt(crime.object)}.`,
-            category: 'investigation',
+            description: `Visit the scene of the ${crime.type}.`,
+            category: 'object_investigation',
             roomType: crime.scene,              // picks background art
             requiredObjects: [crime.object],    // all must be interacted with; picks object sprites
             foundObjects : [],
@@ -47,12 +47,8 @@ export default class ObjectivesController {
     }
 
     addSuspectRoomObjectives() {
-        const { suspects, investigationLocations, defendant } = this.case;
+        const { crime, suspects, investigationLocations, defendant } = this.case;
         const pool = [];
-
-        // resolves array of keys w/ a lookup table + flattens the results
-        // prevent listing keys as objects
-        const resolve = (keys = [], table = {}) => keys.flatMap((key) => table[key] ?? []);
 
         for (const suspect of suspects) {
             const isDefendant = (suspect.name === defendant.name);
@@ -69,11 +65,13 @@ export default class ObjectivesController {
             if (!rooms) continue;
 
             for (const [roomName, roomData] of Object.entries(rooms)) {
+                if(roomName === crime.scene) continue;
+
                 // notable items inside each room
                 const resolvedItems = [
-                    ...resolve(roomData.crime_objects, this.objectsData.crime_objects),
-                    ...resolve(roomData.character_objects, this.objectsData.character_objects),
-                    ...resolve(roomData.activity_objects, this.objectsData.activity_objects),
+                    ...this.resolveObjects(roomData.crime_objects, this.objectsData.crime_objects),
+                    ...this.resolveObjects(roomData.character_objects, this.objectsData.character_objects),
+                    ...this.resolveObjects(roomData.activity_objects, this.objectsData.activity_objects),
                 ];
                 const allItems = [...new Set(resolvedItems)]
 
@@ -81,7 +79,7 @@ export default class ObjectivesController {
                     id: `room_${key}_${roomName}`,
                     label: `Search ${suspect.name}'s ${this.fmt(roomName)}`,
                     description: `Investigate the ${this.fmt(roomName)} for evidence connected to ${suspect.name}.`,
-                    category: 'suspect_investigation',
+                    category: 'object_investigation',
                     roomType: roomName,
                     suspect: suspect.name,
                     requiredObjects: allItems,
@@ -99,59 +97,6 @@ export default class ObjectivesController {
             }
         }
     }
-/*
-    addMotiveObjectives() {
-        const { suspects, crime } = this.case;
-
-        for (const suspect of suspects) {
-            if (!suspect.motives?.length) continue;
-
-            if((suspect.name === defendant.name) && this.role === "defense"){
-                continue;   // defense is NOT looking for evidence against defendant
-            }
-
-            if(!(suspect.name !== defendant.name) && this.role === "prosecution"){
-                continue;   // prosecution is ONLY looking for evidence against defendant
-            }
-
-            this.add({
-                id: `uncover_motive_${suspect.name.toLowerCase()}`,
-                label: `Uncover ${suspect.name}'s motive`,
-                description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
-                type: 'uncover_motive',
-                category: 'motive',
-                target: { suspect: suspect.name, motives: [...suspect.motives] },
-            });
-        }
-    }
-
-    // called after player picks a side
-    applyRole(role) {
-        const { defendant, victim, crime } = this.case;
-
-        if (role === 'prosecution') {
-            this.add({
-                id: 'prosecution_build_case',
-                label: `Build the case against ${defendant.name}`,
-                description: `Gather at least one piece of evidence from each location tied to ${defendant.name}.`,
-                type: 'meta',
-                category: 'role',
-                target: { suspect: defendant.name },
-            });
-        }
-
-        if (role === 'defense') {
-            this.add({
-                id: 'defense_alternate_suspect',
-                label: 'Identify an alternate suspect',
-                description: `Find evidence that implicates someone other than ${defendant.name} in the ${crime.type}.`,
-                type: 'meta',
-                category: 'role',
-                target: {},
-            });
-        }
-    }
-*/
 
     // call when player enters a room. returns newly completed objectives.
     onRoomVisited(roomName) {
@@ -180,7 +125,7 @@ export default class ObjectivesController {
 /*
     // call when motive evidence is confirmed (you decide the trigger).
     onMotiveUncovered(suspectName) {
-        return this.resolve(
+        return this.resolveObjects(
             (o) =>
                 o.type === 'uncover_motive' &&
                 o.target.suspect.toLowerCase() === suspectName.toLowerCase(),
@@ -241,8 +186,11 @@ export default class ObjectivesController {
     getByCategory(category) {
         return this.objectives.filter((o) => o.category === category);
     }
-    getByType(type) {
-        return this.objectives.filter((o) => o.type === type);
+    getByRoomType(type) {
+        return this.objectives.filter((o) => o.roomType === type);
+    }
+    getByID(id) {
+        return this.objectives.filter((o) => o.id === id);
     }
     isComplete(id) {
         return !!this.objectives.find((o) => o.id === id)?.completed;
@@ -270,5 +218,11 @@ export default class ObjectivesController {
             required: obj.requiredObjects.length,
             completed: obj.completed,
         };
+    }
+
+    // resolves array of keys w/ a lookup table + flattens the results
+    // prevent listing keys as objects
+    resolveObjects(keys = [], table = {}){
+        return keys.flatMap((key) => table[key] ?? []);
     }
 }
