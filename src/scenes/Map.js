@@ -32,30 +32,35 @@ export default class MapScene extends Phaser.Scene {
         TILER.tileRoom(0, 0, this.worldWidth, this.worldHeight, FLOOR_FRAMES);
         
         //Room Data
+        const hatchImage = {key: 'rope_hatch', frame: 2, activeFrame: 3}
         let rooms = [
             {
                 type:'Library',
-                objectives: ['blade']
+                objectives: ['blade'],
+               hatchSprite: hatchImage
             }, 
             {
                 type: 'Interrigation',
-                objectives: ['arrow']
+                objectives: ['arrow'],
+                hatchSprite: hatchImage
             }, 
             {
                 type:'Crime_Scene',
-                objectives:['harpoon']
+                objectives:['harpoon'],
+                hatchSprite: hatchImage
             }];
-        let sprite = ['libraryFloor'];
+
          const HATCHINFO = {
-            sprite,
             rooms
         }
          this.hatches = TILER.spawnRandomHatches(
-            HATCHINFO.sprite,
-            HATCHINFO.rooms,
-
+            rooms,
             0.05
         );
+        this.hatchGroup = this.physics.add.group();
+        this.hatches.forEach(h => {
+            this.hatchGroup.add(h.sprite)
+        });
 
         //Player Data
         const safeSpawn = this.findSafePlayerSpawn();
@@ -104,9 +109,14 @@ export default class MapScene extends Phaser.Scene {
 
         //Hatch overlap detection
         this.hatches.forEach(hatch => {
-            this.physics.add.overlap(this.player, hatch.sprite, () =>{
-                this.currentHatch = hatch.sprite;
-            });
+            this.physics.add.overlap(
+                this.player, 
+                this.hatches.map(h => h.sprite), 
+                this.onHatchOverlap, 
+                null, 
+                this);
+            //     this.currentHatch = hatch.sprite;
+            // });
         });
         this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
 
@@ -224,6 +234,17 @@ export default class MapScene extends Phaser.Scene {
             }
         }
 
+        this.hatches.forEach(h => {
+            const sprite = h.sprite;
+
+            if (!sprite.getData('isActive')) {
+                sprite.setFrame(sprite.getData('idleFrame'));
+            }
+
+            // Reset for next frame
+            sprite.setData('isActive', false);
+        });
+
     }
 
     endGame() {
@@ -285,6 +306,10 @@ export default class MapScene extends Phaser.Scene {
 
     }
 
+    onHatchOverlap(player, hatch) {
+        hatch.setFrame(hatch.getData('activeFrame'));
+        hatch.setData('isActive', true);
+    }
 
 }
 
