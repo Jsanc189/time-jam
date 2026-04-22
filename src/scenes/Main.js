@@ -52,6 +52,7 @@ export default class MainScene extends Phaser.Scene {
                 this.registry.set('case', null);
                 this.registry.set('objectives', null);
                 this.scene.start('MenuScene');
+                this.game.audio.playSFX("gavel");
             },
         );
         const MAP_BUTTON = new Button(
@@ -64,7 +65,9 @@ export default class MainScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
-                this.scene.start('MapScene');
+                this.scene.sleep();
+                this.scene.launch('MapScene');
+                this.game.audio.playSFX("gavel");
             },
         );
 
@@ -84,9 +87,10 @@ export default class MainScene extends Phaser.Scene {
                     x: notesOpen
                         ? this.cameras.main.centerX
                         : this.cameras.main.centerX * 3,
-                    duration: 600,
+                    duration: 1000,
                     ease: 'Cubic.easeInOut'
                 })
+                this.game.audio.playSFX("notebook");
             }
         )
 
@@ -126,6 +130,7 @@ export default class MainScene extends Phaser.Scene {
                     g.setVisible(true);
                     juryText.setVisible(true);
                     EVIDENCE_BUTTON.show();
+                    this.game.audio.playSFX("gavel");
 
                     //this.testObjectives();
                 },
@@ -153,6 +158,7 @@ export default class MainScene extends Phaser.Scene {
                     g.setVisible(true);
                     juryText.setVisible(true);
                     EVIDENCE_BUTTON.show();
+                    this.game.audio.playSFX("gavel");
 
                     //this.testObjectives();
                 },
