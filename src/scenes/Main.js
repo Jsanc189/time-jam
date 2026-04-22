@@ -55,6 +55,7 @@ export default class MainScene extends Phaser.Scene {
                 this.game.audio.playSFX("gavel");
             },
         );
+        this.mapLaunched = false;
         const MAP_BUTTON = new Button(
             this,
             this.cameras.main.centerX * 1.8,
@@ -66,8 +67,14 @@ export default class MainScene extends Phaser.Scene {
             undefined,
             () => {
                 this.scene.sleep();
-                this.scene.launch('MapScene');
                 this.game.audio.playSFX("gavel");
+                if (!this.mapLaunched){
+                    this.scene.launch('MapScene');
+                    this.mapLaunched = true;
+                } else {
+                    this.scene.wake('MapScene');
+                }
+
             },
         );
 
