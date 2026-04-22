@@ -6,6 +6,10 @@
     Description: This is the map scene.  This is where the Mindpalace map will be displayed.  The
     player will be ablt to navigate their mind palace and interact with objects to learn more about the 
     story and progress through the game.
+
+    Updated by: Raven Ruiz
+    Updated: 4/22/2026
+    Reworked to guarantee each objective maps to one room.
 */
 
 import GameText from '../prefabs/GameText';
@@ -39,27 +43,32 @@ export default class MapScene extends Phaser.Scene {
         //      useless witnesses
         //      irrelevant locations
         //      evidence against your case (ie implicates defendant guilt if ur defense; implicated defendant innocence if ur prosecution)
-        let rooms = [
-            {
-                type: 'Interrogation',
-                objectives: this.objectivesControl.getByRoomType('interrogation')[0]
-            }, 
-            {
-                type:'Crime_Scene',
-                objectives: this.objectivesControl.getByID('crime_scene')[0]
-            }];
+        const objectiveRooms = [];
+        this.objectivesControl.objectives.forEach((obj) => {
+            objectiveRooms.push({
+                type: obj.roomType,
+                objectives: obj
+            })
+        })
+        // let rooms = [
+        //     {
+        //         type: 'Interrogation',
+        //         objectives: this.objectivesControl.getByRoomType('interrogation')[0]
+        //     }, 
+        //     {
+        //         type:'Crime_Scene',
+        //         objectives: this.objectivesControl.getByID('crime_scene')[0]
+        //     }];
 
         
         let sprite = ['libraryFloor'];
          const HATCHINFO = {
             sprite,
-            rooms
+            rooms: objectiveRooms
         }
-         this.hatches = TILER.spawnRandomHatches(
+        this.hatches = TILER.spawnObjectiveRoomHatches(
             HATCHINFO.sprite,
-            HATCHINFO.rooms,
-
-            0.05
+            objectiveRooms
         );
 
         //Player Data
