@@ -28,6 +28,7 @@ export default class Case {
 
         this.crime.scene = this.getCrimeScene(grammar);
         this.crime.object = this.getObject(grammar);
+
         this.assignMotives(grammar);
 
         this.investigationLocations = this.getLocations(grammar);
@@ -63,6 +64,16 @@ export default class Case {
         for (let suspect of this.suspects) {
             const relationshipToVictim = suspect.relationships[this.victim.name];
             suspect.motives = grammar.getMotives(relationshipToVictim);
+
+            if(!suspect.witnesses){
+                suspect.witnesses = {};
+            }
+
+            if(!suspect.witnesses.motives){
+                suspect.witnesses.motives = [];
+            }
+
+            suspect.witnesses.motives.push(grammar.getMotiveConvos(suspect.motives))
         }
 
         // TODO: second pass

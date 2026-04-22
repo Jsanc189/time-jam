@@ -33,20 +33,22 @@ export default class MapScene extends Phaser.Scene {
         TILER.tileRoom(0, 0, this.worldWidth, this.worldHeight);
         
         //Room Data
-        // get required rooms from this.objectivesControl
-        // add red herring rooms
+        // first, get required rooms from this.objectivesControl
+        // then, add red herring rooms
         //      useless witnesses
         //      irrelevant locations
         //      evidence against your case (ie implicates defendant guilt if ur defense; implicated defendant innocence if ur prosecution)
         let rooms = [
             {
                 type: 'Interrogation',
-                objectives: this.objectivesControl.getByRoomType('interrogation')
+                objectives: this.objectivesControl.getByRoomType('interrogation')[0]
             }, 
             {
                 type:'Crime_Scene',
                 objectives: this.objectivesControl.getByID('crime_scene')[0]
             }];
+
+        
         let sprite = ['libraryFloor'];
          const HATCHINFO = {
             sprite,

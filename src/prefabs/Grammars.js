@@ -63,6 +63,17 @@ export default class Grammar {
         return motives;
     }
 
+    getMotiveConvos(motives){
+        const convos = this.getList("motive_witness_convos");
+        const result = {};
+
+        for(const motive of motives){
+            result[motive] = convos[motive];
+        }
+
+        return result;
+    }
+
     getCrimeObjectFromActivities(activities) {
         const allObjects = this.getList('crime_objects');
         const crimeObjects = [];
