@@ -63,34 +63,13 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         }
     }
 
-    spawnRandomHatches(roomTypes, spawnChance = 0.01) {
+    spawnHatches(rooms){
         const hatches = [];
 
-        for (let x = this.x.min; x < this.x.max; x += this.x.step) {
-            for (let y = this.y.min; y < this.y.max; y += this.y.step) {
-
-                if (Math.random() < spawnChance) {
-                    const spriteKey = Phaser.Utils.Array.GetRandom(spriteKeys);
-                    const room = Phaser.Utils.Array.GetRandom(roomTypes);
-
-                    hatches.push({sprite: this.addHatchAt(x, y, spriteKey, room)});
-                }
-            }
-        }
-
-        return hatches;
-    }
-
-    spawnObjectiveRoomHatches(objectiveRooms) {
-        const hatches = [];
-
-        console.log("[Rooms]", objectiveRooms);
-
-        for(const room of objectiveRooms){
+        for(const room of rooms){
             // place a hatch at a random coord
             const tile = this.getRandomEmptyTile();
-            
-            hatches.push({sprite: this.addHatchAt(tile.x, tile.y, room.objective)});
+            hatches.push({sprite: this.addHatchAt(tile.x, tile.y, room)});
         }
 
         return hatches;

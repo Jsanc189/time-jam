@@ -41,24 +41,8 @@ export default class MapScene extends Phaser.Scene {
         const hatchImage = {key: 'rope_hatch', frame: 2, activeFrame: 3}
         TILER.hatchSprite = hatchImage;
 
-        // first, get required rooms from this.objectivesControl
-        // then, add red herring rooms
-        //      useless witnesses
-        //      irrelevant locations
-        //      evidence against your case (ie implicates defendant guilt if ur defense; implicated defendant innocence if ur prosecution)
-        const objectiveRooms = [];
-        this.objectivesControl.objectives.forEach((obj) => {
-            objectiveRooms.push({
-                objective: obj
-            })
-        })
-        
-         const HATCHINFO = {
-            objectiveRooms
-        }
-        this.hatches = TILER.spawnObjectiveRoomHatches(
-            // HATCHINFO.sprite,
-            objectiveRooms
+        this.hatches = TILER.spawnHatches(
+            this.objectivesControl.rooms
         );
 
         this.hatchGroup = this.physics.add.group();

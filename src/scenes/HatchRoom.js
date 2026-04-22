@@ -44,7 +44,7 @@ export default class HatchRoomScene extends Phaser.Scene {
             this,
             this.cameras.main.centerX,
             this.cameras.main.centerY,
-            this.label + '\nObjective: ' + this.objective.label,    // TODO: handle red herring room labels!
+            this.label + '\nObjective: ' + this.objective.label + (this.objective.redHerring ? "\n[RED HERRING]" : ""),
             {
                backgroundColor:'#43282b'
             }

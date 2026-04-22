@@ -19,12 +19,13 @@
 */
 
 export default class ObjectivesController {
-    constructor(caseData, objectData, numObjectives) {
+    constructor(caseData, objectData, max) {
         this.case = caseData;
-        this.objectives = [];
         this.role = caseData.playerRole;
         this.objectsData = objectData;
-        this.numObjectives = numObjectives;
+        this.max = max;
+
+        this.rooms = [];
 
         this.addCrimeSceneObjectives();
         this.addSuspectRoomObjectives();
@@ -61,16 +62,18 @@ export default class ObjectivesController {
 
     addSuspectRoomObjectives() {
         const { crime, suspects, investigationLocations, defendant } = this.case;
-        const pool = [];
+        const herringPool = [];
+        const objectivePool = [];
 
         for (const suspect of suspects) {
             const isDefendant = (suspect.name === defendant.name);
+            let redHerring = false;
             if(isDefendant && this.role === "defense"){
-                continue;   // defense is NOT looking for evidence against defendant
+                redHerring = true;   // defense is NOT looking for evidence against defendant
             }
 
             if(!isDefendant && this.role === "prosecution"){
-                continue;   // prosecution is ONLY looking for evidence against defendant
+                redHerring = true;   // prosecution is ONLY looking for evidence against defendant
             }
 
             const key = suspect.name.toLowerCase();
@@ -88,7 +91,7 @@ export default class ObjectivesController {
                 ];
                 const allItems = [...new Set(resolvedItems)]
 
-                pool.push({
+                const newRoom = {
                     id: `room_${key}_${roomName}`,
                     label: `Search ${suspect.name}'s ${this.fmt(roomName)}`,
                     description: `Investigate the ${this.fmt(roomName)} for evidence connected to ${suspect.name}.`,
@@ -100,11 +103,20 @@ export default class ObjectivesController {
                     foundObjects: [],
                     alwaysSpawn: false,
                     meta: { isCrimeScene: !!roomData.crimeScene },
-                });
+                };
+
+                if(!redHerring){
+                    objectivePool.push(newRoom);
+                } else {
+                    newRoom.redHerring = true;
+                    herringPool.push(newRoom);
+                }
             }
 
-            // randomly pick {numObjectives} from the pool
-            const selections = this.shuffle(pool).slice(0, this.numObjectives);
+            objectivePool.forEach((o) => this.add(o));
+
+            // fluff rooms with random selection from the red herring pool
+            const selections = this.shuffle(herringPool).slice(0, this.max - objectivePool.length - 1);
 
             for(const obj of selections){
                 this.add(obj);
@@ -129,7 +141,7 @@ export default class ObjectivesController {
                 if (!suspect.witnesses || !suspect.witnesses.motives?.length) continue;
 
                 for(const allMotives of suspect.witnesses.motives){
-                    console.log("[Objectives]", suspect.name, allMotives)
+                    // console.log("[Objectives]", suspect.name, allMotives)
                     for(const motive in allMotives){
                         this.add({
                             id: `uncover_motive_${suspect.name.toLowerCase()}`,
@@ -147,20 +159,19 @@ export default class ObjectivesController {
                     }
                 }
             }
-
     }
 
     // call when player enters a room. returns newly completed objectives.
     onRoomVisited(roomName) {
         this.currentRoom = roomName;
-        return this.objectives.find((o) => !o.completed && o.roomType === roomName) ?? null;
+        return this.rooms.find((o) => !o.completed && o.roomType === roomName) ?? null;
     }
 
     // call when player examines an item. returns newly completed objectives.
     onItemFound(itemName) {
         if(!this.currentRoom) return null;
 
-        const objective = this.objectives.find(
+        const objective = this.rooms.find(
             (o) => !o.completed && o.roomType === this.currentRoom
         );
         if(!objective || !objective.requiredObjects.includes(itemName)) return null;
@@ -186,24 +197,24 @@ export default class ObjectivesController {
 */
     isWinConditionMet() {
         const crimeSceneDone = this.isComplete('crime_scene');
-        const suspectObjectiveDone = this.objectives.every(o => o.completed);
+        const suspectObjectiveDone = this.rooms.every(o => o.completed);
 
         return crimeSceneDone && suspectObjectiveDone;
     }
 
-    add(objective) {
-        this.objectives.push({ completed: false, ...objective });
+    add(room) {
+        this.rooms.push({ completed: false, ...room });
     }
 
     completeById(id) {
-        const obj = this.objectives.find((o) => o.id === id && !o.completed);
+        const obj = this.rooms.find((o) => o.id === id && !o.completed);
         if (!obj) return null;
         obj.completed = true;
         return obj;
     }
 
     resolve(predicate) {
-        return this.objectives
+        return this.rooms
             .filter((o) => !o.completed && predicate(o))
             .map((o) => this.completeById(o.id))
             .filter(Boolean);
@@ -227,28 +238,28 @@ export default class ObjectivesController {
 
     // helpers
     getAll() {
-        return [...this.objectives];
+        return [...this.rooms];
     }
     getPending() {
-        return this.objectives.filter((o) => !o.completed);
+        return this.rooms.filter((o) => !o.completed);
     }
     getCompleted() {
-        return this.objectives.filter((o) => o.completed);
+        return this.rooms.filter((o) => o.completed);
     }
     getByCategory(category) {
-        return this.objectives.filter((o) => o.category === category);
+        return this.rooms.filter((o) => o.category === category);
     }
     getByRoomType(type) {
-        return this.objectives.filter((o) => o.roomType === type);
+        return this.rooms.filter((o) => o.roomType === type);
     }
     getByID(id) {
-        return this.objectives.filter((o) => o.id === id);
+        return this.rooms.filter((o) => o.id === id);
     }
     isComplete(id) {
-        return !!this.objectives.find((o) => o.id === id)?.completed;
+        return !!this.rooms.find((o) => o.id === id)?.completed;
     }
     isAllComplete() {
-        return this.objectives.every((o) => o.completed);
+        return this.rooms.every((o) => o.completed);
     }
 
     // helper to manually complete any objective by id
@@ -258,12 +269,12 @@ export default class ObjectivesController {
 
     getSummary() {
         const completed = this.getCompleted().length;
-        const total = this.objectives.length;
+        const total = this.rooms.length;
         return { total, completed, pending: total - completed };
     }
 
     getRoomProgress(roomType) {
-        const obj = this.objectives.find(o => o.roomType === roomType);
+        const obj = this.rooms.find(o => o.roomType === roomType);
         if (!obj) return null;
         return {
             found: obj.foundObjects.length,

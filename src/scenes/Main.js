@@ -31,10 +31,8 @@ export default class MainScene extends Phaser.Scene {
             this.case = new Case(this.grammar, this.NUM_SUSPECTS);
 
             this.registry.set('case', this.case);
-            this.testObjectives();
+            // this.testObjectives();
         }
-
-        console.log('[Main]: ', this.case);
 
         this.cameras.main.setBackgroundColor('#6e3318');
         //button to get back to MenuScene
@@ -96,7 +94,6 @@ export default class MainScene extends Phaser.Scene {
                     this.case.playerRole = this.DEFENSE_ROLE;
                     this.objectivesControl = new ObjectivesController(this.case, this.grammar.getAllObjects(), this.NUM_OBJECTIVES);
                     this.registry.set('objectivesControl', this.objectivesControl);
-                    console.log("[Main]", this.objectivesControl);
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
@@ -117,7 +114,6 @@ export default class MainScene extends Phaser.Scene {
                     this.case.playerRole = this.PROSECUTE_ROLE;
                     this.objectivesControl = new ObjectivesController(this.case, this.grammar.getAllObjects(), this.NUM_OBJECTIVES);
                     this.registry.set('objectivesControl', this.objectivesControl);
-                    console.log("[Main]", this.objectivesControl);
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
