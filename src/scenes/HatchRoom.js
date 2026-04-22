@@ -20,10 +20,12 @@ export default class HatchRoomScene extends Phaser.Scene {
         this.label = data.label;
         this.objective = data.objective;
         this.tile = [Phaser.Utils.Array.GetRandom(data.floorFrames)];
+
+        this.objectivesControl = this.registry.get('objectivesControl');
     }
 
     create(){
-;        //camera set up
+        //camera set up
         const cam = this.cameras.main;
         const viewWidth = cam.width;
         const viewHeight = cam.height;
@@ -91,7 +93,13 @@ export default class HatchRoomScene extends Phaser.Scene {
         });
 
 
+        // OBJECTIVE HANDLING
+        // mark room as current in objectivesControl
+        //      so controller knows which objective/room to poll for object handler
+        this.objectivesControl.onRoomVisited(this.objective.roomID);
 
+        // put objects in scene!
+        this.placeObjects();
     }
 
     update() {
@@ -103,5 +111,33 @@ export default class HatchRoomScene extends Phaser.Scene {
         this.scene.get('MapScene').events.emit('timeSpent', 1800);//30 minutes
         this.scene.stop();
         this.scene.wake('MapScene');
+    }
+
+    // TEMP: objects as buttons
+    // made this function for testing, but it also demonstrates how to get and handle objects in this.objective!
+    placeObjects(){
+        const x = this.game.config.width - 300;
+        let y = 0;
+        const yStep = 150;
+
+        for(const object of this.objective.requiredObjects){    // player has to find all requiredObjects to complete room
+            y += yStep;
+            const objectButton = new Button(
+                    this,
+                    x,
+                    y,
+                    300,
+                    100,
+                    `${object}`,
+                    undefined,
+                    undefined,
+                    () => {
+                        // mark object as found
+                        const handled = this.objectivesControl.onItemFound(object); 
+                        console.log("[HatchRoom]", object, handled)
+                        
+                    },
+                );
+        }
     }
 }

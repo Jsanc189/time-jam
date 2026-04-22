@@ -51,11 +51,11 @@ export default class ObjectivesController {
             id: 'crime_scene',
             label: `Examine the ${this.fmt(crime.scene)}`,
             description: `Visit the scene of the ${crime.type}.`,
-            category: 'object_investigation',
             roomType: crime.scene,              
+            roomID: 'crime_scene',              
             floorFrames: floor,         // picks background art
-            requiredObjects: [crime.object],    // all must be interacted with; picks object sprites
-            foundObjects : [],
+            requiredObjects: new Set([crime.object]),    // all must be interacted with; picks object sprites
+            foundObjects : new Set(),
             alwaysSpawn: true
         });
     }
@@ -95,14 +95,11 @@ export default class ObjectivesController {
                     id: `room_${key}_${roomName}`,
                     label: `Search ${suspect.name}'s ${this.fmt(roomName)}`,
                     description: `Investigate the ${this.fmt(roomName)} for evidence connected to ${suspect.name}.`,
-                    category: 'object_investigation',
                     roomType: roomName,
+                    roomID: `room_${key}_${roomName}`,
                     floorFrames: roomData.floor_frames,
-                    suspect: suspect.name,
-                    requiredObjects: allItems,
-                    foundObjects: [],
-                    alwaysSpawn: false,
-                    meta: { isCrimeScene: !!roomData.crimeScene },
+                    requiredObjects: new Set(allItems),
+                    foundObjects: new Set(),
                 };
 
                 if(!redHerring){
@@ -144,57 +141,47 @@ export default class ObjectivesController {
                     // console.log("[Objectives]", suspect.name, allMotives)
                     for(const motive in allMotives){
                         this.add({
-                            id: `uncover_motive_${suspect.name.toLowerCase()}`,
+                            id: `uncover_${motive}_motive_${suspect.name.toLowerCase()}`,
                             label: `Uncover ${suspect.name}'s motive`,
                             description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
-                            category: 'motive_investigation',
                             roomType: "interrogation",
+                            roomID: `${motive}_motive_interrogation`,
                             floorFrames: investigationLocations.misc.interrogation.floor_frames,
-                            suspect: suspect.name,
-                            requiredObjects: [motive],
-                            foundObjects: [],
-                            alwaysSpawn: false,
-                            meta: { isCrimeScene: false },
+                            requiredObjects: new Set([motive]),
+                            foundObjects: new Set(),
                         });
                     }
                 }
             }
     }
 
-    // call when player enters a room. returns newly completed objectives.
-    onRoomVisited(roomName) {
-        this.currentRoom = roomName;
-        return this.rooms.find((o) => !o.completed && o.roomType === roomName) ?? null;
+    onRoomVisited(roomID) {
+        this.currentRoomID = roomID;
     }
 
     // call when player examines an item. returns newly completed objectives.
     onItemFound(itemName) {
-        if(!this.currentRoom) return null;
+        if(!this.currentRoomID) return null;
 
         const objective = this.rooms.find(
-            (o) => !o.completed && o.roomType === this.currentRoom
+            (o) => !o.completed && o.roomID === this.currentRoomID
         );
-        if(!objective || !objective.requiredObjects.includes(itemName)) return null;
+        if(!objective || !objective.requiredObjects.has(itemName)) return null;
 
-        if(!objective.foundObjects.includes(itemName)) {
-            objective.foundObjects.push(itemName);
-        }
+        objective.foundObjects.add(itemName);
 
         // complete this objective once every required object has been found
-        const allFound = objective.requiredObjects.every((item) => objective.foundObjects.includes(item));
-        
-        return allFound ? this.completeById(objective.id) : null;
+        const checkFound = objective.requiredObjects.difference(objective.foundObjects);
+        const allFound = checkFound.size === 0;
+
+        if(allFound){
+            this.completeById(objective.id);
+            console.log("OBJECTIVE COMPLETED!")
+        }      
+
+        return allFound;
     }
-/*
-    // call when motive evidence is confirmed (you decide the trigger).
-    onMotiveUncovered(suspectName) {
-        return this.resolveObjects(
-            (o) =>
-                o.type === 'uncover_motive' &&
-                o.target.suspect.toLowerCase() === suspectName.toLowerCase(),
-        );
-    }
-*/
+
     isWinConditionMet() {
         const crimeSceneDone = this.isComplete('crime_scene');
         const suspectObjectiveDone = this.rooms.every(o => o.completed);
@@ -246,11 +233,8 @@ export default class ObjectivesController {
     getCompleted() {
         return this.rooms.filter((o) => o.completed);
     }
-    getByCategory(category) {
-        return this.rooms.filter((o) => o.category === category);
-    }
-    getByRoomType(type) {
-        return this.rooms.filter((o) => o.roomType === type);
+    getByRoomID(id) {
+        return this.rooms.filter((o) => o.roomID === id);
     }
     getByID(id) {
         return this.rooms.filter((o) => o.id === id);
@@ -260,11 +244,6 @@ export default class ObjectivesController {
     }
     isAllComplete() {
         return this.rooms.every((o) => o.completed);
-    }
-
-    // helper to manually complete any objective by id
-    complete(id) {
-        return this.completeById(id);
     }
 
     getSummary() {
@@ -277,8 +256,8 @@ export default class ObjectivesController {
         const obj = this.rooms.find(o => o.roomType === roomType);
         if (!obj) return null;
         return {
-            found: obj.foundObjects.length,
-            required: obj.requiredObjects.length,
+            found: obj.foundObjects.size,
+            required: obj.requiredObjects.size,
             completed: obj.completed,
         };
     }
@@ -287,5 +266,11 @@ export default class ObjectivesController {
     // prevent listing keys as objects
     resolveObjects(keys = [], table = {}){
         return keys.flatMap((key) => table[key] ?? []);
+    }
+}
+
+class Objective {
+    constructor(){
+
     }
 }
