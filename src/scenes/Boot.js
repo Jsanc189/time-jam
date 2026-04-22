@@ -83,7 +83,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('paper2', 'assets/images/paper_2.png');
 
     //music
-    this.load.audio('testMusic', 'assets/audio/music/boss_time_15.mp3');
+    this.load.audio('testMusic', 'assets/audio/music/mystery-game_main-theme.mp3');
     
     //SFX
     this.load.audio('testVolume', 'assets/audio/sfx/select.wav');

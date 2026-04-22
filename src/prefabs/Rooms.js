@@ -10,13 +10,13 @@
 import Phaser from 'phaser';
 
 export default class Rooms extends Phaser.GameObjects.Sprite {
-    constructor(scene, tileKey, tileWidth, tileHeight, roomType) {
-        super(scene, tileKey, tileWidth, tileHeight, roomType);
+    constructor(scene, tileKey, tileWidth, tileHeight, roomTypes) {
+        super(scene, tileKey, tileWidth, tileHeight, roomTypes);
         this.scene = scene;
         this.tileKey = tileKey;
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
-        this.roomType = roomType;
+        this.roomTypes = roomTypes;
         
     }
 
@@ -41,36 +41,37 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         }
     }
 
-    spawnRandomHatches(spriteKeys, roomTypes, spawnChance = 0.01) {
+    spawnRandomHatches(roomTypes, spawnChance = 0.01) {
         const hatches = [];
 
         for (let x = this.tileWidth / 2; x < this.roomWidth - this.tileWidth / 2; x += this.tileWidth) {
             for (let y = this.tileHeight / 2; y < this.roomHeight - this.tileHeight / 2; y += this.tileHeight) {
 
                 if (Math.random() < spawnChance) {
-                    const spriteKey = Phaser.Utils.Array.GetRandom(spriteKeys);
-                    const label = Phaser.Utils.Array.GetRandom(roomTypes);
-                    const type = label.type;
-                    const objectives = label.objectives;
+                    const room = Phaser.Utils.Array.GetRandom(roomTypes);
 
                     // x, y are already centers
                     const hatch = this.scene.physics.add.sprite(
                         x,
                         y,
-                        spriteKey
+                        room.hatchSprite.key,
+                        room.hatchSprite.frame
                     )
-                    .setScale(0.25)
+                    .setScale(0.5)
                     .setInteractive({ cursor: 'pointer' });
 
                     // 🔹 Attach the label directly to the sprite
-                    hatch.setData('label', type);
-                    hatch.setData('objectives', objectives);
+                    hatch.setData('label', room.type);
+                    hatch.setData('objectives', room.objectives);
+                    hatch.setData('idleFrame', room.hatchSprite.frame);
+                    hatch.setData('activeFrame', room.hatchSprite.activeFrame);
+                    hatch.setData('floorFrames', room.floorFrames);
 
                     // Label text above the hatch
                     const LABELTEXT = this.scene.add.text(
                         x,
                         y - 40,
-                        type +"\n" + objectives
+                        room.type +"\n" + room.objectives
                     )
                     .setOrigin(0.5)
                     .setDepth(999)
@@ -80,13 +81,13 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
                     hatch.on('pointerover', () => {
                         LABELTEXT.setVisible(true);
                         hatch.setTint(0xffff99);
-                        hatch.setScale(0.3);
+                        hatch.setScale(0.6);
                     });
 
                     hatch.on('pointerout', () => {
                         LABELTEXT.setVisible(false);
                         hatch.clearTint();
-                        hatch.setScale(0.25);
+                        hatch.setScale(0.5);
                     });
 
                     // Optional: keep wrapper object if you like
@@ -100,5 +101,6 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
 
         return hatches;
     }
+
 
 }

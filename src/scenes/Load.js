@@ -12,7 +12,9 @@ export default class LoadScene extends Phaser.Scene {
         super('LoadScene');
     }
 
-    preload() {}
+    preload() {
+        
+    }
 
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
@@ -36,5 +38,7 @@ export default class LoadScene extends Phaser.Scene {
                 this.scene.start('MenuScene');
             },
         );
+        
+
     }
 }
