@@ -49,8 +49,6 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
 
                 if (Math.random() < spawnChance) {
                     const room = Phaser.Utils.Array.GetRandom(roomTypes);
-                    console.log(room.hatchSprite.key);
-                    console.log(room.hatchSprite.frame);
 
                     // x, y are already centers
                     const hatch = this.scene.physics.add.sprite(
@@ -67,6 +65,7 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
                     hatch.setData('objectives', room.objectives);
                     hatch.setData('idleFrame', room.hatchSprite.frame);
                     hatch.setData('activeFrame', room.hatchSprite.activeFrame);
+                    hatch.setData('floorFrames', room.floorFrames);
 
                     // Label text above the hatch
                     const LABELTEXT = this.scene.add.text(

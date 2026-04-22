@@ -37,17 +37,20 @@ export default class MapScene extends Phaser.Scene {
             {
                 type:'Library',
                 objectives: ['blade'],
-               hatchSprite: hatchImage
+               hatchSprite: hatchImage,
+               floorFrames: [10]
             }, 
             {
                 type: 'Interrigation',
                 objectives: ['arrow'],
-                hatchSprite: hatchImage
+                hatchSprite: hatchImage,
+                floorFrames: [4, 5, 6, 7]
             }, 
             {
                 type:'Crime_Scene',
                 objectives:['harpoon'],
-                hatchSprite: hatchImage
+                hatchSprite: hatchImage,
+                floorFrames:[8, 9]
             }];
 
          const HATCHINFO = {
@@ -115,8 +118,6 @@ export default class MapScene extends Phaser.Scene {
                 this.onHatchOverlap, 
                 null, 
                 this);
-            //     this.currentHatch = hatch.sprite;
-            // });
         });
         this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
 
@@ -228,7 +229,8 @@ export default class MapScene extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
                 const label = this.currentHatch.getData('label');
                 const objectives = this.currentHatch.getData('objectives');
-                const data = {label: label, objectives: objectives};
+                const floorFrames = this.currentHatch.getData('floorFrames')
+                const data = {label: label, objectives: objectives, floorFrames: floorFrames};
                 this.scene.sleep('MapScene');
                 this.scene.launch("HatchRoomScene", data);
                 this.physics.world.pause();
