@@ -39,7 +39,7 @@ export default class Case {
     getCrimeScene(grammar) {
         // collect locations from case characters
         const locations = [
-            ...new Set([this.victim, ...this.suspects].flatMap((npc) => npc.locations)),
+            ...new Set([...this.suspects].flatMap((npc) => npc.locations)),
         ];
 
         return grammar.listPick(locations);
@@ -84,6 +84,10 @@ export default class Case {
     getLocations(grammar) {
         const rooms = {};
         const locations = grammar.getLocations();
+
+        rooms.misc = locations.misc;    // stores room that arent tied to specific characters (like interrogation room)
+
+        rooms[this.victim.name]
 
         for (const suspect of this.suspects) {
             const suspectName = suspect.name.toLowerCase()

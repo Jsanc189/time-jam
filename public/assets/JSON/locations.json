@@ -2,33 +2,33 @@
     "locations": {
         "enfrin": {
             "river": {
-                "tileset": [],
+                "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["fishing"],
                 "crime_objects": ["fishing"]
             },
             "cobbler_shop": {
-                "tileset": [],
+                "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["cobbler"],
                 "crime_objects": ["cobbler"]
             },
             "fairy_home": {
-                "tileset": [],
+                "floor_frames": [4, 5, 6, 7],
                 "character_objects": ["enfrin"],
                 "location_objects": ["house"]
             }
         },
         "chorg": {
             "library": {
-                "tileset": [],
+                "floor_frames": [10],
                 "activity_objects": ["library"]
             },
             "hospital": {
-                "tileset": [],
+                "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["medicine"],
                 "crime_objects": ["medicine"]
             },
             "goblin_home": {
-                "tileset": [],
+                "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["pyromancy"],
                 "crime_objects": ["pyromancy"],
                 "character_objects": ["chorg"],
@@ -37,19 +37,24 @@
         },
         "sil": {
             "pasture": {
-                "tileset": [],
+                "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["archery"],
                 "crime_objects": ["archery"]
             },
             "carpentry_shop": {
-                "tileset": [],
+                "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["carpentry"],
                 "crime_objects": ["carpentry"]
             },
             "elf_home": {
-                "tileset": [],
+                "floor_frames": [4, 5, 6, 7],
                 "character_objects": ["sil"],
                 "location_objects": ["house"]
+            }
+        },
+        "misc": {
+            "interrogation": {
+                "floor_frames": [8, 9]
             }
         }
     }

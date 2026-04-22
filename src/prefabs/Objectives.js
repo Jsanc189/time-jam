@@ -34,12 +34,25 @@ export default class ObjectivesController {
     addCrimeSceneObjectives() {
         const { crime } = this.case;
 
+        let floor;
+        for(const sus in this.case.investigationLocations){
+            const susLocations = this.case.investigationLocations[sus];
+            for(const loc in susLocations){
+                const location = susLocations[loc];
+                if(loc === crime.scene){
+                    floor = location.floor_frames;
+                    break;
+                }
+            }
+        }
+
         this.add({
             id: 'crime_scene',
             label: `Examine the ${this.fmt(crime.scene)}`,
             description: `Visit the scene of the ${crime.type}.`,
             category: 'object_investigation',
-            roomType: crime.scene,              // picks background art
+            roomType: crime.scene,              
+            floorFrames: floor,         // picks background art
             requiredObjects: [crime.object],    // all must be interacted with; picks object sprites
             foundObjects : [],
             alwaysSpawn: true
@@ -81,6 +94,7 @@ export default class ObjectivesController {
                     description: `Investigate the ${this.fmt(roomName)} for evidence connected to ${suspect.name}.`,
                     category: 'object_investigation',
                     roomType: roomName,
+                    floorFrames: roomData.floor_frames,
                     suspect: suspect.name,
                     requiredObjects: allItems,
                     foundObjects: [],
@@ -99,7 +113,7 @@ export default class ObjectivesController {
     }
 
     addMotiveObjectives() {
-        const { suspects, defendant, crime } = this.case;
+        const { suspects, defendant, crime, investigationLocations } = this.case;
 
         for (const suspect of suspects) {
                 const isDefendant = (suspect.name === defendant.name);
@@ -123,6 +137,7 @@ export default class ObjectivesController {
                             description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
                             category: 'motive_investigation',
                             roomType: "interrogation",
+                            floorFrames: investigationLocations.misc.interrogation.floor_frames,
                             suspect: suspect.name,
                             requiredObjects: [motive],
                             foundObjects: [],
@@ -133,56 +148,7 @@ export default class ObjectivesController {
                 }
             }
 
-            // const resolvedItems = [
-            //         ...this.resolveObjects(roomData.crime_objects, this.objectsData.crime_objects),
-            //         ...this.resolveObjects(roomData.character_objects, this.objectsData.character_objects),
-            //         ...this.resolveObjects(roomData.activity_objects, this.objectsData.activity_objects),
-            // ];
-
-            // this.add({
-            //     id: `uncover_motive_${suspect.name.toLowerCase()}`,
-            //     label: `Uncover ${suspect.name}'s motive`,
-            //     description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
-            //     category: 'motive_investigation',
-            //     roomType: "interrogation",
-            //     suspect: suspect.name,
-            //     requiredObjects: allItems,
-            //     foundObjects: [],
-            //     alwaysSpawn: false,
-            //     meta: { isCrimeScene: !!roomData.crimeScene },
-            // });
     }
-
-    addOpportunityObjectives() {
-        const { suspects, crime } = this.case;
-
-        for (const suspect of suspects) {
-            if (!suspect.motives?.length) continue;
-
-            const isDefendant = (suspect.name === defendant.name);
-            if(isDefendant && this.role === "defense"){
-                continue;   // defense is NOT looking for evidence against defendant
-            }
-
-            if(!isDefendant && this.role === "prosecution"){
-                continue;   // prosecution is ONLY looking for evidence against defendant
-            }
-
-            this.add({
-                id: `uncover_opportunity_${suspect.name.toLowerCase()}`,
-                label: `Find out where ${suspect.name} was at time of the crime`,
-                description: `Find evidence that ${suspect.name} might have committed the ${crime.type}.`,
-                category: 'opportunity_investigation',
-                roomType: "interrogation",
-                suspect: suspect.name,
-                requiredObjects: allItems,
-                foundObjects: [],
-                alwaysSpawn: false,
-                meta: { isCrimeScene: !!roomData.crimeScene },
-            });
-        }
-    }
-
 
     // call when player enters a room. returns newly completed objectives.
     onRoomVisited(roomName) {

@@ -38,6 +38,9 @@ export default class MapScene extends Phaser.Scene {
         TILER.tileRoom(0, 0, this.worldWidth, this.worldHeight, FLOOR_FRAMES);
         
         //Room Data
+        const hatchImage = {key: 'rope_hatch', frame: 2, activeFrame: 3}
+        TILER.hatchSprite = hatchImage;
+
         // first, get required rooms from this.objectivesControl
         // then, add red herring rooms
         //      useless witnesses
@@ -46,30 +49,22 @@ export default class MapScene extends Phaser.Scene {
         const objectiveRooms = [];
         this.objectivesControl.objectives.forEach((obj) => {
             objectiveRooms.push({
-                type: obj.roomType,
-                objectives: obj
+                objective: obj
             })
         })
-        // let rooms = [
-        //     {
-        //         type: 'Interrogation',
-        //         objectives: this.objectivesControl.getByRoomType('interrogation')[0]
-        //     }, 
-        //     {
-        //         type:'Crime_Scene',
-        //         objectives: this.objectivesControl.getByID('crime_scene')[0]
-        //     }];
-
         
-        let sprite = ['libraryFloor'];
          const HATCHINFO = {
-            sprite,
-            rooms: objectiveRooms
+            objectiveRooms
         }
         this.hatches = TILER.spawnObjectiveRoomHatches(
-            HATCHINFO.sprite,
+            // HATCHINFO.sprite,
             objectiveRooms
         );
+
+        this.hatchGroup = this.physics.add.group();
+        this.hatches.forEach(h => {
+            this.hatchGroup.add(h.sprite)
+        });
 
         //Player Data
         const safeSpawn = this.findSafePlayerSpawn();
@@ -118,9 +113,12 @@ export default class MapScene extends Phaser.Scene {
 
         //Hatch overlap detection
         this.hatches.forEach(hatch => {
-            this.physics.add.overlap(this.player, hatch.sprite, () =>{
-                this.currentHatch = hatch.sprite;
-            });
+            this.physics.add.overlap(
+                this.player, 
+                this.hatches.map(h => h.sprite), 
+                this.onHatchOverlap, 
+                null, 
+                this);
         });
         this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
 
@@ -128,7 +126,7 @@ export default class MapScene extends Phaser.Scene {
         this.interactText =  new GameText(
             this,
             this.cameras.main.centerX,
-            this.cameras.main.centerY,
+            this.cameras.main.centerY / 6,
             "Press E to Enter",
             {
                 fontSize: '48px',
@@ -137,6 +135,7 @@ export default class MapScene extends Phaser.Scene {
         )
         .setOrigin(0.5)
         .setScrollFactor(0)
+        .setDepth(9999)
         .setVisible(false);
 
         //resume physics world when returning to scene
@@ -230,13 +229,25 @@ export default class MapScene extends Phaser.Scene {
             
             if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
                 const label = this.currentHatch.getData('label');
-                const objectives = this.currentHatch.getData('objectives');
-                const data = {label: label, objectives: objectives};
+                const objective = this.currentHatch.getData('objective');
+                const floorFrames = this.currentHatch.getData('floorFrames')
+                const data = {label: label, objective: objective, floorFrames: floorFrames};
                 this.scene.sleep('MapScene');
                 this.scene.launch("HatchRoomScene", data);
                 this.physics.world.pause();
             }
         }
+
+        this.hatches.forEach(h => {
+            const sprite = h.sprite;
+
+            if (!sprite.getData('isActive')) {
+                sprite.setFrame(sprite.getData('idleFrame'));
+            }
+
+            // Reset for next frame
+            sprite.setData('isActive', false);
+        });
 
     }
 
@@ -299,6 +310,12 @@ export default class MapScene extends Phaser.Scene {
 
     }
 
+    onHatchOverlap(player, hatch) {
+        hatch.setFrame(hatch.getData('activeFrame'));
+        hatch.setData('isActive', true);
+        this.currentHatch = hatch;
+        this.interactText.setVisible(true);
+    }
 
 }
 
