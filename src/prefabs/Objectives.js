@@ -164,9 +164,11 @@ export default class ObjectivesController {
         if(!this.currentRoomID) return null;
 
         const objective = this.rooms.find(
-            (o) => !o.completed && o.roomID === this.currentRoomID
+            (o) => o.roomID === this.currentRoomID
         );
-        if(!objective || !objective.requiredObjects.has(itemName)) return null;
+        if(!objective) return null;
+        if(!objective.requiredObjects.has(itemName)) return null;
+        if(objective.completed) return true;
 
         objective.foundObjects.add(itemName);
 
