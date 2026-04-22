@@ -41,16 +41,16 @@ export default class MapScene extends Phaser.Scene {
                floorFrames: [10]
             }, 
             {
-                type: 'Interrigation',
+                type: 'Interview',
                 objectives: ['arrow'],
                 hatchSprite: hatchImage,
-                floorFrames: [4, 5, 6, 7]
+                floorFrames: [8, 9]
             }, 
             {
                 type:'Crime_Scene',
                 objectives:['harpoon'],
                 hatchSprite: hatchImage,
-                floorFrames:[8, 9]
+                floorFrames:[4, 5, 6, 7]
             }];
 
          const HATCHINFO = {
