@@ -13,6 +13,7 @@ import GameText from "../prefabs/GameText";
 import Case from '../prefabs/Case';
 import Button from '../prefabs/Button';
 import ObjectivesController from "../prefabs/Objectives";
+import { Game } from "phaser";
 
 export default class MainScene extends Phaser.Scene {
     constructor() {
@@ -37,21 +38,11 @@ export default class MainScene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#6e3318');
         //button to get back to MenuScene
         const BUTTON_SPACING = 150;
-        const TITLE_TEXT = new GameText(
-            this,
-            this.cameras.main.centerX,
-            this.cameras.main.centerY - BUTTON_SPACING,
-            'Main Game Scene',
-            {
-                fontSize: '128px',
-                color: '#fff',
-            },
-        ).setOrigin(0.5);
 
         const MENU_BUTTON = new Button(
             this,
-            this.cameras.main.centerX,
-            this.cameras.main.centerY + BUTTON_SPACING,
+            this.cameras.main.centerX / 6 + 50,
+            this.cameras.main.centerY / 6 ,
             300,
             100,
             'Back to Menu',
@@ -65,8 +56,8 @@ export default class MainScene extends Phaser.Scene {
         );
         const MAP_BUTTON = new Button(
             this,
-            this.cameras.main.centerX,
-            this.cameras.main.centerY + BUTTON_SPACING * 2,
+            this.cameras.main.centerX * 1.8,
+            this.cameras.main.centerY / 6 + BUTTON_SPACING,
             300,
             100,
             'Go to Mind Palace',
@@ -77,9 +68,41 @@ export default class MainScene extends Phaser.Scene {
             },
         );
 
+        const EVIDENCE_BUTTON = new Button(
+            this,
+            this.cameras.main.centerX * 1.8,
+            this.cameras.main.centerY / 6,
+            300,
+            100,
+            'Evidence Found',
+            undefined,
+            undefined, () =>{
+                notesOpen = !notesOpen;
+
+                this.tweens.add({
+                    targets: this.evidenceNotes,
+                    x: notesOpen
+                        ? this.cameras.main.centerX
+                        : this.cameras.main.centerX * 3,
+                    duration: 600,
+                    ease: 'Cubic.easeInOut'
+                })
+            }
+        )
+
+        let notesOpen = false;
+        this.evidenceNotes = this.add.sprite(
+            this.cameras.main.centerX * 3,
+            this.cameras.main.centerY,
+            'paper2'
+        )
+        .setDepth(10)
+        .setScale(.90);
+
         // player chooses defense or prosecution 
         if(!this.case.playerRole){
             MAP_BUTTON.hide();
+            EVIDENCE_BUTTON.hide();
             
             const PICK_SIDE_DEFENSE = new Button(
                 this,
@@ -98,8 +121,13 @@ export default class MainScene extends Phaser.Scene {
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
                     MAP_BUTTON.show();
+                    this.judgeStand.setVisible(true);
+                    judge.setVisible(true);
+                    g.setVisible(true);
+                    juryText.setVisible(true);
+                    EVIDENCE_BUTTON.show();
 
-                    this.testObjectives();
+                    //this.testObjectives();
                 },
             );
 
@@ -120,11 +148,56 @@ export default class MainScene extends Phaser.Scene {
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
                     MAP_BUTTON.show();
+                    this.judgeStand.setVisible(true);
+                    judge.setVisible(true);
+                    g.setVisible(true);
+                    juryText.setVisible(true);
+                    EVIDENCE_BUTTON.show();
 
                     //this.testObjectives();
                 },
             );
         }
+
+        //judge placeholder
+        const judgeWidth = 800;
+        const judgeHeight = 600;
+        this.judgeStand = this.add.rectangle(
+            this.cameras.main.centerX / 2,
+            this.cameras.main.centerY * 1.30 ,
+            judgeWidth,
+            judgeHeight,
+            0x3b2f2f
+        ).setStrokeStyle(4, 0xfffff)
+        .setVisible(false);
+        const judge = new GameText(
+            this,
+            this.judgeStand.x,
+            this.judgeStand.y,
+            "JUDGE"
+        ).setOrigin(0.5)
+        .setVisible(false);
+
+        //jury stand placeholer
+        const g = this.add.graphics();
+        g.fillStyle(0x2e2a24, 1);
+        const x = this.cameras.main.centerX * 1.6;
+        const y = this.cameras.main.centerY * 1.5;
+        g.moveTo(x - 420, y - 220);   // top-left (pulled back)
+        g.lineTo(x + 420, y - 50);   // top-right (pulled back)
+        g.lineTo(x + 420, y + 300);  // bottom-right (closer)
+        g.lineTo(x - 420, y + 100);  // bottom-left (closer)
+        g.closePath();
+        g.fillPath();
+        g.setVisible(false);
+        const juryText = new GameText(
+            this,
+            x,
+            y,
+            "JURY"
+        ).setOrigin(0.5)
+        .setVisible(false);
+
     }
 
     // TEMP TESTING CODE
@@ -206,4 +279,8 @@ export default class MainScene extends Phaser.Scene {
     // }
 
     update() {}
+
+    evidenceFound() {
+        this.evidenceNotes.x = this.cameras.main.centerX;
+    }
 }
