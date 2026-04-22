@@ -49,12 +49,17 @@ export default class AudioManager {
             this.currentMusic = null;
         }
     }
+    
 
     playSFX(key) {
-        this.scene.sound.play(key, {
+        const sound = this.scene.sound.add(key);
+
+        sound.play({
             volume: this.sfxVolume,
-            mute: this.sfxMute
+            mute: this.sfxMute  
         });
+
+        return sound;
     }
 
     setMusicVolume(value) {

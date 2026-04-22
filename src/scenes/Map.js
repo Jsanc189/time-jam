@@ -57,37 +57,6 @@ export default class MapScene extends Phaser.Scene {
             safeSpawn.x,
             safeSpawn.y,
         );
-        //Player animation
-        this.anims.create({
-            key: 'playerIdle',
-            frames: this.anims.generateFrameNumbers('playerSheet', { start: 0, end: 0 }),
-            frameRate: 1,
-            repeat: -1,
-        });
-        this.anims.create({
-            key: 'playerWalkDown',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 0, end: 3 }),
-            frameRate: 4,
-            repeat: -1,
-        });
-        this.anims.create({
-            key: 'playerWalkUp',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 4, end:  7 }),
-            frameRate: 4,
-            repeat: -1,
-        });
-        this.anims.create({
-            key: 'playerWalkRight',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 8, end: 11 }),
-            frameRate: 4,
-            repeat: -1,
-        });
-        this.anims.create({
-            key: 'playerWalkLeft',
-            frames: this.anims.generateFrameNames('playerSheet', { start: 12, end: 15 }),
-            frameRate: 4,
-            repeat: -1,
-        });
 
         //input for rooms
         this.interactKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
@@ -165,7 +134,9 @@ export default class MapScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
-                this.scene.start('MainScene');
+                this.game.audio.playSFX("gavel");
+                this.scene.sleep();
+                this.scene.wake('MainScene');
             },
         );
         MAIN_BUTTON.setScrollFactor(0);
@@ -186,6 +157,10 @@ export default class MapScene extends Phaser.Scene {
                 } else {
                     this.clock.moveTo(CLOCK_POSITIONX, CLOCK_POSITIONY);
                 }
+                const clockTick = this.game.audio.playSFX("clockCalm");
+                this.time.delayedCall(2000, ()=>{ 
+                    clockTick.stop()
+                });
             },
         );
         CLOCK_BUTTON.setScrollFactor(0);

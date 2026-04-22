@@ -58,7 +58,8 @@ export default class OptionsScene extends Phaser.Scene {
             "SFX Volume:",
             POSITION_X + BUTTON_SPACING,
             POSITION_Y + BUTTON_SPACING * 2,
-            SLIDER_WIDTH, this.game.audio.sfxMute,
+            SLIDER_WIDTH, 
+            this.game.audio.sfxVol,
             percent => this.game.audio.setSFXVolume(percent),
             () => this.game.audio.playSFX("gavel")
         )
@@ -83,6 +84,7 @@ export default class OptionsScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
+                this.game.audio.playSFX("gavel");
                 this.scene.start('MenuScene');
             },
         );
