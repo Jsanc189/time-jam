@@ -150,7 +150,7 @@ export default class MapScene extends Phaser.Scene {
             undefined,
             () => {
                 this.game.audio.playSFX("gavel");
-                this.scene.stop();
+                this.scene.sleep();
                 this.scene.wake('MainScene');
             },
         );
