@@ -39,6 +39,7 @@ export default class MenuScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
+                this.game.audio.playSFX("gavel");
                 this.scene.start('MainScene');
             },
         );
@@ -53,6 +54,7 @@ export default class MenuScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
+                this.game.audio.playSFX("gavel");
                 this.scene.start('OptionsScene');
             },
         );
@@ -67,6 +69,7 @@ export default class MenuScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
+                this.game.audio.playSFX("gavel");
                 this.scene.start('CreditsScene');
             },
         );
