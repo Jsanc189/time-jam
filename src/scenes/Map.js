@@ -29,8 +29,9 @@ export default class MapScene extends Phaser.Scene {
         this.worldWidth = this.cameras.main.width * 3;
         this.worldHeight = this.cameras.main.height * 3;
 
-        const TILER = new Rooms(this, 'tileFloor', this.tileWidth, this.tileHeight);
-        TILER.tileRoom(0, 0, this.worldWidth, this.worldHeight);
+        const FLOOR_FRAMES = [0, 1, 2, 3];
+        const TILER = new Rooms(this, 'floorTiles', this.tileWidth, this.tileHeight);
+        TILER.tileRoom(0, 0, this.worldWidth, this.worldHeight, FLOOR_FRAMES);
         
         //Room Data
         // first, get required rooms from this.objectivesControl
@@ -145,12 +146,20 @@ export default class MapScene extends Phaser.Scene {
         //clock logic
         const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
         const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
+        const CLOCK_ITERATION_TIME = 1800; //30 minutes in seconds
 
         this.registry.set('clockStartTime', 0); //start time in seconds
         this.registry.set('maxSeconds', 43200); //12 hours in seconds
         this.registry.set('taskTime', 1800); // 30 minutes in seconds
 
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
+
+        this.events.on('timeSpent', (seconds) =>{
+            let current = this.registry.get('clockStartTime');
+            current += seconds;
+            this.registry.set('clockStartTime', current)
+            this.clock.updateTime(current);
+        });
 
         //UI buttons
         const BUTTON_SPACING = 120;
@@ -189,31 +198,10 @@ export default class MapScene extends Phaser.Scene {
         );
         CLOCK_BUTTON.setScrollFactor(0);
 
-        //button to increment time on the clock by 5 minutes
-        const TIME_BUTTON = new Button(
-            this,
-            this.cameras.main.centerX / 5,
-            this.cameras.main.centerY + BUTTON_SPACING * 3,
-            300,
-            100,
-            'Advance Time',
-            undefined,
-            undefined,
-            () => {
-                this.clockStartTime += CLOCK_ITERATION_TIME;
-                this.clock.updateTime(this.clockStartTime);
-                if(this.clockStartTime >= this.maxSeconds) {
-                    this.endGame();
-                }
-            },
-        );
-        TIME_BUTTON.setScrollFactor(0);
-               
     }
 
     update() {
         this.player.update();
-        this.clock.update();
 
         // --- CHECK IF PLAYER MOVED AWAY FROM HATCH ---
         if (this.currentHatch) {
@@ -255,6 +243,8 @@ export default class MapScene extends Phaser.Scene {
         const TILE = this.tileWidth;
         let spawnX = this.worldWidth / 2;
         let spawnY = this.worldHeight / 2;
+        let x = spawnX;
+        let y = spawnY;
 
         //if no hatches exist, just return center
         if (!this.hatches || this.hatches.length === 0) {
@@ -277,8 +267,8 @@ export default class MapScene extends Phaser.Scene {
 
             // Random nudge direction
             const dir = Phaser.Math.Between(0, 3);
-            let newX = x;
-            let newY = y;
+            let newX = spawnX;
+            let newY = spawnY;
 
             if (dir === 0) newX += TILE; // rights
             if (dir === 1) newX -= TILE; // left

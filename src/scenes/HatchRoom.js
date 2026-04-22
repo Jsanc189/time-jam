@@ -27,6 +27,7 @@ export default class HatchRoomScene extends Phaser.Scene {
             this.cameras.main.centerY,
             this.label + '\nObjective: ' + this.objectives.label + '\nObjects: ' + this.objectives.requiredObjects
         )
+        // chose a sprite floor for tiler based on room type
 
         const MIND_PALACE = new Button(
             this,
@@ -38,6 +39,7 @@ export default class HatchRoomScene extends Phaser.Scene {
             undefined,
             undefined,
             () =>{
+                this.scene.get('MapScene').events.emit('timeSpent', 1800);//30 minutes
                 this.scene.stop();
                 this.scene.wake('MapScene');
             }
