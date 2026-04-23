@@ -19,11 +19,10 @@
 */
 
 export default class ObjectivesController {
-    constructor(caseData, objectData, dialogue, max) {
+    constructor(caseData, objectData, max) {
         this.case = caseData;
         this.role = caseData.playerRole;
         this.objectsData = objectData;
-        this.dialogue = dialogue;
         this.max = max;
 
         this.rooms = [];
@@ -142,11 +141,11 @@ export default class ObjectivesController {
                 for(const motive of suspect.motives){
                     // console.log("[Objectives]", suspect.name, allMotives)
                     this.add({
-                        id: `uncover_${motive}_motive_${suspect.name.toLowerCase()}`,
+                        id: `uncover_${motive.name}_motive_${suspect.name.toLowerCase()}`,
                         label: `Uncover ${suspect.name}'s motive`,
                         description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
                         roomType: "interrogation",
-                        roomID: `${motive}_motive_interrogation`,
+                        roomID: `${motive.name}_motive_interrogation`,
                         floorFrames: investigationLocations.misc.interrogation.floor_frames,
                         requiredObjects: new Set([motive]),
                         foundObjects: new Set(),

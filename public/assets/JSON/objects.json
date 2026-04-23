@@ -1,58 +1,217 @@
 {
     "crime_objects": {
         "general": [
-            "blade"
+            {
+                "name": "blade",
+                "description": "blade description filler",
+                "barks": [
+                    "blade bark filler"
+                ]
+            }
         ],
         "cobbler": [
-            "cobbler_hammer"
+            {
+                "name": "cobbler_hammer",
+                "description": "cobbler_hammer description filler",
+                "barks": [
+                    "cobbler_hammer bark filler"
+                ]
+            }
         ],
         "fishing": [
-            "harpoon"
+            {
+                "name": "harpoon",
+                "description": "harpoon description filler",
+                "barks": [
+                    "harpoon bark filler"
+                ]
+            }
         ],
         "carpentry": [
-            "claw_hammer"
+            {
+                "name": "claw_hammer",
+                "description": "claw_hammer description filler",
+                "barks": [
+                    "claw_hammer bark filler"
+                ]
+            }
         ],
         "archery": [
-            "arrow"
+            {
+                "name": "arrow",
+                "description": "arrow description filler",
+                "barks": [
+                    "arrow bark filler"
+                ]
+            }
         ],
         "medicine": [
-            "poison"
+            {
+                "name": "poison",
+                "description": "poison description filler",
+                "barks": [
+                    "poison bark filler"
+                ]
+            }
         ]
     },
     "activity_objects": {
         "cobbler": [
-            "shoes", "cobbler_customer_invoices"
+            {
+                "name": "shoes",
+                "description": "shoes description filler",
+                "barks": [
+                    "shoes bark filler"
+                ]
+            },
+            {
+                "name": "cobbler_customer_invoices",
+                "description": "cobbler_customer_invoices description filler",
+                "barks": [
+                    "cobbler_customer_invoices bark filler"
+                ]
+            }
         ],
         "fishing": [
-            "rowboat"
+            {
+                "name": "rowboat",
+                "description": "rowboat description filler",
+                "barks": [
+                    "rowboat bark filler"
+                ]
+            }
         ],
         "carpentry": [
-            "lumber", "carpentry_customer_invoices"
+            {
+                "name": "lumber",
+                "description": "lumber description filler",
+                "barks": [
+                    "lumber bark filler"
+                ]
+            },
+            {
+                "name": "carpentry_customer_invoices",
+                "description": "carpentry_customer_invoices description filler",
+                "barks": [
+                    "carpentry_customer_invoices bark filler"
+                ]
+            }
         ],
         "archery": [
-            "target"
+            {
+                "name": "target",
+                "description": "target description filler",
+                "barks": [
+                    "target bark filler"
+                ]
+            }
         ],
         "medicine": [
-            "medicine", "medicine_customer_invoices"
+            {
+                "name": "medicine",
+                "description": "medicine description filler",
+                "barks": [
+                    "medicine bark filler"
+                ]
+            },
+            {
+                "name": "medicine_customer_invoices",
+                "description": "medicine_customer_invoices description filler",
+                "barks": [
+                    "medicine_customer_invoices bark filler"
+                ]
+            }
         ],
         "library": [
-            "books", "borrow_list"
+            {
+                "name": "books",
+                "description": "books description filler",
+                "barks": [
+                    "books bark filler"
+                ]
+            },
+            {
+                "name": "borrow_list",
+                "description": "borrow_list description filler",
+                "barks": [
+                    "borrow_list bark filler"
+                ]
+            }
         ]
     },
     "character_objects": {
         "chorg": [
-            "books", "sil_portrait"
+            {
+                "name": "books",
+                "description": "books description filler",
+                "barks": [
+                    "books bark filler"
+                ]
+            },
+            {
+                "name": "sil_portrait",
+                "description": "sil_portrait description filler",
+                "barks": [
+                    "sil_portrait bark filler"
+                ]
+            }
         ],
         "enfrin": [
-            "sil_portrait", "fountain_pen"
+            {
+                "name": "sil_portrait",
+                "description": "sil_portrait description filler",
+                "barks": [
+                    "sil_portrait bark filler"
+                ]
+            },
+            {
+                "name": "fountain_pen",
+                "description": "fountain_pen description filler",
+                "barks": [
+                    "fountain_pen bark filler"
+                ]
+            }
         ],
         "sil": [
-            "chorg_sculpture", "anon_love_letter"
+            {
+                "name": "chorg_sculpture",
+                "description": "chorg_sculpture description filler",
+                "barks": [
+                    "chorg_sculpture bark filler"
+                ]
+            },
+            {
+                "name": "anon_love_letter",
+                "description": "anon_love_letter description filler",
+                "barks": [
+                    "anon_love_letter bark filler"
+                ]
+            }
         ]
     },
     "location_objects": {
         "house": [
-            "bed", "sofa", "table"
+            {
+                "name": "bed",
+                "description": "bed description filler",
+                "barks": [
+                    "bed bark filler"
+                ]
+            },
+            {
+                "name": "sofa",
+                "description": "sofa description filler",
+                "barks": [
+                    "sofa bark filler"
+                ]
+            },
+            {
+                "name": "table",
+                "description": "table description filler",
+                "barks": [
+                    "table bark filler"
+                ]
+            }
         ]
     }
 }

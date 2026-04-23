@@ -1,19 +1,59 @@
 {
     "motives": {
         "enemy": [
-            "hatred"
+            {
+                "name": "hatred",
+                "description": "hatred description filler",
+                "barks": ["hatred bark filler"]
+            }
         ],
         "neighbor": [
-            "property_dispute"
+            {
+                "name": "property_dispute",
+                "description": "property_dispute description filler",
+                "barks": ["property_dispute bark filler"]
+            }
         ],
         "friend": [
-            "argument", "betrayal"
+            {
+                "name": "argument",
+                "description": "argument description filler",
+                "barks": ["argument bark filler"]
+            },
+            {
+                "name": "betrayal",
+                "description": "betrayal description filler",
+                "barks": ["betrayal bark filler"]
+            }
         ],
         "romance_unrequited": [
-            "jealousy"
+            {
+                "name": "jealousy",
+                "description": "jealousy description filler",
+                "barks": ["jealousy bark filler"]
+            }
         ],
         "romance": [
-            "argument", "betrayal", "jealousy", "crime_of_passion"
+            {
+                "name": "argument",
+                "description": "argument description filler",
+                "barks": ["argument bark filler"]
+            },
+            {
+                "name": "betrayal",
+                "description": "betrayal description filler",
+                "barks": ["betrayal bark filler"]
+            },
+            {
+                "name": "jealousy",
+                "description": "jealousy description filler",
+                "barks": ["jealousy bark filler"]
+            },
+            {
+                "name": "crime_of_passion",
+                "description": "crime_of_passion description filler",
+                "barks": ["crime_of_passion bark filler"]
+            }
         ]
-    }    
+    }
 }

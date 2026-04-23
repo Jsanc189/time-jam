@@ -119,8 +119,9 @@ export default class HatchRoomScene extends Phaser.Scene {
         const x = this.game.config.width - 300;
         let y = 0;
         const yStep = 150;
-
-        for(const object of this.objective.requiredObjects){    // player has to find all requiredObjects to complete room
+        
+        // player has to find all requiredObjects to complete room
+        for(const object of this.objective.requiredObjects){    
             y += yStep;
             const objectButton = new Button(
                     this,
@@ -128,7 +129,7 @@ export default class HatchRoomScene extends Phaser.Scene {
                     y,
                     300,
                     100,
-                    `${object}`,
+                    `${object.name}`,
                     undefined,
                     undefined,
                     () => {
@@ -137,10 +138,8 @@ export default class HatchRoomScene extends Phaser.Scene {
                         console.log("[HatchRoom]", object, handled)
 
                         // dialogue associated with object
-                        const line = this.objectivesControl.getObjectDialogue(object);
-                        if (line) {
-                            console.log("[HatchRoom]", line);
-                        }
+                        console.log(object.description)
+                        console.log(object.barks)
                     },
                 );
         }
