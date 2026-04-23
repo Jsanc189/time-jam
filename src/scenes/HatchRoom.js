@@ -42,11 +42,14 @@ export default class HatchRoomScene extends Phaser.Scene {
             this.tile
         );
 
+        const isCrimeScene = (this.objective.roomID === "crime_scene") ? 
+            " [CRIME SCENE]" :
+            "";
         const TITLE_TEXT = new GameText(
             this,
             this.cameras.main.centerX,
             this.cameras.main.centerY,
-            this.label + '\nObjective: ' + this.objective.label + (this.objective.redHerring ? "\n[RED HERRING]" : ""),
+            this.label + isCrimeScene + '\nObjective: ' + this.objective.label + (this.objective.redHerring ? "\n[RED HERRING]" : ""),
             {
                backgroundColor:'#43282b'
             }
