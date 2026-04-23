@@ -72,8 +72,8 @@ export default class HatchRoomScene extends Phaser.Scene {
         this.player = new Player(
             this,
             100,
-            this.cameras.main.height - 100
-        ).setDepth(2);
+            this.cameras.main.height - 200
+        ).setDepth(3);
 
         this.player.play('playerIdle');
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -200,13 +200,13 @@ export default class HatchRoomScene extends Phaser.Scene {
         const lampType = config.props.find(p => p.id === "lamp");
 
         const rowY1 = this.cameras.main.height * 0.60;
-        const rowY2 = this.cameras.main.height * 0.85;
+        const rowY2 = this.cameras.main.height * 0.90;
 
-        this.placeTableRow(tableType, rowY1);
-        this.placeTableRow(tableType, rowY2);
+        this.placeTableRow(tableType, rowY1, stoolType, lampType);
+        this.placeTableRow(tableType, rowY2, stoolType, lampType);
     }
 
-    placeTableRow(tableType, y) {
+    placeTableRow(tableType, y, stoolStyle, lampStyle) {
         const tableCount = Phaser.Math.Between(2, 4);
 
         const leftX = 350;
@@ -218,21 +218,60 @@ export default class HatchRoomScene extends Phaser.Scene {
             const x = leftX + spacing * i;
             const table = this.add.sprite(x, y, tableType.id, tableType.frames[0])
                 .setOrigin(0.5)
-                .setScale(0.5);
+                .setScale(0.5)
+                .setDepth(1);
 
             this.physics.add.existing(table);
             table.body.setImmovable(true);
 
             const bounds = table.getBounds();
-            table.body.setSize(bounds.width * 1.7, bounds.height);
+            table.body.setSize(bounds.width * 1.7, bounds.height * 0.5);
             console.log("width: " + table.width + " scale: " + table.scaleX + " bounds width: " + bounds.width);
             table.body.setOffset(35, bounds.height * 0.04)
             this.furnitureGroup.add(table);
+
+            this.placeStoolsAroundTable(table, stoolStyle, i);
+            this.placeLampOnTable(table, lampStyle);
         }
     }
 
-    PlaceStoolsAroundTable(table, stoolStyle) {
+    placeStoolsAroundTable(table, stoolStyle, tableNum) {
+        const stoolCount = Phaser.Math.Between(1, 2);
+        const bounds = table.getBounds();
+        const halfWidth = bounds.width /2;
+        const halfHeight = table.displayHeight /2;
 
+        const positions = [
+            { x: table.x - halfWidth - 10, y: table.y , pos: "left"},          // left
+            { x: table.x + halfWidth + 10, y: table.y, pos: "right" },          // right
+            { x: table.x, y: table.y - halfHeight - 5, pos: "top" },          // top
+            { x: table.x, y: table.y + halfHeight + 5, pos: "bottom" }           // bottom
+        ];
+
+
+
+        Phaser.Utils.Array.Shuffle(positions);
+
+        for (let i = 0; i < stoolCount; i++) {
+            const stoolPosition = positions[i];
+            
+            const stool = this.add.sprite(stoolPosition.x, stoolPosition.y, stoolStyle.key, stoolStyle.frames[0])
+                .setOrigin(0.5)
+                .setScale(0.4);
+        }
+    }
+
+    placeLampOnTable(table, lampType) {
+        const frame = Phaser.Utils.Array.GetRandom(lampType.frames);
+
+        const xPositions = [table.x - 40, table.x - 30, table.x - 20, table.x + 20, table.x + 30, table.x + 40]
+        const lampX = Phaser.Utils.Array.GetRandom(xPositions)
+
+        const lamp = this.add.sprite(lampX, table.y - 60, lampType.key, frame)
+            .setOrigin(0.5)
+            .setScale(0.4)
+            .setDepth(2);
+            
     }
 
 
