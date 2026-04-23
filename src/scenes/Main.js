@@ -33,7 +33,7 @@ export default class MainScene extends Phaser.Scene {
             this.registry.set('case', this.case);
         }
 
-        console.log("[Main]: ", this.case)
+        //console.log("[Main]: ", this.case)
 
         this.cameras.main.setBackgroundColor('#6e3318');
         //button to get back to MenuScene

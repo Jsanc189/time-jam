@@ -21,7 +21,11 @@ const config = {
   scene: [BootScene, MenuScene, CreditsScene, LoadScene, MainScene, MapScene, HatchRoomScene, OptionsScene],
   physics: {
     default: 'arcade',
-    arcade: { debug: false },
+    arcade: { 
+      debug: true,
+      debugShowBody: true,
+      debugShowStaticBody: true
+    },
   },
 };
 
