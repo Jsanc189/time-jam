@@ -36,10 +36,10 @@ export default class Grammar {
     }
 
     getCrime() {
-        const crimeType = this.lexiconPick('crime');
+        // const crimeType = this.lexiconPick('crime');
         return {
-            type: crimeType.name,
-            object: '', // filled in after characters are selected
+            type: "murder",     // in the future, we could add different crime types. for now, its all murder
+            object: '',         // filled in after characters are selected
         };
     }
 
