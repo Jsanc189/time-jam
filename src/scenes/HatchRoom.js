@@ -59,7 +59,7 @@ export default class HatchRoomScene extends Phaser.Scene {
         )
         this.tweens.add({
             targets:[this.ropeTop, this.ropeBottom],
-            y: '+=350',
+            y: '+=200',
             duration: 1200,
             ease: 'Bounce.easeOut'
         })
@@ -232,7 +232,7 @@ export default class HatchRoomScene extends Phaser.Scene {
     }
 
     PlaceStoolsAroundTable(table, stoolStyle) {
-        
+
     }
 
 
