@@ -135,7 +135,12 @@ export default class HatchRoomScene extends Phaser.Scene {
                         // mark object as found
                         const handled = this.objectivesControl.onItemFound(object); 
                         console.log("[HatchRoom]", object, handled)
-                        
+
+                        // dialogue associated with object
+                        const line = this.objectivesControl.getObjectDialogue(object);
+                        if (line) {
+                            console.log("[HatchRoom]", line);
+                        }
                     },
                 );
         }

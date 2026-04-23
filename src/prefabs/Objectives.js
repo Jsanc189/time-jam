@@ -19,10 +19,11 @@
 */
 
 export default class ObjectivesController {
-    constructor(caseData, objectData, max) {
+    constructor(caseData, objectData, dialogue, max) {
         this.case = caseData;
         this.role = caseData.playerRole;
         this.objectsData = objectData;
+        this.dialogue = dialogue;
         this.max = max;
 
         this.rooms = [];
@@ -100,6 +101,7 @@ export default class ObjectivesController {
                     floorFrames: roomData.floor_frames,
                     requiredObjects: new Set(allItems),
                     foundObjects: new Set(),
+                    suspect: suspect.name
                 };
 
                 if(!redHerring){
@@ -126,31 +128,31 @@ export default class ObjectivesController {
 
         for (const suspect of suspects) {
                 const isDefendant = (suspect.name === defendant.name);
+                let redHerring = false;
                 if(isDefendant && this.role === "defense"){
-                    continue;   // defense is NOT looking for evidence against defendant
+                    redHerring = true;   // defense is NOT looking for evidence against defendant
                 }
 
                 if(!isDefendant && this.role === "prosecution"){
-                    continue;   // prosecution is ONLY looking for evidence against defendant
+                    redHerring = true;   // prosecution is ONLY looking for evidence against defendant
                 }
 
                 if (!suspect.motives?.length) continue;
-                if (!suspect.witnesses || !suspect.witnesses.motives?.length) continue;
 
-                for(const allMotives of suspect.witnesses.motives){
+                for(const motive of suspect.motives){
                     // console.log("[Objectives]", suspect.name, allMotives)
-                    for(const motive in allMotives){
-                        this.add({
-                            id: `uncover_${motive}_motive_${suspect.name.toLowerCase()}`,
-                            label: `Uncover ${suspect.name}'s motive`,
-                            description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
-                            roomType: "interrogation",
-                            roomID: `${motive}_motive_interrogation`,
-                            floorFrames: investigationLocations.misc.interrogation.floor_frames,
-                            requiredObjects: new Set([motive]),
-                            foundObjects: new Set(),
-                        });
-                    }
+                    this.add({
+                        id: `uncover_${motive}_motive_${suspect.name.toLowerCase()}`,
+                        label: `Uncover ${suspect.name}'s motive`,
+                        description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
+                        roomType: "interrogation",
+                        roomID: `${motive}_motive_interrogation`,
+                        floorFrames: investigationLocations.misc.interrogation.floor_frames,
+                        requiredObjects: new Set([motive]),
+                        foundObjects: new Set(),
+                        redHerring: redHerring,
+                        suspect: suspect.name
+                    });
                 }
             }
     }
@@ -178,7 +180,7 @@ export default class ObjectivesController {
 
         if(allFound){
             this.completeById(objective.id);
-            console.log("OBJECTIVE COMPLETED!")
+            console.log("[Objective]", "OBJECTIVE COMPLETED!")
         }      
 
         return allFound;
@@ -246,6 +248,12 @@ export default class ObjectivesController {
     }
     isAllComplete() {
         return this.rooms.every((o) => o.completed);
+    }
+
+    getObjectDialogue(object) {
+        const lines = this.dialogue[object];
+        if (!lines?.length) return null;
+        return lines[Math.floor(Math.random() * lines.length)]; // random line if multiple
     }
 
     getSummary() {

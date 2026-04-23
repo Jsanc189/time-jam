@@ -125,7 +125,12 @@ export default class MainScene extends Phaser.Scene {
                 undefined,
                 () => {
                     this.case.playerRole = this.DEFENSE_ROLE;
-                    this.objectivesControl = new ObjectivesController(this.case, this.grammar.getAllObjects(), this.NUM_OBJECTIVES);
+                    this.objectivesControl = new ObjectivesController(
+                        this.case,
+                        this.grammar.getAllObjects(),
+                        this.grammar.getAllObjectDialogue(),
+                        this.NUM_OBJECTIVES,
+                    );
                     this.registry.set('objectivesControl', this.objectivesControl);
 
                     PICK_SIDE_DEFENSE.hide();

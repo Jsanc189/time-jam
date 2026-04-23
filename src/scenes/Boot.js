@@ -37,6 +37,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.json('motiveData', 'assets/JSON/motives.json');
     this.load.json('objectData', 'assets/JSON/objects.json');
     this.load.json('locationData', 'assets/JSON/locations.json');
+    this.load.json('objectDialogue', 'assets/JSON/object_dialogue.json');
 
     //player
     this.load.spritesheet('playerSheet', 'assets/images/player.png', {
@@ -107,6 +108,7 @@ export default class BootScene extends Phaser.Scene {
       ...this.cache.json.get('motiveData'),
       ...this.cache.json.get('objectData'),
       ...this.cache.json.get('locationData'),
+      ...this.cache.json.get('objectDialogue'),
     };
 
     // store merged data on registry for global access
