@@ -36,10 +36,10 @@ export default class Grammar {
     }
 
     getCrime() {
-        const crimeType = this.lexiconPick('crime');
+        // const crimeType = this.lexiconPick('crime');
         return {
-            type: crimeType.name,
-            object: '', // filled in after characters are selected
+            type: "murder",     // in the future, we could add different crime types. for now, its all murder
+            object: '',         // filled in after characters are selected
         };
     }
 
@@ -63,6 +63,17 @@ export default class Grammar {
         return motives;
     }
 
+    getMotiveConvos(motives){
+        const convos = this.getList("motives");
+        const result = {};
+
+        for(const motive of motives){
+            result[motive] = convos[motive];
+        }
+
+        return result;
+    }
+
     getCrimeObjectFromActivities(activities) {
         const allObjects = this.getList('crime_objects');
         const crimeObjects = [];
@@ -79,5 +90,18 @@ export default class Grammar {
 
     getLocations(){
         return this.getList("locations");
+    }
+
+    getAllObjects() {
+        return {
+            crime_objects:    this.getList('crime_objects'),
+            activity_objects: this.getList('activity_objects'),
+            character_objects: this.getList('character_objects'),
+            location_objects: this.getList('location_objects')
+        };
+    }
+
+    getAllObjectDialogue(){
+        return this.getList("object_dialogue");
     }
 }

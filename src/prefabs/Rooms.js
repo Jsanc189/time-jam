@@ -5,6 +5,13 @@
     in the mind palace.  Each room will have its own unique layout and objects to interact with.
     It takes in a room type, size and texture.  It will also handle the logic for player interactions
     with objects in the room and transitioning between rooms.
+
+    Updated by: Raven Ruiz
+    Date: 4/22/2026
+    Description: Moved hatch drawing logic to a function, "addHatchAt(x, y)", for reusability. 
+    Added a separate function to take a list of required rooms and add single hatches for each.
+    Added a helped function to get random tile coordinates. Also added an array to store hatch locations
+    to prevent overwrites.
 */
 
 import Phaser from 'phaser';
@@ -14,15 +21,30 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         super(scene, tileKey, tileWidth, tileHeight, roomTypes);
         this.scene = scene;
         this.tileKey = tileKey;
+
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
+
         this.roomTypes = roomTypes;
         
+        // use to save room locations so random room spawner does not overlap!
+        this.occupiedTiles = [];    
+        this.hatchSprite;
     }
 
     tileRoom(x, y, roomWidth, roomHeight, framesToUse) {
         this.roomWidth = roomWidth;
         this.roomHeight = roomHeight;
+        this.x = {
+            min: this.tileWidth / 2,
+            max: this.roomWidth - this.tileWidth / 2,
+            step: this.tileWidth,
+        }
+        this.y = {
+            min: this.tileHeight / 2,
+            max: this.roomHeight - this.tileHeight / 2,
+            step: this.tileHeight,
+        }
         
         const columns = Math.ceil(roomWidth / this.tileWidth);
         const rows = Math.ceil(roomHeight / this.tileHeight);
@@ -41,66 +63,84 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         }
     }
 
-    spawnRandomHatches(roomTypes, spawnChance = 0.01) {
+    spawnHatches(rooms){
         const hatches = [];
 
-        for (let x = this.tileWidth / 2; x < this.roomWidth - this.tileWidth / 2; x += this.tileWidth) {
-            for (let y = this.tileHeight / 2; y < this.roomHeight - this.tileHeight / 2; y += this.tileHeight) {
-
-                if (Math.random() < spawnChance) {
-                    const room = Phaser.Utils.Array.GetRandom(roomTypes);
-
-                    // x, y are already centers
-                    const hatch = this.scene.physics.add.sprite(
-                        x,
-                        y,
-                        room.hatchSprite.key,
-                        room.hatchSprite.frame
-                    )
-                    .setScale(0.5)
-                    .setInteractive({ cursor: 'pointer' });
-
-                    // 🔹 Attach the label directly to the sprite
-                    hatch.setData('label', room.type);
-                    hatch.setData('objectives', room.objectives);
-                    hatch.setData('idleFrame', room.hatchSprite.frame);
-                    hatch.setData('activeFrame', room.hatchSprite.activeFrame);
-                    hatch.setData('floorFrames', room.floorFrames);
-
-                    // Label text above the hatch
-                    const LABELTEXT = this.scene.add.text(
-                        x,
-                        y - 40,
-                        room.type +"\n" + room.objectives
-                    )
-                    .setOrigin(0.5)
-                    .setDepth(999)
-                    .setVisible(false);
-
-                    // Hover behavior
-                    hatch.on('pointerover', () => {
-                        LABELTEXT.setVisible(true);
-                        hatch.setTint(0xffff99);
-                        hatch.setScale(0.6);
-                    });
-
-                    hatch.on('pointerout', () => {
-                        LABELTEXT.setVisible(false);
-                        hatch.clearTint();
-                        hatch.setScale(0.5);
-                    });
-
-                    // Optional: keep wrapper object if you like
-                    hatches.push({
-                        sprite: hatch,
-
-                    });
-                }
-            }
+        for(const room of rooms){
+            // place a hatch at a random coord
+            const tile = this.getRandomEmptyTile();
+            hatches.push({sprite: this.addHatchAt(tile.x, tile.y, room)});
         }
 
         return hatches;
     }
 
+    addHatchAt(x, y, roomData){
+        // x, y are already centers
+        const hatch = this.scene.physics.add.sprite(
+            x,
+            y,
+            this.hatchSprite.key,
+            this.hatchSprite.frame
+        )
+        .setScale(0.5)
+        .setInteractive({ cursor: 'pointer' });
+
+        // 🔹 Attach the label directly to the sprite
+        hatch.setData('label'       , roomData.roomType);
+        hatch.setData('floorFrames' , roomData.floorFrames);
+
+        // check if roomData represents an objective, or a red herring room
+        //      objective room will always have requiredObjects
+        hatch.setData('objective'   , roomData.requiredObjects ? roomData : null);
+        hatch.setData('idleFrame'   , this.hatchSprite.frame);
+        hatch.setData('activeFrame' , this.hatchSprite.activeFrame);
+
+        // Label text above the hatch
+        const LABELTEXT = this.scene.add.text(
+            x,
+            y - 40,
+            roomData.type +"\n" + roomData.objectives
+        )
+        .setOrigin(0.5)
+        .setDepth(999)
+        .setVisible(false);
+
+        // Hover behavior
+        hatch.on('pointerover', () => {
+            LABELTEXT.setVisible(true);
+            hatch.setTint(0xffff99);
+            hatch.setScale(0.6);
+        });
+
+        hatch.on('pointerout', () => {
+            LABELTEXT.setVisible(false);
+            hatch.clearTint();
+            hatch.setScale(0.5);
+        });
+
+        return hatch;
+    }
+
+    getRandomEmptyTile() {
+        const xRange = (this.x.max - this.x.min) / this.x.step;
+        const yRange = (this.y.max - this.y.min) / this.y.step;
+
+        let x = Math.floor(Math.random() * (xRange + 1)) * this.x.step + this.x.min;
+        let y = Math.floor(Math.random() * (yRange + 1)) * this.y.step + this.y.min
+
+        while(this.isTileOccupied(x,y)){
+            x = Math.floor(Math.random() * (xRange + 1)) * this.x.step + this.x.min;
+            y = Math.floor(Math.random() * (yRange + 1)) * this.y.step + this.y.min
+        }
+
+        return { x: x, y: y }
+    }
+
+    isTileOccupied(x, y){
+        const tiles = this.occupiedTiles.filter((t) => { t.x == x && t.y == y});
+        
+        return tiles.length !== 0;
+    }
 
 }

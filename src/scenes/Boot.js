@@ -32,7 +32,6 @@ export default class BootScene extends Phaser.Scene {
 
     //space to load assets and animations
     // grammar filler JSONs
-    this.load.json('crimeData', 'assets/JSON/crime.json');
     this.load.json('characterData', 'assets/JSON/characters.json');
     this.load.json('motiveData', 'assets/JSON/motives.json');
     this.load.json('objectData', 'assets/JSON/objects.json');
@@ -102,7 +101,6 @@ export default class BootScene extends Phaser.Scene {
   create() {
     // merge all JSON data into a single lexicon dictionary
     const lexicon = {
-      ...this.cache.json.get('crimeData'),
       ...this.cache.json.get('characterData'),
       ...this.cache.json.get('motiveData'),
       ...this.cache.json.get('objectData'),

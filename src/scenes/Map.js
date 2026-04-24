@@ -6,6 +6,10 @@
     Description: This is the map scene.  This is where the Mindpalace map will be displayed.  The
     player will be ablt to navigate their mind palace and interact with objects to learn more about the 
     story and progress through the game.
+
+    Updated by: Raven Ruiz
+    Updated: 4/22/2026
+    Reworked to guarantee each objective maps to one room.
 */
 
 import GameText from '../prefabs/GameText';
@@ -20,6 +24,8 @@ export default class MapScene extends Phaser.Scene {
     }
 
     create() {
+        this.objectivesControl = this.registry.get('objectivesControl');
+
         // World Setup
         this.cameras.main.setBackgroundColor('#6e3318');
         this.tileWidth = 128;
@@ -33,33 +39,12 @@ export default class MapScene extends Phaser.Scene {
         
         //Room Data
         const hatchImage = {key: 'rope_hatch', frame: 2, activeFrame: 3}
-        let rooms = [
-            {
-                type:'Library',
-                objectives: ['blade'],
-               hatchSprite: hatchImage,
-               floorFrames: [10]
-            }, 
-            {
-                type: 'Interview',
-                objectives: ['arrow'],
-                hatchSprite: hatchImage,
-                floorFrames: [8, 9]
-            }, 
-            {
-                type:'Crime_Scene',
-                objectives:['harpoon'],
-                hatchSprite: hatchImage,
-                floorFrames:[4, 5, 6, 7]
-            }];
+        TILER.hatchSprite = hatchImage;
 
-         const HATCHINFO = {
-            rooms
-        }
-         this.hatches = TILER.spawnRandomHatches(
-            rooms,
-            0.05
+        this.hatches = TILER.spawnHatches(
+            this.objectivesControl.rooms
         );
+
         this.hatchGroup = this.physics.add.group();
         this.hatches.forEach(h => {
             this.hatchGroup.add(h.sprite)
@@ -203,9 +188,9 @@ export default class MapScene extends Phaser.Scene {
             
             if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
                 const label = this.currentHatch.getData('label');
-                const objectives = this.currentHatch.getData('objectives');
+                const objective = this.currentHatch.getData('objective');
                 const floorFrames = this.currentHatch.getData('floorFrames')
-                const data = {label: label, objectives: objectives, floorFrames: floorFrames};
+                const data = {label: label, objective: objective, floorFrames: floorFrames};
                 this.scene.sleep('MapScene');
                 this.scene.launch("HatchRoomScene", data);
                 this.physics.world.pause();
