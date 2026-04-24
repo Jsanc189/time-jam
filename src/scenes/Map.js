@@ -40,12 +40,12 @@ export default class MapScene extends Phaser.Scene {
                hatchSprite: hatchImage,
                floorFrames: [10]
             }, 
-            // {
-            //     type: 'Interview',
-            //     objectives: ['arrow'],
-            //     hatchSprite: hatchImage,
-            //     floorFrames: [8, 9]
-            // }, 
+            {
+                type: 'Interview',
+                objectives: ['arrow'],
+                hatchSprite: hatchImage,
+                floorFrames: [8, 9]
+            }, 
             // {
             //     type:'Crime_Scene',
             //     objectives:['harpoon'],

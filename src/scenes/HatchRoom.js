@@ -26,7 +26,7 @@ export default class HatchRoomScene extends Phaser.Scene {
     }
 
     create(){
-;        //camera set up
+        //camera set up
         const cam = this.cameras.main;
         const viewWidth = cam.width;
         const viewHeight = cam.height;
@@ -227,7 +227,7 @@ export default class HatchRoomScene extends Phaser.Scene {
             const bounds = table.getBounds();
             table.body.setSize(bounds.width * 1.7, bounds.height * 0.5);
             console.log("width: " + table.width + " scale: " + table.scaleX + " bounds width: " + bounds.width);
-            table.body.setOffset(35, bounds.height * 0.04)
+            table.body.setOffset(40, bounds.height * .003)
             this.furnitureGroup.add(table);
 
             this.placeStoolsAroundTable(table, stoolStyle, i);
@@ -267,9 +267,9 @@ export default class HatchRoomScene extends Phaser.Scene {
         const xPositions = [table.x - 40, table.x - 30, table.x - 20, table.x + 20, table.x + 30, table.x + 40]
         const lampX = Phaser.Utils.Array.GetRandom(xPositions)
 
-        const lamp = this.add.sprite(lampX, table.y - 60, lampType.key, frame)
+        const lamp = this.add.sprite(lampX, table.y - 30, lampType.key, frame)
             .setOrigin(0.5)
-            .setScale(0.4)
+            .setScale(0.35)
             .setDepth(2);
             
     }
