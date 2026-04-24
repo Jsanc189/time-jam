@@ -4,55 +4,73 @@
             {
                 "name": "hatred",
                 "description": "hatred description filler",
-                "barks": ["hatred bark filler"]
+                "barks": ["hatred bark filler"],
+                "relationship": ["enemy"],
+                "witness_statement": ["enemy witness filler statement"]
             }
         ],
         "neighbor": [
             {
                 "name": "property_dispute",
                 "description": "property_dispute description filler",
-                "barks": ["property_dispute bark filler"]
+                "barks": ["property_dispute bark filler"],
+                "relationship": ["neighbor"],
+                "witness_statement": ["neighbor witness filler statement"]
             }
         ],
         "friend": [
             {
                 "name": "argument",
                 "description": "argument description filler",
-                "barks": ["argument bark filler"]
+                "barks": ["argument bark filler"],
+                "relationship": ["friend"],
+                "witness_statement": ["friend argument witness filler statement"]
             },
             {
                 "name": "betrayal",
                 "description": "betrayal description filler",
-                "barks": ["betrayal bark filler"]
+                "barks": ["betrayal bark filler"],
+                "relationship": ["friend"],
+                "witness_statement": ["friend betrayal witness filler statement"]
             }
         ],
         "romance_unrequited": [
             {
                 "name": "jealousy",
                 "description": "jealousy description filler",
-                "barks": ["jealousy bark filler"]
+                "barks": ["jealousy bark filler"],
+                "relationship": ["romance_unrequited"],
+                "witness_statement": ["$characterA and $characterB"]
             }
         ],
         "romance": [
             {
                 "name": "argument",
                 "description": "argument description filler",
-                "barks": ["argument bark filler"]
+                "barks": ["argument bark filler"],
+                "relationship": ["romance"],
+                "witness_statement": ["romance argument witness filler statement"]
             },
             {
                 "name": "betrayal",
                 "description": "betrayal description filler",
-                "barks": ["betrayal bark filler"]
+                "barks": ["betrayal bark filler"],
+                "relationship": ["romance"],
+                "witness_statement": ["romance betrayal witness filler statement"]
             },
             {
                 "name": "jealousy",
                 "description": "jealousy description filler",
-                "barks": ["jealousy bark filler"]
+                "barks": ["jealousy bark filler"],
+                "relationship": ["romance"],
+                "witness_statement": ["romance jealousy witness filler statement"]
             },
             {
                 "name": "crime_of_passion",
                 "description": "crime_of_passion description filler",
-                "barks": ["crime_of_passion bark filler"]
+                "barks": ["crime_of_passion bark filler"],
+                "relationship": ["romance"],
+                "witness_statement": ["romance crime_of_passion witness filler statement"]
             }
         ]
     }

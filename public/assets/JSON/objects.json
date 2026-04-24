@@ -4,6 +4,8 @@
             {
                 "name": "blade",
                 "description": "blade description filler",
+                "activity": ["general"],
+                "potential_weapon": true,
                 "barks": [
                     "blade bark filler"
                 ]
@@ -13,6 +15,8 @@
             {
                 "name": "cobbler_hammer",
                 "description": "cobbler_hammer description filler",
+                "activity": ["cobbler"],
+                "potential_weapon": true,
                 "barks": [
                     "cobbler_hammer bark filler"
                 ]
@@ -22,6 +26,8 @@
             {
                 "name": "harpoon",
                 "description": "harpoon description filler",
+                "activity": ["fishing"],
+                "potential_weapon": true,
                 "barks": [
                     "harpoon bark filler"
                 ]
@@ -31,6 +37,8 @@
             {
                 "name": "claw_hammer",
                 "description": "claw_hammer description filler",
+                "activity": ["carpentry"],
+                "potential_weapon": true,
                 "barks": [
                     "claw_hammer bark filler"
                 ]
@@ -40,6 +48,8 @@
             {
                 "name": "arrow",
                 "description": "arrow description filler",
+                "activity": ["archery"],
+                "potential_weapon": true,
                 "barks": [
                     "arrow bark filler"
                 ]
@@ -49,6 +59,8 @@
             {
                 "name": "poison",
                 "description": "poison description filler",
+                "activity": ["medicine"],
+                "potential_weapon": true,
                 "barks": [
                     "poison bark filler"
                 ]
@@ -60,6 +72,7 @@
             {
                 "name": "shoes",
                 "description": "shoes description filler",
+                "activity": ["cobbler"],
                 "barks": [
                     "shoes bark filler"
                 ]
@@ -67,6 +80,7 @@
             {
                 "name": "cobbler_customer_invoices",
                 "description": "cobbler_customer_invoices description filler",
+                "activity": ["cobbler"],
                 "barks": [
                     "cobbler_customer_invoices bark filler"
                 ]
@@ -76,6 +90,7 @@
             {
                 "name": "rowboat",
                 "description": "rowboat description filler",
+                "activity": ["fishing"],
                 "barks": [
                     "rowboat bark filler"
                 ]
@@ -85,6 +100,7 @@
             {
                 "name": "lumber",
                 "description": "lumber description filler",
+                "activity": ["carpentry"],
                 "barks": [
                     "lumber bark filler"
                 ]
@@ -92,6 +108,7 @@
             {
                 "name": "carpentry_customer_invoices",
                 "description": "carpentry_customer_invoices description filler",
+                "activity": ["carpentry"],
                 "barks": [
                     "carpentry_customer_invoices bark filler"
                 ]
@@ -101,6 +118,7 @@
             {
                 "name": "target",
                 "description": "target description filler",
+                "activity": ["archery"],
                 "barks": [
                     "target bark filler"
                 ]
@@ -110,6 +128,7 @@
             {
                 "name": "medicine",
                 "description": "medicine description filler",
+                "activity": ["medicine"],
                 "barks": [
                     "medicine bark filler"
                 ]
@@ -117,6 +136,7 @@
             {
                 "name": "medicine_customer_invoices",
                 "description": "medicine_customer_invoices description filler",
+                "activity": ["medicine"],
                 "barks": [
                     "medicine_customer_invoices bark filler"
                 ]
@@ -126,6 +146,7 @@
             {
                 "name": "books",
                 "description": "books description filler",
+                "activity": ["library"],
                 "barks": [
                     "books bark filler"
                 ]
@@ -133,6 +154,7 @@
             {
                 "name": "borrow_list",
                 "description": "borrow_list description filler",
+                "activity": ["library"],
                 "barks": [
                     "borrow_list bark filler"
                 ]
@@ -144,6 +166,7 @@
             {
                 "name": "books",
                 "description": "books description filler",
+                "activity": ["library"],
                 "barks": [
                     "books bark filler"
                 ]
@@ -151,6 +174,7 @@
             {
                 "name": "sil_portrait",
                 "description": "sil_portrait description filler",
+                "activity": ["general"],
                 "barks": [
                     "sil_portrait bark filler"
                 ]
@@ -160,6 +184,7 @@
             {
                 "name": "sil_portrait",
                 "description": "sil_portrait description filler",
+                "activity": ["general"],
                 "barks": [
                     "sil_portrait bark filler"
                 ]
@@ -167,6 +192,7 @@
             {
                 "name": "fountain_pen",
                 "description": "fountain_pen description filler",
+                "activity": ["general"],
                 "barks": [
                     "fountain_pen bark filler"
                 ]
@@ -176,12 +202,14 @@
             {
                 "name": "chorg_sculpture",
                 "description": "chorg_sculpture description filler",
+                "activity": ["general"],
                 "barks": [
                     "chorg_sculpture bark filler"
                 ]
             },
             {
                 "name": "anon_love_letter",
+                "activity": ["general"],
                 "description": "anon_love_letter description filler",
                 "barks": [
                     "anon_love_letter bark filler"
@@ -194,6 +222,7 @@
             {
                 "name": "bed",
                 "description": "bed description filler",
+                "activity": ["general"],
                 "barks": [
                     "bed bark filler"
                 ]
@@ -201,6 +230,7 @@
             {
                 "name": "sofa",
                 "description": "sofa description filler",
+                "activity": ["general"],
                 "barks": [
                     "sofa bark filler"
                 ]
@@ -208,6 +238,7 @@
             {
                 "name": "table",
                 "description": "table description filler",
+                "activity": ["general"],
                 "barks": [
                     "table bark filler"
                 ]

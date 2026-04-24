@@ -276,10 +276,16 @@ export default class ObjectivesController {
     resolveObjects(keys = [], table = {}){
         return keys.flatMap((key) => table[key] ?? []);
     }
-}
 
-class Objective {
-    constructor(){
+    areObjectsRelated(objectA, objectB){
+        if(!objectA.activity || !objectB.activity) return false; 
 
+        for(const a of objectA.activity){
+            if(objectB.activity.includes(a)){
+                return a;
+            }
+        }
+
+        return null;
     }
 }
