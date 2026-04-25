@@ -21,11 +21,14 @@ export default class HatchRoomScene extends Phaser.Scene {
 
     init(data){
         this.label = data.label;
-        this.objectives = data.objectives;
+        this.objective = data.objective;
         this.tile = [Phaser.Utils.Array.GetRandom(data.floorFrames)];
+
+        this.objectivesControl = this.registry.get('objectivesControl');
     }
 
     create(){
+        //camera set up
         //camera set up
         const cam = this.cameras.main;
         const viewWidth = cam.width;
@@ -41,6 +44,19 @@ export default class HatchRoomScene extends Phaser.Scene {
             viewWidth,
             viewHeight,
             this.tile
+        );
+
+        const isCrimeScene = (this.objective.roomID === "crime_scene") ? 
+            " [CRIME SCENE]" :
+            "";
+        const TITLE_TEXT = new GameText(
+            this,
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            this.label + isCrimeScene + '\nObjective: ' + this.objective.label + (this.objective.redHerring ? "\n[RED HERRING]" : ""),
+            {
+               backgroundColor:'#43282b'
+            }
         );
 
         //rope to map.js
@@ -85,7 +101,13 @@ export default class HatchRoomScene extends Phaser.Scene {
         });
 
 
+        // OBJECTIVE HANDLING
+        // mark room as current in objectivesControl
+        //      so controller knows which objective/room to poll for object handler
+        this.objectivesControl.onRoomVisited(this.objective.roomID);
 
+        // put objects in scene!
+        this.placeObjects();
         //Room assets  buffer is the # of empty pixels to the left of a sprite for placement
         this.roomAssets = {
             Library: {
@@ -124,6 +146,71 @@ export default class HatchRoomScene extends Phaser.Scene {
         this.scene.get('MapScene').events.emit('timeSpent', 1800);//30 minutes
         this.scene.stop();
         this.scene.wake('MapScene');
+    }
+
+    // TEMP: objects as buttons
+    // made this function for testing, but it also demonstrates how to get and handle objects in this.objective!
+    placeObjects(){
+        const x = this.game.config.width - 300;
+        let y = 0;
+        const yStep = 150;
+        
+        // player has to find all requiredObjects to complete room
+        for(const object of this.objective.requiredObjects){    
+            y += yStep;
+            const objectButton = new Button(
+                this,
+                x,
+                y,
+                300,
+                100,
+                `${object.name}`,
+                undefined,
+                undefined,
+                () => {
+                    // mark object as found
+                    const handled = this.objectivesControl.onItemFound(object); 
+                    console.log("[HatchRoom]", object, handled)
+
+                    // dialogue associated with object
+                    console.log(object.description)
+                    console.log(object.barks)
+
+                    // is it the murder weapon?
+                    const crime = this.objectivesControl.case.crime;
+                    if(object.name === crime.object.name){
+                        console.log(`The murder weapon is in ${this.objective.suspect}'s ${this.objective.roomType}`)
+                    } else {
+                        // is it associated with the same activity that the murder weapon is associated with?
+                        const relation = this.objectivesControl.areObjectsRelated(
+                            object,
+                            crime.object,
+                        );
+                        if (relation) {
+                            console.log(
+                                `${object.name} is associated with ${relation}, just like the murder weapon...`,
+                            );
+                        } else {
+                            // if its a crime object but not related to case, how can it be framed to make suspect look guilty anyways?
+                            // (character eval type beat)
+                            if (object.potential_weapon) {
+                                console.log(
+                                    `Not the murder weapon but still sus to have a ${object.name} laying around you ${this.objective.roomType}...`,
+                                );
+                            }
+                        }
+
+                        // if its a motive room, what does this motive imply about the relationship between the suspect and the victim?
+                        if (object.relationship) {
+                            console.log(
+                                `${this.objectivesControl.case.victim.name} and ${this.objective.suspect} had a ${object.relationship} relationship`,
+                            );
+                            console.log(`motive event: ${object.name}`);
+                        }
+                    }
+                },
+            );
+        }
     }
 
     spawnRoomProps() {

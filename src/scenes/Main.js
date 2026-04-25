@@ -9,7 +9,7 @@
     
 */
 
-import GameText from "../prefabs/GameText";
+import GameText from '../prefabs/GameText';
 import Case from '../prefabs/Case';
 import Button from '../prefabs/Button';
 import ObjectivesController from "../prefabs/Objectives";
@@ -21,19 +21,18 @@ export default class MainScene extends Phaser.Scene {
     }
 
     create() {
-        const NUM_SUSPECTS = 2;
-        const NUM_OBJECTIVES = 10;
-        const DEFENSE_ROLE = "defense"
-        const PROSECUTE_ROLE = "prosecution"
+        this.NUM_SUSPECTS = 2;
+        this.NUM_OBJECTIVES = 10;
+        this.DEFENSE_ROLE = 'defense';
+        this.PROSECUTE_ROLE = 'prosecution';
 
-        if(!this.registry.get('case')){
-            const grammar = this.registry.get('grammar');
-            this.case = new Case(grammar, NUM_SUSPECTS);
+        if (!this.registry.get('case')) {
+            this.grammar = this.registry.get('grammar');
+            this.case = new Case(this.grammar, this.NUM_SUSPECTS);
 
             this.registry.set('case', this.case);
+            // this.testObjectives();
         }
-
-        //console.log("[Main]: ", this.case)
 
         this.cameras.main.setBackgroundColor('#6e3318');
         //button to get back to MenuScene
@@ -50,7 +49,7 @@ export default class MainScene extends Phaser.Scene {
             undefined,
             () => {
                 this.registry.set('case', null);
-                this.registry.set('objectives', null);
+                this.registry.set('objectivesControl', null);
                 this.scene.start('MenuScene');
                 this.game.audio.playSFX("gavel");
             },
@@ -125,9 +124,13 @@ export default class MainScene extends Phaser.Scene {
                 undefined,
                 undefined,
                 () => {
-                    this.case.playerRole = DEFENSE_ROLE
-                    this.objectives = new ObjectivesController(this.case, NUM_OBJECTIVES);
-                    this.registry.set('objectives', this.objectives);
+                    this.case.playerRole = this.DEFENSE_ROLE;
+                    this.objectivesControl = new ObjectivesController(
+                        this.case,
+                        this.grammar.getAllObjects(),
+                        this.NUM_OBJECTIVES,
+                    );
+                    this.registry.set('objectivesControl', this.objectivesControl);
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
@@ -153,9 +156,13 @@ export default class MainScene extends Phaser.Scene {
                 undefined,
                 undefined,
                 () => {
-                    this.case.playerRole = PROSECUTE_ROLE
-                    this.objectives = new ObjectivesController(this.case, NUM_OBJECTIVES);
-                    this.registry.set('objectives', this.objectives);
+                    this.case.playerRole = this.PROSECUTE_ROLE;
+                    this.objectivesControl = new ObjectivesController(
+                        this.case,
+                        this.grammar.getAllObjects(),
+                        this.NUM_OBJECTIVES,
+                    );
+                    this.registry.set('objectivesControl', this.objectivesControl);
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
@@ -214,82 +221,176 @@ export default class MainScene extends Phaser.Scene {
     }
 
     // TEMP TESTING CODE
-    // testObjectives(){
-    //     const PLAYER_ROLE_OG = this.case.playerRole;    // preserve
+    testObjectives() {
+        const PLAYER_ROLE_OG = this.case.playerRole; // preserve
 
-    //     const LOG_ID = "[Main] testObjectives()";
-    //     const pass = (msg) => console.log(`${LOG_ID} PASS: ${msg}`);
-    //     const fail = (msg) => console.error(`${LOG_ID} FAIL: ${msg}`);
-    //     const assert = (condition, msg) => condition ? pass(msg) : fail(msg);
-    //     const header = (title) => console.log(`${'_'.repeat(40)}\n--- ${title}\n${'_'.repeat(40)}`);
+        const OBJECTS = this.grammar.getAllObjects();
 
-    //     const testRole = (role) => {
-    //         header(`\n${LOG_ID} ... Initial Build ... testing ${role}`);
-    //         this.case.playerRole = role;
-    //         const ctrl = new ObjectivesController(this.case, NUM_OBJECTIVES);
-    //         const all = ctrl.getAll();
+        const LOG_ID = '[Main] testObjectives()';
+        const pass = (msg) => console.log(`${LOG_ID} PASS: ${msg}`);
+        const fail = (msg) => console.error(`${LOG_ID} FAIL: ${msg}`);
+        const assert = (condition, msg) => (condition ? pass(msg) : fail(msg));
+        const header = (title) => console.log(`${'_'.repeat(40)}\n--- ${title}\n${'_'.repeat(40)}\n${LOG_ID} ... `);
 
-    //         assert(all.length > 0, `${LOG_ID} ... Generated ${ctrl.getAll().length} ${this.case.role} objectives`);
-    //         assert(ctrl.getPending().length === all.length, `${LOG_ID} ... All ${all.length} start as pending`);
+        const testRole = (role) => {
+            header(`Initial Build ... testing ${role}`);
+            this.case.playerRole = role;
+            const ctrl = new ObjectivesController(this.case, OBJECTS, this.NUM_OBJECTIVES);
+            const all = ctrl.getAll();
 
-    //         // should always generate crime scene objectives
-    //         const crimeSceneObj = all.find((o) => o.id === "crime_scene");
-    //         assert(!!crimeSceneObj, `Crime scene objective spawns`);
+            assert(
+                all.length > 0,
+                `${LOG_ID} ... Generated ${ctrl.getAll().length} ${this.case.role} objectives`,
+            );
+            assert(
+                ctrl.getPending().length === all.length,
+                `${LOG_ID} ... All ${all.length} start as pending`,
+            );
 
-    //         // suspect investigation objectives spawn, capped at NUM_OBJECTIVES
-    //         const susObjs = all.filter((o) => o.suspect);
-    //         assert(susObjs.length <= NUM_OBJECTIVES, `${LOG_ID} ... Suspect objectives (${susObjs.length}) do not exceed NUM_OBJECTIVES (${NUM_OBJECTIVES})`);
+            // should always generate crime scene objectives
+            const crimeSceneObj = all.find((o) => o.id === 'crime_scene');
+            assert(!!crimeSceneObj, `Crime scene objective spawns`);
 
-    //         const defendant = this.case.defendant;         
-    //         if(role == PROSECUTE_ROLE){
-    //             // prosecution should only ever target defendant
-    //             //const wrongSuspect = roleObjs.find((o) => )
-    //         }
+            // suspect investigation objectives spawn, capped at NUM_OBJECTIVES
+            const roleObjs = all.filter((o) => o.suspect);
+            assert(
+                roleObjs.length <= this.NUM_OBJECTIVES,
+                `${LOG_ID} ... Suspect objectives (${roleObjs.length}) do not exceed NUM_OBJECTIVES (${this.NUM_OBJECTIVES})`,
+            );
 
-    //         console.log(`${LOG_ID} ... SUMMARY (${this.case.playerRole}):`, ctrl.getSummary());
-    //     }
+            const defendant = this.case.defendant;
+            if (role == this.PROSECUTE_ROLE) {
+                // prosecution should only ever target defendant
+                const wrongSuspect = roleObjs.find(
+                    (o) => o.suspect && o.suspect !== defendant.name,
+                );
+                assert(
+                    !wrongSuspect,
+                    `Prosecution objectives only target defendant (${defendant.name})`,
+                );
+            } else if (role == this.DEFENSE_ROLE) {
+                // defense should never target defendant
+                const wrongSuspect = roleObjs.find(
+                    (o) => o.suspect && o.suspect === defendant.name,
+                );
+                assert(
+                    !wrongSuspect,
+                    `Defense objectives never target defendant (${defendant.name})`,
+                );
+            }
 
-    //     // testing roles
-    //     testRole(PROSECUTE_ROLE);
-    //     testRole(DEFENSE_ROLE);
+            console.log(`${LOG_ID} ... SUMMARY (${this.case.playerRole}):`, ctrl.getSummary());
+        };
 
-    //     // should always generate crime scene objectives
-    //     const crimeSceneObj = allD.find((o) => o.id === "crime_scene");
-    //     assert(!!crimeSceneObj, `Crime scene objective spawns`);
+        testRole(this.PROSECUTE_ROLE);
+        testRole(this.DEFENSE_ROLE);
 
-    //     // suspect investigation objectives spawn, capped at NUM_OBJECTIVES
-    //     const susObjs = allD.filter((o) => o.suspect);
-    //     assert(susObjs.length <= NUM_OBJECTIVES, `${LOG_ID} ... Suspect objectives (${susObjs.length}) do not exceed NUM_OBJECTIVES (${NUM_OBJECTIVES})`);
+        // simulate walking into a room and touching every required object
+        // (returns completed objective returned by the last onItemFound call)
+        const clearRoom = (ctrl, roomType) => {
+            ctrl.onRoomVisited(roomType);
+            const obj = ctrl.getAll().find((o) => o.roomType === roomType);
+            if (!obj) return null;
+            let result = null;
+            for (const item of obj.requiredObjects) {
+                result = ctrl.onItemFound(item);
+            }
+            return result; // returns the completed objective
+        };
 
-    //     console.log(`${LOG_ID} ... SUMMARY (${this.case.playerRole}):`, ctrlD.getSummary());
+        // visiting rooms
+        header('testing onRoomVisited');
 
+        const ctrl = new ObjectivesController(this.case, 'prosecution', OBJECTS, this.NUM_OBJECTIVES);
 
+        const roomResult = ctrl.onRoomVisited(this.case.crime.scene);
+        assert(roomResult !== null, `onRoomVisited(crime scene) returned the active objective`);
+        assert(
+            roomResult?.roomType === this.case.crime.scene,
+            `Returned objective matches visited room (${this.case.crime.scene})`,
+        );
 
+        // Re-visiting a completed room returns null
+        clearRoom(ctrl, this.case.crime.scene); // complete it first
+        const revisit = ctrl.onRoomVisited(this.case.crime.scene);
+        // After completion there's no pending objective for this room
+        assert(
+            revisit === null || revisit?.completed,
+            `Re-visiting a completed room does not return a pending objective`,
+        );
 
+        // onItemFound
+        header('testing onItemFound');
 
+        const ctrl2 = new ObjectivesController(this.case, 'prosecution', OBJECTS, this.NUM_OBJECTIVES);
+        ctrl2.onRoomVisited(this.case.crime.scene);
 
-    //     header(`${LOG_ID} ... Triggers`);
-    //     const roomHit = ctrl.onRoomVisited(this.case.crime.scene);
-    //     assert(roomHit.length > 0, `${LOG_ID} ... onRoomVisited(crime scene) completed ${roomHit.length} objective(s)`);
-    //     assert(ctrl.onRoomVisited(this.case.crime.scene).length === 0, `${LOG_ID} ... Re-visiting completes nothing`);
+        // item outside the room requiredObjects returns null
+        const irrelevant = ctrl2.onItemFound('__nonexistent_item__');
+        assert(irrelevant === null, `onItemFound with irrelevant item returns null`);
 
-    //     const itemHit = ctrl.onItemFound(this.case.crime.object);
-    //     assert(itemHit.length > 0, `${LOG_ID} ... onItemFound(crime object) completed ${itemHit.length} objective(s)`);
-    //     assert(ctrl.onItemFound(this.case.crime.object).length === 0, `${LOG_ID} ... Re-finding completes nothing`);
+        // progress increments before completion
+        const crimeObj2 = ctrl2.getAll().find((o) => o.id === 'crime_scene');
+        if (crimeObj2.requiredObjects.length > 1) {
+            ctrl2.onItemFound(crimeObj2.requiredObjects[0]);
+            const progress = ctrl2.getRoomProgress(this.case.crime.scene);
+            assert(
+                progress.found === 1 && !progress.completed,
+                `Partial interaction: found ${progress.found}/${progress.required}, not yet complete`,
+            );
+        }
 
-    //     const motiveHit = ctrl.onMotiveUncovered(this.case.defendant.name);
-    //     assert(motiveHit.length > 0, `${LOG_ID} ... onMotiveUncovered(defendant) completed ${motiveHit.length} objective(s)`);
+        // finding all required objects completes the objective
+        const completed = clearRoom(ctrl2, this.case.crime.scene);
+        assert(completed !== null, `clearRoom returned the completed objective`);
+        assert(
+            ctrl2.isComplete('crime_scene'),
+            `Crime scene objective is marked complete after all objects found`,
+        );
 
-    //     header(`${LOG_ID} ... role = prosecution`);
-    //     ctrl.applyRole('prosecution');
-    //     assert(ctrl.getByCategory('role').length > 0, `${LOG_ID} ... Role objectives added`);
-    //     assert(ctrl.isComplete('prosecution_build_case') === false, `${LOG_ID} ... prosecution_build_case starts pending`);
+        // re-finding object in completed room does nothing
+        ctrl2.onRoomVisited(this.case.crime.scene);
+        const refind = ctrl2.onItemFound(this.case.crime.object);
+        assert(refind === null, `onItemFound in a completed room returns null`);
 
-    //     console.log(`\n${LOG_ID} ...  Final summary:`, ctrl.getSummary());
-    //     console.log(`${LOG_ID} ... All objectives:`, ctrl.getAll());
+        // room progress
+        header('testing getRoomProgress');
 
-    //     this.case.playerRole = PLAYER_ROLE_OG;    // revert
-    // }
+        const ctrl3 = new ObjectivesController(this.case, 'prosecution', OBJECTS, this.NUM_OBJECTIVES);
+        const progBefore = ctrl3.getRoomProgress(this.case.crime.scene);
+        assert(progBefore !== null, `getRoomProgress returns data for a valid room`);
+        assert(
+            progBefore.found === 0 && progBefore.required > 0 && !progBefore.completed,
+            `Progress before interaction: found=${progBefore.found}, required=${progBefore.required}, completed=${progBefore.completed}`,
+        );
+
+        clearRoom(ctrl3, this.case.crime.scene);
+        const progAfter = ctrl3.getRoomProgress(this.case.crime.scene);
+        assert(
+            progAfter.completed,
+            `Progress after clearing room: completed=${progAfter.completed}`,
+        );
+
+        const noRoom = ctrl3.getRoomProgress('__fake_room__');
+        assert(noRoom === null, `getRoomProgress returns null for unknown room`);
+
+        // win condition
+        header('testing isWinConditionMet');
+
+        const ctrl4 = new ObjectivesController(this.case, 'prosecution', OBJECTS, this.NUM_OBJECTIVES);
+        assert(!ctrl4.isWinConditionMet(), `Win condition not met at start`);
+
+        for (const obj of ctrl4.getAll()) {
+            clearRoom(ctrl4, obj.roomType);
+        }
+        assert(ctrl4.isWinConditionMet(), `Win condition met after clearing all rooms`);
+
+        // final summary
+        header('final state');
+        console.log(`${LOG_ID} ... All objectives:`, ctrl4.getAll());
+        console.log(`${LOG_ID} ... Final summary:`, ctrl4.getSummary());
+        this.case.playerRole = PLAYER_ROLE_OG; // revert
+    }
 
     update() {}
 
