@@ -74,12 +74,12 @@ export default class Button extends Phaser.GameObjects.Sprite {
         buttonBG.fillRoundedRect(PADDING / 2, PADDING / 2, width - PADDING, height - PADDING, 16);
         buttonBG.generateTexture('ButtonClick', width, height);
 
-        this.newButton = scene.add.image(x, y, 'Button').setOrigin(0.5, 0.5).setScrollFactor(0);
+        this.newButton = scene.add.image(x, y, 'Button').setOrigin(0.5, 0.5).setScrollFactor(0).setDepth(999);
         
 
         this.buttonText = new GameText(scene, x, y, text, {
             ...finalTextStyles,
-        }).setOrigin(0.5, 0.5).setScrollFactor(0);
+        }).setOrigin(0.5, 0.5).setScrollFactor(0).setDepth(999);
 
         // button hover effect
         let isDown = false;

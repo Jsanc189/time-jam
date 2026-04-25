@@ -76,6 +76,10 @@ export default class BootScene extends Phaser.Scene {
       frameWidth: 256,
       frameHeight: 454
     });
+    this.load.spritesheet('bookshelves', 'assets/images/bookShelves.png',{
+      frameWidth: 512,
+      frameHeigh: 512
+    })
 
     //ui assets
     this.load.image('paper1', 'assets/images/paper_1.png');

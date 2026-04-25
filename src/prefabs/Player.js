@@ -21,6 +21,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setOrigin(0.5, 0.5);
         this.speed = 400;
         this.setScale(0.25);
+        this.body.setSize(
+            this.width * 0.5,
+            this.height * 0.63
+        )
 
 
         //input for the player to move for WASD and arrow keys
