@@ -25,6 +25,7 @@ export default class HatchRoomScene extends Phaser.Scene {
         this.tile = [Phaser.Utils.Array.GetRandom(data.floorFrames)];
 
         this.objectivesControl = this.registry.get('objectivesControl');
+        console.log(this.objective);
     }
 
     create(){
@@ -110,7 +111,7 @@ export default class HatchRoomScene extends Phaser.Scene {
         this.placeObjects();
         //Room assets  buffer is the # of empty pixels to the left of a sprite for placement
         this.roomAssets = {
-            Library: {
+            library: {
                 props: [
                     {id:"bigShelf", key: "bookshelves", frames: [0, 1, 2, 3, 4, 5, 6], buffer: 39},
                     {id: "smallShelf", key: "bookshelves", frames: [7, 8, 9, 10, 11, 12, 13, 14, 15], buffer: 145},
@@ -210,17 +211,21 @@ export default class HatchRoomScene extends Phaser.Scene {
                     }
                 },
             );
+            objectButton.setDepth(4)
         }
     }
 
     spawnRoomProps() {
-        const config = this.roomAssets[this.label];
-        if (!config) {
-            console.log("There is no config");
-            return;
-        }
+         const config = this.roomAssets['library'];
+        // console.log(this.objective.roomType);
+        // console.log(config);
+        // if (!config) {
+        //     console.log("There is no config");
+        //     return;
+        // }
 
-        if (this.label === 'Library'){
+        //if (this.objective.roomType === 'library'){
+        if (this.objective.roomType){
             const bookshelves = config.props.filter(p=> p.key === 'bookshelves');
             if (bookshelves.length > 0) {
                 this.placeBookshelfRows(bookshelves);
