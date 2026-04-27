@@ -13,6 +13,7 @@ import GameText from "../prefabs/GameText";
 import Button from '../prefabs/Button';
 import Rooms from "../prefabs/Rooms";
 import Player from "../prefabs/Player";
+import DialogueBox from "../prefabs/DialogueBox";
 
 export default class HatchRoomScene extends Phaser.Scene {
     constructor() {
@@ -26,6 +27,19 @@ export default class HatchRoomScene extends Phaser.Scene {
 
         this.objectivesControl = this.registry.get('objectivesControl');
         console.log(this.objective);
+
+        this.dialogueBox = new DialogueBox(
+            this,
+            this.scale.width / 2, // centered X
+            this.scale.height - 120, // near bottom of screen
+            'paper1',
+        );
+
+        this.dialogueBox.showDialogue(
+            'testing testing testing testing testing testing testing testing ' +
+                'testing testing testing testing testing testing testing.',
+            'Test Speaker',
+        );
     }
 
     create(){
@@ -144,6 +158,7 @@ export default class HatchRoomScene extends Phaser.Scene {
     }
 
     returnToMap() {
+        this.dialogueBox.destroy();
         this.cameras.main.fadeOut(300, 0, 0);
         this.scene.get('MapScene').events.emit('timeSpent', 1800);//30 minutes
         this.scene.stop();
@@ -171,38 +186,61 @@ export default class HatchRoomScene extends Phaser.Scene {
                 undefined,
                 () => {
                     // mark object as found
-                    const handled = this.objectivesControl.onItemFound(object); 
-                    console.log("[HatchRoom]", object, handled)
+                    const handled = this.objectivesControl.onItemFound(object);
+                    // console.log("[HatchRoom]", object, handled)
 
                     // dialogue associated with object
-                    console.log("[HatchRoom]", object.description)
-                    console.log("[HatchRoom]", object.barks)
-                    console.log("[HatchRoom]", object.dialogue)
+                    const allDialouge = [object.description];
+                    if (object.dialogue) {
+                        allDialouge.push(...object.dialogue);
+                    }
+
+                    this.dialogueBox.showDialogue(allDialouge, 'YOU');
 
                     // is it the murder weapon?
                     const caseInfo = this.objectivesControl.case;
                     const crime = caseInfo.crime;
-                    if(object.name === crime.object.name){
-                        console.log(caseInfo.foundWeaponDialouge(this.objective.suspect, this.objective.roomType));
+                    if (object.name === crime.object.name) {
+                        this.dialogueBox.showDialogue(
+                            caseInfo.foundWeaponDialouge(
+                                this.objective.suspect,
+                                this.objective.roomType,
+                            ),
+                            'YOU',
+                        );
                     } else {
-                        if(object.implicates){
+                        if (object.implicates) {
                             // is it associated with the same activity that the murder weapon is associated with?
                             const relation = this.objectivesControl.areObjectsRelated(
                                 object,
                                 crime.object,
                             );
 
-                            console.log(caseInfo.foundObjectDialogue(object.name, this.objective.suspect, relation));
+                            this.dialogueBox.showDialogue(
+                                caseInfo.foundObjectDialogue(
+                                    object.name,
+                                    this.objective.suspect,
+                                    relation,
+                                ),
+                                'YOU',
+                            );
                         }
 
                         // if its a motive room, what does this motive imply about the relationship between the suspect and the victim?
                         if (object.relationship) {
-                            console.log(caseInfo.foundRelationshipEvenDialogue(this.objective.suspect, object.relationship, object.name));
+                            this.dialogueBox.showDialogue(
+                                caseInfo.foundRelationshipEvenDialogue(
+                                    this.objective.suspect,
+                                    object.relationship,
+                                    object.name,
+                                ),
+                                'YOU',
+                            );
                         }
                     }
                 },
             );
-            objectButton.setDepth(4)
+            objectButton.setDepth(4);
         }
     }
 
@@ -356,6 +394,4 @@ export default class HatchRoomScene extends Phaser.Scene {
             .setDepth(2);
             
     }
-
-
 }
