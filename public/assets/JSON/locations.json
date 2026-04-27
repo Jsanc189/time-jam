@@ -4,52 +4,61 @@
             "river": {
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["fishing"],
-                "crime_objects": ["fishing"]
+                "crime_objects": ["fishing"],
+                "enter": "Whoever frequents here must be an avid fisherman."
             },
             "cobbler_shop": {
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["cobbler"],
-                "crime_objects": ["cobbler"]
+                "crime_objects": ["cobbler"],
+                "enter": "A cobbler's shop..."
             },
             "fairy_home": {
                 "floor_frames": [4, 5, 6, 7],
                 "character_objects": ["enfrin"],
-                "location_objects": ["house"]
+                "location_objects": ["house"],
+                "enter": "Looks like a fairy lives here."
             }
         },
         "chorg": {
             "library": {
                 "floor_frames": [10],
-                "activity_objects": ["library"]
+                "activity_objects": ["library"],
+                "enter": "All kinds of books to read here."
             },
             "hospital": {
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["medicine"],
-                "crime_objects": ["medicine"]
+                "crime_objects": ["medicine"],
+                "enter": "A hospital. It's a place of healing. And of death."
             },
             "goblin_home": {
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["pyromancy"],
                 "crime_objects": ["pyromancy"],
                 "character_objects": ["chorg"],
-                "location_objects": ["house"]
+                "location_objects": ["house"],
+                "enter": "Looks like a gobline lives here."
             }
         },
         "sil": {
             "pasture": {
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["archery"],
-                "crime_objects": ["archery"]
+                "crime_objects": ["archery"],
+                "enter": "Good place to practice your archery."
             },
             "carpentry_shop": {
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["carpentry"],
-                "crime_objects": ["carpentry"]
+                "crime_objects": ["carpentry"],
+                "enter": "Smells like felled trees."
             },
             "elf_home": {
                 "floor_frames": [4, 5, 6, 7],
                 "character_objects": ["sil"],
-                "location_objects": ["house"]
+                "location_objects": ["house"],
+                "enter": "This is the dwelling of an elf."
             }
         },
         "misc": {

@@ -105,10 +105,11 @@ export default class HatchRoomScene extends Phaser.Scene {
         // OBJECTIVE HANDLING
         // mark room as current in objectivesControl
         //      so controller knows which objective/room to poll for object handler
-        this.objectivesControl.onRoomVisited(this.objective.roomID);
+        console.log("[HatchRoom]", this.objectivesControl.onRoomVisited(this.objective.roomID));
 
         // put objects in scene!
         this.placeObjects();
+
         //Room assets  buffer is the # of empty pixels to the left of a sprite for placement
         this.roomAssets = {
             library: {
@@ -174,39 +175,29 @@ export default class HatchRoomScene extends Phaser.Scene {
                     console.log("[HatchRoom]", object, handled)
 
                     // dialogue associated with object
-                    console.log(object.description)
-                    console.log(object.barks)
+                    console.log("[HatchRoom]", object.description)
+                    console.log("[HatchRoom]", object.barks)
+                    console.log("[HatchRoom]", object.dialogue)
 
                     // is it the murder weapon?
-                    const crime = this.objectivesControl.case.crime;
+                    const caseInfo = this.objectivesControl.case;
+                    const crime = caseInfo.crime;
                     if(object.name === crime.object.name){
-                        console.log(`The murder weapon is in ${this.objective.suspect}'s ${this.objective.roomType}`)
+                        console.log(caseInfo.foundWeaponDialouge(this.objective.suspect, this.objective.roomType));
                     } else {
-                        // is it associated with the same activity that the murder weapon is associated with?
-                        const relation = this.objectivesControl.areObjectsRelated(
-                            object,
-                            crime.object,
-                        );
-                        if (relation) {
-                            console.log(
-                                `${object.name} is associated with ${relation}, just like the murder weapon...`,
+                        if(object.implicates){
+                            // is it associated with the same activity that the murder weapon is associated with?
+                            const relation = this.objectivesControl.areObjectsRelated(
+                                object,
+                                crime.object,
                             );
-                        } else {
-                            // if its a crime object but not related to case, how can it be framed to make suspect look guilty anyways?
-                            // (character eval type beat)
-                            if (object.potential_weapon) {
-                                console.log(
-                                    `Not the murder weapon but still sus to have a ${object.name} laying around you ${this.objective.roomType}...`,
-                                );
-                            }
+
+                            console.log(caseInfo.foundObjectDialogue(object.name, this.objective.suspect, relation));
                         }
 
                         // if its a motive room, what does this motive imply about the relationship between the suspect and the victim?
                         if (object.relationship) {
-                            console.log(
-                                `${this.objectivesControl.case.victim.name} and ${this.objective.suspect} had a ${object.relationship} relationship`,
-                            );
-                            console.log(`motive event: ${object.name}`);
+                            console.log(caseInfo.foundRelationshipEvenDialogue(this.objective.suspect, object.relationship, object.name));
                         }
                     }
                 },

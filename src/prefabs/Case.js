@@ -100,4 +100,68 @@ export default class Case {
 
         return rooms;
     }
+
+    foundWeaponDialouge(suspect, location){
+        suspect = suspect.charAt(0).toUpperCase() + suspect.slice(1);   // capitalize
+        
+        const roleOpinionBank = { 
+            not_guilty: "But that alone doesn't prove their guilt.",
+            guilty: "And I'm going to prove they did it."
+        };
+
+        // TODO: more sophisticated reflections
+        let reflection = "";
+        if(this.playerRole === "defense"){  
+            // player is defense --> suggest defendant innocence, anyone else guilty
+            if(this.defendant.name.toLowerCase() === suspect.toLowerCase()){
+                reflection += roleOpinionBank.not_guilty
+            } else {
+                reflection += roleOpinionBank.guilty
+            }
+        } else {    
+            // player is prosecution --> suggest defendant guilt, anyone else innocent
+            if(this.defendant.name.toLowerCase() === suspect.toLowerCase()){
+                reflection += roleOpinionBank.guilty
+            } else { 
+                reflection += roleOpinionBank.not_guilty
+            }
+        }
+        
+        let dialogue = "";
+
+        // initial discovery dialogue, 
+        //  when player goes to crime scene and discovers murder weapon
+        if(location == this.crime.scene){
+            dialogue = `${this.victim.name} was murdered with a ${this.crime.object.name.replace("_"," ")}. Locale points to ${suspect}.`
+        }
+
+        // when player finds the crime object at its location in mind palace
+        if(location.includes("home")) location = "home";
+        location = location.replace("_"," ");
+
+        dialogue = `The murder weapon is in ${suspect}'s ${location}.`
+
+        return `${dialogue} ${reflection}`
+    }
+
+    foundObjectDialogue(object, suspect, hasRelationToCrime){
+        if (hasRelationToCrime) {
+            return `Looks like ${suspect} may be involved with ${hasRelationToCrime}`;
+            
+        } else {
+            // if its a crime object but not related to case, how can it be framed to make suspect look guilty anyways?
+            if (object.potential_weapon) {
+                return `What would ${suspect} need with a ${object.name}? Seems dangerous.`;
+            }
+        }
+
+        return `${object}? Interesting`;
+    }
+
+    foundRelationshipEvenDialogue(suspect, relationship, event){
+        const rel = `${this.victim.name} and ${suspect} had a ${relationship} relationship.`;
+        const relEvent = `Looks like there was a ${event} between them, though.`;
+
+        return `${rel} ${event}`
+    }
 }

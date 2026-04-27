@@ -7,7 +7,9 @@
                 "activity": ["general"],
                 "potential_weapon": true,
                 "barks": [
-                    "blade bark filler"
+                    "Sharp.",
+                    "Deadly.",
+                    "Bloodstained."
                 ]
             }
         ],
@@ -17,8 +19,10 @@
                 "description": "cobbler_hammer description filler",
                 "activity": ["cobbler"],
                 "potential_weapon": true,
-                "barks": [
-                    "cobbler_hammer bark filler"
+                "dialogue": [
+                    "Get a load of that stain. Doesn't look like shoe polish to me.",
+                    "Shoe or a skull on its business end, the hammer will hammer regardless.",
+                    "That sharp end sure ain't pretty."
                 ]
             }
         ],
@@ -28,8 +32,10 @@
                 "description": "harpoon description filler",
                 "activity": ["fishing"],
                 "potential_weapon": true,
-                "barks": [
-                    "harpoon bark filler"
+                "dialogue": [
+                    "This thing could take down one big fish.",
+                    "Sharp. Heavy, too",
+                    "Gotta know how to handle a tool like this."
                 ]
             }
         ],
@@ -39,8 +45,10 @@
                 "description": "claw_hammer description filler",
                 "activity": ["carpentry"],
                 "potential_weapon": true,
-                "barks": [
-                    "claw_hammer bark filler"
+                "dialogue": [
+                    "Wouldn't even have to swing it very hard.",
+                    "That stain doesn't look like rust to me.",
+                    "Drive a nail into hardwood. Drive a skull into pieces."
                 ]
             }
         ],
@@ -50,8 +58,10 @@
                 "description": "arrow description filler",
                 "activity": ["archery"],
                 "potential_weapon": true,
-                "barks": [
-                    "arrow bark filler"
+                "dialogue": [
+                    "Not an easy hobby, archery. Not safe, either.",
+                    "You'd do well to stay well away from the business end of a bow.",
+                    "Interesting stain there. Looks like this one wasn't just used for practice."
                 ]
             }
         ],
@@ -61,8 +71,10 @@
                 "description": "poison description filler",
                 "activity": ["medicine"],
                 "potential_weapon": true,
-                "barks": [
-                    "poison bark filler"
+                "dialogue": [
+                    "Well, this sure isn't a healing tonic, now is it?",
+                    "This'll give you one hell of a stomach ache.",
+                    "Wouldn't want a spoonful of this stuff..."
                 ]
             }
         ]
@@ -73,16 +85,19 @@
                 "name": "shoes",
                 "description": "shoes description filler",
                 "activity": ["cobbler"],
-                "barks": [
-                    "shoes bark filler"
+                "dialogue": [
+                    "Seems a skilled cobbler fixed these right up",
+                    "Brand new nails in the sole. Woulda needed a specialized hammer."
                 ]
             },
             {
                 "name": "cobbler_customer_invoices",
                 "description": "cobbler_customer_invoices description filler",
                 "activity": ["cobbler"],
-                "barks": [
-                    "cobbler_customer_invoices bark filler"
+                "dialogue": [
+                    "Looks like Enfrin owns this shop.",
+                    "Well, well done Enfrin. Must be real handy with that hammer.",
+                    "Popular shop. Good for its owner...good for Enfrin."
                 ]
             }
         ],
@@ -91,8 +106,9 @@
                 "name": "rowboat",
                 "description": "rowboat description filler",
                 "activity": ["fishing"],
-                "barks": [
-                    "rowboat bark filler"
+                "dialogue": [
+                    "Registered to Enfrin. Interesting",
+                    "Looks like it's got a harpoon rack built-in. Convenient."
                 ]
             }
         ],
@@ -101,16 +117,20 @@
                 "name": "lumber",
                 "description": "lumber description filler",
                 "activity": ["carpentry"],
-                "barks": [
-                    "lumber bark filler"
+                "dialogue": [
+                    "Lots of supply. Must get good business, here.",
+                    "Hardwood. Fixed with nails, not screws. Bet the owner of this shop has a trusty hammer."
                 ]
             },
             {
                 "name": "carpentry_customer_invoices",
                 "description": "carpentry_customer_invoices description filler",
                 "activity": ["carpentry"],
-                "barks": [
-                    "carpentry_customer_invoices bark filler"
+                "implicates": ["sil"],
+                "dialogue": [
+                    "Looks like Sil owns this shop.",
+                    "Well, well done Sil. Must be real handy with that hammer.",
+                    "Popular shop. Good for its owner...good for Sil."
                 ]
             }
         ],
@@ -119,8 +139,9 @@
                 "name": "target",
                 "description": "target description filler",
                 "activity": ["archery"],
-                "barks": [
-                    "target bark filler"
+                "dialogue": [
+                    "One hell of an archer practiced with this.",
+                    "Look at all those bullseyes."
                 ]
             }
         ],
@@ -129,16 +150,19 @@
                 "name": "medicine",
                 "description": "medicine description filler",
                 "activity": ["medicine"],
-                "barks": [
-                    "medicine bark filler"
+                "dialogue": [
+                    "So many tonics. One wrong ingredient and healing turns to hurting.",
+                    "Gotta be real well-read to know what you're doing with this stuff."
                 ]
             },
             {
                 "name": "medicine_customer_invoices",
                 "description": "medicine_customer_invoices description filler",
                 "activity": ["medicine"],
-                "barks": [
-                    "medicine_customer_invoices bark filler"
+                "dialogue": [
+                    "Looks like Chorg owns this shop.",
+                    "Well, well done Chorg. Must be one hell of a doctor.",
+                    "Popular shop. Good for its owner...good for Chorg."
                 ]
             }
         ],
@@ -147,16 +171,19 @@
                 "name": "books",
                 "description": "books description filler",
                 "activity": ["library"],
-                "barks": [
-                    "books bark filler"
+                "dialogue": [
+                    "'Do's and Don't's of Tonic Crafting.' Gotta know how to make poison to avoid it? Right.",
+                    "'The Perfect Crime.' No such thing."
                 ]
             },
             {
                 "name": "borrow_list",
                 "description": "borrow_list description filler",
                 "activity": ["library"],
-                "barks": [
-                    "borrow_list bark filler"
+                "dialogue": [
+                    "Chorg spent a lot of time here. Reading all about tonic crafting.",
+                    "'How To Get Away With Murder.' Oh Chorg. What do you need to know that for?",
+                    "Looks like Chorg recently borrowed...'100 Deadly Plants to Avoid.' Hah. Right. Avoid"
                 ]
             }
         ]
@@ -167,16 +194,18 @@
                 "name": "books",
                 "description": "books description filler",
                 "activity": ["library"],
-                "barks": [
-                    "books bark filler"
+                "dialogue": [
+                    "Chorg's library books...",
+                    "'How To Get Away With Murder.' Not a good look.",
+                    "'100 Deadly Plants to Avoid.' Uh-huh..."
                 ]
             },
             {
                 "name": "sil_portrait",
                 "description": "sil_portrait description filler",
                 "activity": ["general"],
-                "barks": [
-                    "sil_portrait bark filler"
+                "dialogue": [
+                    "A portrait of Sil. Lovebird."
                 ]
             }
         ],
@@ -185,16 +214,16 @@
                 "name": "sil_portrait",
                 "description": "sil_portrait description filler",
                 "activity": ["general"],
-                "barks": [
-                    "sil_portrait bark filler"
+                "dialogue": [
+                    "A portrait of Sil. Weird."
                 ]
             },
             {
                 "name": "fountain_pen",
                 "description": "fountain_pen description filler",
                 "activity": ["general"],
-                "barks": [
-                    "fountain_pen bark filler"
+                "dialogue": [
+                    "Waxing poetic, Enfrin?"
                 ]
             }
         ],
@@ -203,16 +232,16 @@
                 "name": "chorg_sculpture",
                 "description": "chorg_sculpture description filler",
                 "activity": ["general"],
-                "barks": [
-                    "chorg_sculpture bark filler"
+                "bardialogueks": [
+                    "A wood carving of Chorg. Lovebird."
                 ]
             },
             {
                 "name": "anon_love_letter",
                 "activity": ["general"],
                 "description": "anon_love_letter description filler",
-                "barks": [
-                    "anon_love_letter bark filler"
+                "dialogue": [
+                    "Looks like it was written with a fountain pen."
                 ]
             }
         ]
@@ -224,7 +253,7 @@
                 "description": "bed description filler",
                 "activity": ["general"],
                 "barks": [
-                    "bed bark filler"
+                    "Cozy."
                 ]
             },
             {
@@ -232,7 +261,7 @@
                 "description": "sofa description filler",
                 "activity": ["general"],
                 "barks": [
-                    "sofa bark filler"
+                    "Cozy."
                 ]
             },
             {
@@ -240,7 +269,7 @@
                 "description": "table description filler",
                 "activity": ["general"],
                 "barks": [
-                    "table bark filler"
+                    "Right."
                 ]
             }
         ]

@@ -36,7 +36,11 @@ export default class ObjectivesController {
         const { crime } = this.case;
 
         let floor;
+        let suspect;
         for(const sus in this.case.investigationLocations){
+            if(floor) break;
+
+            suspect = sus;
             const susLocations = this.case.investigationLocations[sus];
             for(const loc in susLocations){
                 const location = susLocations[loc];
@@ -51,12 +55,14 @@ export default class ObjectivesController {
             id: 'crime_scene',
             label: `Examine the ${this.fmt(crime.scene)}`,
             description: `Visit the scene of the ${crime.type}.`,
+            onEnter: 'So this is where it happened...',
             roomType: crime.scene,              
             roomID: 'crime_scene',              
             floorFrames: floor,         // picks background art
             requiredObjects: new Set([crime.object]),    // all must be interacted with; picks object sprites
             foundObjects : new Set(),
-            alwaysSpawn: true
+            alwaysSpawn: true,
+            suspect: suspect
         });
     }
 
@@ -95,12 +101,13 @@ export default class ObjectivesController {
                     id: `room_${key}_${roomName}`,
                     label: `Search ${suspect.name}'s ${this.fmt(roomName)}`,
                     description: `Investigate the ${this.fmt(roomName)} for evidence connected to ${suspect.name}.`,
+                    onEnter: roomData.enter,
                     roomType: roomName,
                     roomID: `room_${key}_${roomName}`,
                     floorFrames: roomData.floor_frames,
                     requiredObjects: new Set(allItems),
                     foundObjects: new Set(),
-                    suspect: suspect.name
+                    suspect: suspect.name,
                 };
 
                 if(!redHerring){
@@ -144,6 +151,7 @@ export default class ObjectivesController {
                         id: `uncover_${motive.name}_motive_${suspect.name.toLowerCase()}`,
                         label: `Uncover ${suspect.name}'s motive`,
                         description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
+                        onEnter: 'This witness must have some vital information for me',
                         roomType: "interrogation",
                         roomID: `${motive.name}_motive_interrogation`,
                         floorFrames: investigationLocations.misc.interrogation.floor_frames,
@@ -158,6 +166,8 @@ export default class ObjectivesController {
 
     onRoomVisited(roomID) {
         this.currentRoomID = roomID;
+
+        return this.getByRoomID(roomID).onEnter;    // returns a room dialogue
     }
 
     // call when player examines an item. returns newly completed objectives.
