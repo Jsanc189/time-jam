@@ -28,7 +28,6 @@ export default class DialogueBox extends GameText {
 
         this.typewriterSpeed = typewriterSpeed;
         this.typewriterEvent = null;
-        this.onComplete = null;
 
         this.bg = scene.add.image(x, y, bgKey).setOrigin(0.5);
 
@@ -71,9 +70,8 @@ export default class DialogueBox extends GameText {
         });
     }
 
-    showDialogue(messages, speaker = null, onComplete = null) {
+    showDialogue(messages, speaker = null) {
         this.stopTypewriter();
-        this.onComplete = onComplete;
 
         if (speaker) {
             this.setSpeaker(speaker);
@@ -100,8 +98,7 @@ export default class DialogueBox extends GameText {
         if (this.typewriterEvent) {
             const full = this.typewriterEvent.args[0]; // stored full text
             this.stopTypewriter();
-            this.setText(full);
-            if (this.onComplete) this.onComplete();
+            if(full) this.setText(full);
         }
     }
 
@@ -127,10 +124,6 @@ export default class DialogueBox extends GameText {
             callback: () => {
                 charIndex++;
                 this.setText(fullText.slice(0, charIndex));
-
-                if (charIndex === fullText.length && this.onComplete) {
-                    this.onComplete();
-                }
             },
         });
     }
