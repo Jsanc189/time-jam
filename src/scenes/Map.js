@@ -23,8 +23,23 @@ export default class MapScene extends Phaser.Scene {
         super('MapScene');
     }
 
-    create() {
+    create(data) {
         this.objectivesControl = this.registry.get('objectivesControl');
+        this.audio = this.game.audio;
+        this.registry.set("okToFade", true);
+        this.fadeIn();
+
+        // Fade in music
+        this.time.delayedCall(300, () => {
+            this.audio.playMusic("mindPalace");
+            this.audio.currentMusic.setVolume(0);
+
+            this.tweens.add({
+                targets: this.audio.currentMusic,
+                volume: 1,
+                duration: 800
+            });
+        });
 
         // World Setup
         this.cameras.main.setBackgroundColor('#6e3318');
@@ -93,6 +108,7 @@ export default class MapScene extends Phaser.Scene {
 
         //resume physics world when returning to scene
         this.events.on('wake', ()=> {
+            this.registry.set("okToFade", true);
             this.physics.world.resume();
         })
 
@@ -134,6 +150,7 @@ export default class MapScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
+
                 this.game.audio.playSFX("gavel");
                 this.scene.sleep();
                 this.scene.wake('MainScene');
@@ -165,10 +182,14 @@ export default class MapScene extends Phaser.Scene {
         );
         CLOCK_BUTTON.setScrollFactor(0);
 
+
     }
 
     update() {
         this.player.update();
+        if(this.registry.get("okToFade")) {
+            this.fadeIn();
+        }
 
         // --- CHECK IF PLAYER MOVED AWAY FROM HATCH ---
         if (this.currentHatch) {
@@ -193,6 +214,7 @@ export default class MapScene extends Phaser.Scene {
                 const data = {label: label, objective: objective, floorFrames: floorFrames};
                 this.scene.sleep('MapScene');
                 this.scene.launch("HatchRoomScene", data);
+                const hatchSound = this.game.audio.playSFX('hatch');
                 this.physics.world.pause();
             }
         }
@@ -274,6 +296,28 @@ export default class MapScene extends Phaser.Scene {
         hatch.setData('isActive', true);
         this.currentHatch = hatch;
         this.interactText.setVisible(true);
+    }
+
+    fadeIn() {
+        const overlay = this.add.rectangle(
+            0,
+            0,
+            this.cameras.main.width,
+            this.cameras.main.height,
+            0x000000
+        )
+            .setOrigin(0)
+            .setScrollFactor(0)
+            .setDepth(9999)
+            .setAlpha(1);
+        this.tweens.add({
+            targets: overlay,
+            alpha: 0,
+            duration: 750,
+            ease: "Linear",
+            onComplete: () => overlay.destroy()
+        });
+        this.registry.set("okToFade", false);
     }
 
 }
