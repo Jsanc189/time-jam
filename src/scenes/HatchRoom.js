@@ -2,8 +2,8 @@
     Created by: Jackie Sanchez and Raven Ruiz
     Date: 4/19/2026
     Updates by: Jackie Sanchez
-    Date: 4/23/2026
-    Update notes: Adds furniture to the scene based on hatch type.
+    Date: 4/28/2026
+    Update notes:  Adds SFX and fade in FX.
     Description:  This scene will take in parameters to make a scene based on what
     type of hatch the player has visited.  It will have objective(s) to finish and it
     will progress time
@@ -34,6 +34,7 @@ export default class HatchRoomScene extends Phaser.Scene {
         const cam = this.cameras.main;
         const viewWidth = cam.width;
         const viewHeight = cam.height;
+        this.fadeIn();
 
         //tile the room
         this.tileWidth = 128;
@@ -59,31 +60,6 @@ export default class HatchRoomScene extends Phaser.Scene {
                backgroundColor:'#43282b'
             }
         );
-
-        //rope to map.js
-        const startY = -200;
-        this.ropeTop = this.add.image(
-            this.cameras.main.centerX / 8,
-            startY,
-            'rope_hatch',
-            0
-        )
-        this.ropeBottom = this.add.image(
-            this.cameras.main.centerX / 8,
-            startY + this.ropeTop.height,
-            'rope_hatch',
-            1
-        )
-        this.tweens.add({
-            targets:[this.ropeTop, this.ropeBottom],
-            y: '+=200',
-            duration: 1200,
-            ease: 'Bounce.easeOut'
-        })
-        this.ropeTop.setInteractive({cursor: 'pointer'});
-        this.ropeBottom.setInteractive({cursor: 'pointer'});
-        this.ropeTop.on('pointerdown', ()=> this.returnToMap());
-        this.ropeBottom.on('pointerdown', ()=> this.returnToMap());
 
         //Player sprite
         this.player = new Player(
@@ -136,10 +112,77 @@ export default class HatchRoomScene extends Phaser.Scene {
         );
 
         this.spawnRoomProps();
+
+        //rope to map.js
+        this.ropeZone = this.add.zone(0, 0).setSize(150, 300);
+        this.physics.add.existing(this.ropeZone);
+        this.ropeZone.body.setAllowGravity(false);
+        this.ropeZone.body.setImmovable(true);
+        const startY = -200;
+        this.playerNearRope = false;
+        this.ropeTop = this.add.image(
+            this.cameras.main.centerX / 8,
+            startY,
+            'rope_hatch',
+            0
+        )
+        this.ropeBottom = this.add.image(
+            this.cameras.main.centerX / 8,
+            startY + this.ropeTop.height,
+            'rope_hatch',
+            1
+        )
+        this.tweens.add({
+            targets:[this.ropeTop, this.ropeBottom],
+            y: '+=200',
+            duration: 1200,
+            ease: 'Bounce.easeOut',
+            onComplete:() => {
+                this.ropeZone.setPosition(
+                    100,
+                    520
+                );
+            }
+        })
+        this.ropeTop.setInteractive({cursor: 'pointer'});
+        this.ropeBottom.setInteractive({cursor: 'pointer'});
+        this.ropeTop.on('pointerdown', ()=> this.returnToMap());
+        this.ropeBottom.on('pointerdown', ()=> this.returnToMap());
+
+         //Press E text to leave hatch
+        this.interactKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        this.interactText =  new GameText(
+            this,
+            this.cameras.main.centerX / 6,
+            this.cameras.main.centerY /4,
+            "Press E return\nto Mind Palace",
+            {
+                fontSize: '38px',
+                backgroundColor:'#43282b' 
+            }
+        )
+        .setOrigin(0.5)
+        .setScrollFactor(0)
+        .setDepth(9999)
+        .setVisible(false);
     }
 
     update() {
         this.player.update();
+        this.playerNearRope = this.physics.world.overlap(
+            this.player,
+            this.ropeZone
+        );
+
+        this.interactText.setVisible(this.playerNearRope);
+
+        if(this.playerNearRope && Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+            const ropeSound = this.game.audio.playSFX("rope");
+            this.fadeOut();
+            this.time.delayedCall(2000, ()=>{ 
+                this.returnToMap();
+            })
+        }
     }
 
     returnToMap() {
@@ -216,15 +259,8 @@ export default class HatchRoomScene extends Phaser.Scene {
     }
 
     spawnRoomProps() {
-         const config = this.roomAssets['library'];
-        // console.log(this.objective.roomType);
-        // console.log(config);
-        // if (!config) {
-        //     console.log("There is no config");
-        //     return;
-        // }
+         const config = this.roomAssets['library']
 
-        //if (this.objective.roomType === 'library'){
         if (this.objective.roomType){
             const bookshelves = config.props.filter(p=> p.key === 'bookshelves');
             if (bookshelves.length > 0) {
@@ -364,6 +400,53 @@ export default class HatchRoomScene extends Phaser.Scene {
             .setScale(0.35)
             .setDepth(2);
             
+    }
+
+    fadeIn() {
+        const overlay = this.add.rectangle(
+            0,
+            0,
+            this.cameras.main.width,
+            this.cameras.main.height,
+            0x000000
+        )
+            .setOrigin(0)
+            .setScrollFactor(0)
+            .setDepth(9999)
+            .setAlpha(1);
+        this.tweens.add({
+            targets: overlay,
+            alpha: 0,
+            duration: 750,
+            ease: "Linear",
+            onComplete: () => overlay.destroy()
+        });
+    }
+
+    onRopeOverlap() {
+        this.interactText.setVisible(true);
+        this.playerNearRope = true
+    }
+
+    fadeOut() {
+        const overlay = this.add.rectangle(
+            0,
+            0,
+            this.cameras.main.width,
+            this.cameras.main.height,
+            0x00000
+        )
+            .setOrigin(0)
+            .setScrollFactor(0)
+            .setDepth(9999)
+            .setAlpha(0);
+        this.tweens.add({
+            targets: overlay,
+            alpha: 1,
+            duration: 2000,
+            ease: "Linear",
+        })
+
     }
 
 
