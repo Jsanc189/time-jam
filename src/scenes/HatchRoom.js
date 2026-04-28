@@ -35,11 +35,11 @@ export default class HatchRoomScene extends Phaser.Scene {
             'paper1',
         );
 
-        this.dialogueBox.showDialogue(
-            'testing testing testing testing testing testing testing testing ' +
-                'testing testing testing testing testing testing testing.',
-            'Test Speaker',
-        );
+        // this.dialogueBox.showDialogue(
+        //     'testing testing testing testing testing testing testing testing ' +
+        //         'testing testing testing testing testing testing testing.',
+        //     'Test Speaker',
+        // );
     }
 
     create(){
@@ -119,7 +119,10 @@ export default class HatchRoomScene extends Phaser.Scene {
         // OBJECTIVE HANDLING
         // mark room as current in objectivesControl
         //      so controller knows which objective/room to poll for object handler
-        console.log("[HatchRoom]", this.objectivesControl.onRoomVisited(this.objective.roomID));
+        this.dialogueBox.showDialogue(
+            this.objectivesControl.onRoomVisited(this.objective.roomID), 
+            'YOU'
+        );
 
         // put objects in scene!
         this.placeObjects();

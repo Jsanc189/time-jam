@@ -103,7 +103,7 @@ export default class ObjectivesController {
                     description: `Investigate the ${this.fmt(roomName)} for evidence connected to ${suspect.name}.`,
                     onEnter: roomData.enter,
                     roomType: roomName,
-                    roomID: `room_${key}_${roomName}`,
+                    roomID: `${suspect.name}_room_${key}_${roomName}`,
                     floorFrames: roomData.floor_frames,
                     requiredObjects: new Set(allItems),
                     foundObjects: new Set(),
@@ -153,7 +153,7 @@ export default class ObjectivesController {
                         description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
                         onEnter: 'This witness must have some vital information for me',
                         roomType: "interrogation",
-                        roomID: `${motive.name}_motive_interrogation`,
+                        roomID: `${suspect.name}_${motive.name}_motive_interrogation`,
                         floorFrames: investigationLocations.misc.interrogation.floor_frames,
                         requiredObjects: new Set([motive]),
                         foundObjects: new Set(),
@@ -241,22 +241,22 @@ export default class ObjectivesController {
         return [...this.rooms];
     }
     getPending() {
-        return this.rooms.filter((o) => !o.completed);
+        return this.rooms.filter((o) => !o.completed)[0];
     }
     getCompleted() {
-        return this.rooms.filter((o) => o.completed);
+        return this.rooms.filter((o) => o.completed)[0];
     }
     getByRoomID(id) {
-        return this.rooms.filter((o) => o.roomID === id);
+        return this.rooms.filter((o) => o.roomID === id)[0];
     }
     getByID(id) {
-        return this.rooms.filter((o) => o.id === id);
+        return this.rooms.filter((o) => o.id === id)[0];
     }
     isComplete(id) {
-        return !!this.rooms.find((o) => o.id === id)?.completed;
+        return !!this.rooms.find((o) => o.id === id)[0]?.completed;
     }
     isAllComplete() {
-        return this.rooms.every((o) => o.completed);
+        return this.rooms.every((o) => o.completed)[0];
     }
 
     getObjectDialogue(object) {
