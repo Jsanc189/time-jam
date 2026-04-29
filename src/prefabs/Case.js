@@ -158,10 +158,46 @@ export default class Case {
         return `${object}? Interesting`;
     }
 
-    foundRelationshipEvenDialogue(suspect, relationship, event){
-        const rel = `${this.victim.name} and ${suspect} had a ${relationship} relationship.`;
-        const relEvent = `Looks like there was a ${event} between them, though.`;
+    foundRelationshipEventDialogue(suspect, motive) {
+        suspect = suspect.charAt(0).toUpperCase() + suspect.slice(1);
 
-        return `${rel} ${event}`
+        const relationship = (Array.isArray(motive.relationship)
+            ? motive.relationship[0]
+            : motive.relationship
+        ).replace(/_/g, ' ');
+
+        const relRaw = motive.description;
+
+        // pick a random discovery_dialogue line
+        const pool = motive.discovery_dialogue;
+        const eventRaw = pool[Math.floor(Math.random() * pool.length)];
+
+        // swap in character names
+        const rel = relRaw
+            .replace(/\$suspect/g, suspect)
+            .replace(/\$victim/g, this.victim.name);
+
+        const relEvent = eventRaw
+            .replace(/\$suspect/g, suspect)
+            .replace(/\$victim/g, this.victim.name);
+
+        // role-based reflection
+        const roleOpinionBank = { 
+            not_guilty: "But a complicated past doesn't make someone a killer.",
+            guilty: "Now that's a motive worth looking into."
+        };
+        const isDefendant = this.defendant.name.toLowerCase() === suspect.toLowerCase();
+        let reflection;
+        if (this.playerRole === "defense") {
+            reflection = isDefendant
+                ? roleOpinionBank.not_guilty
+                : roleOpinionBank.guilty;
+        } else {
+            reflection = isDefendant
+                ? roleOpinionBank.guilty
+                : roleOpinionBank.not_guilty;
+        }
+
+        return [`${rel}`, `${relEvent}`, `${reflection}`];
     }
 }

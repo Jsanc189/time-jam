@@ -3,33 +3,47 @@
         "enemy": [
             {
                 "name": "hatred",
-                "description": "hatred description filler",
+                "description": "$suspect and $victim didn't get along.",
                 "barks": ["hatred bark filler"],
                 "relationship": ["enemy"],
+                "discovery_dialogue": [
+                    "$suspect despised $victim. That's no secret.",
+                    "Bad blood between $suspect and $victim. Deep-rooted, by the looks of it."
+                ],
                 "witness_statement": ["enemy witness filler statement"]
             }
         ],
         "neighbor": [
             {
                 "name": "property_dispute",
-                "description": "property_dispute description filler",
+                "description": "$suspect and $victim were neighbors, then.",
                 "barks": ["property_dispute bark filler"],
                 "relationship": ["neighbor"],
+                "discovery_dialogue": [
+                    "$suspect and $victim had been fighting over land. For years, apparently.",
+                    "A property dispute. Petty on the surface. Deadly underneath."
+                ],
                 "witness_statement": ["neighbor witness filler statement"]
             }
         ],
         "friend": [
             {
                 "name": "argument",
-                "description": "argument description filler",
-                "barks": ["argument bark filler"],
+                "description": "$suspect and $victim were friends.",
+                "discovery_dialogue": [
+                    "Looks like $suspect and $victim weren't on speaking terms. Wonder what set them off.",
+                    "Something came between them. Friends one day, strangers the next."
+                ],
                 "relationship": ["friend"],
                 "witness_statement": ["friend argument witness filler statement"]
             },
             {
                 "name": "betrayal",
-                "description": "betrayal description filler",
-                "barks": ["betrayal bark filler"],
+                "description": "$suspect and $victim got along.",
+                "discovery_dialogue": [
+                    "$suspect felt betrayed by $victim. That kind of wound doesn't close easy.",
+                    "Trust, broken. By $victim, no less. $suspect wouldn't forget that."
+                ],
                 "relationship": ["friend"],
                 "witness_statement": ["friend betrayal witness filler statement"]
             }
@@ -37,8 +51,11 @@
         "romance_unrequited": [
             {
                 "name": "jealousy",
-                "description": "jealousy description filler",
-                "barks": ["jealousy bark filler"],
+                "description": "$suspect and $victim were just friends.",
+                "discovery_dialogue": [
+                    "$suspect wanted something from $victim they were never going to get.",
+                    "Unrequited love. The worst kind of feeling to sit with."
+                ],
                 "relationship": ["romance_unrequited"],
                 "witness_statement": ["$characterA and $characterB"]
             }
@@ -46,29 +63,41 @@
         "romance": [
             {
                 "name": "argument",
-                "description": "argument description filler",
-                "barks": ["argument bark filler"],
+                "description": "$suspect and $victim were together romantically.",
+                "discovery_dialogue": [
+                    "Lovers' quarrel? Or something worse?",
+                    "$suspect and $victim had been fighting. Badly, from what I can tell."
+                ],
                 "relationship": ["romance"],
                 "witness_statement": ["romance argument witness filler statement"]
             },
             {
                 "name": "betrayal",
-                "description": "betrayal description filler",
-                "barks": ["betrayal bark filler"],
+                "description": "$suspect and $victim were lovers.",
+                "discovery_dialogue": [
+                    "$victim did something unforgivable. And $suspect found out.",
+                    "Betrayed by the one person you trusted most. That'll do something to you."
+                ],
                 "relationship": ["romance"],
                 "witness_statement": ["romance betrayal witness filler statement"]
             },
             {
                 "name": "jealousy",
-                "description": "jealousy description filler",
-                "barks": ["jealousy bark filler"],
+                "description": "$suspect and $victim were partners.",
+                "discovery_dialogue": [
+                    "$suspect couldn't let go. Even when $victim had moved on.",
+                    "Green-eyed and dangerous. $suspect was watching $victim closely."
+                ],
                 "relationship": ["romance"],
                 "witness_statement": ["romance jealousy witness filler statement"]
             },
             {
                 "name": "crime_of_passion",
-                "description": "crime_of_passion description filler",
-                "barks": ["crime_of_passion bark filler"],
+                "description": "$suspect and $victim were in love.",
+                "discovery_dialogue": [
+                    "Whatever happened between them...it wasn't planned. It was felt.",
+                    "So $suspect snapped. Heat of the moment. That's the only explanation."
+                ],
                 "relationship": ["romance"],
                 "witness_statement": ["romance crime_of_passion witness filler statement"]
             }

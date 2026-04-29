@@ -192,13 +192,15 @@ export default class HatchRoomScene extends Phaser.Scene {
                     const handled = this.objectivesControl.onItemFound(object);
                     // console.log("[HatchRoom]", object, handled)
 
-                    // dialogue associated with object
-                    const allDialouge = [object.description];
-                    if (object.dialogue) {
-                        allDialouge.push(...object.dialogue);
-                    }
+                    if(!object.relationship){
+                        // dialogue associated with object
+                        const allDialouge = [object.description];
+                        if (object.dialogue) {
+                            allDialouge.push(...object.dialogue);
+                        }
 
-                    this.dialogueBox.showDialogue(allDialouge, 'YOU');
+                        this.dialogueBox.showDialogue(allDialouge, 'YOU');
+                    }
 
                     // is it the murder weapon?
                     const caseInfo = this.objectivesControl.case;
@@ -232,10 +234,9 @@ export default class HatchRoomScene extends Phaser.Scene {
                         // if its a motive room, what does this motive imply about the relationship between the suspect and the victim?
                         if (object.relationship) {
                             this.dialogueBox.showDialogue(
-                                caseInfo.foundRelationshipEvenDialogue(
+                                caseInfo.foundRelationshipEventDialogue(
                                     this.objective.suspect,
-                                    object.relationship,
-                                    object.name,
+                                    object
                                 ),
                                 'YOU',
                             );

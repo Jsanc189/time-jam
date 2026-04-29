@@ -288,7 +288,7 @@ export default class ObjectivesController {
     }
 
     areObjectsRelated(objectA, objectB){
-        if(!objectA.activity || !objectB.activity) return false; 
+        if(!objectA.activity || !objectB.activity) return null; 
 
         for(const a of objectA.activity){
             if(objectB.activity.includes(a)){
