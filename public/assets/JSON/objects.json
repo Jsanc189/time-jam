@@ -5,7 +5,7 @@
                 "name": "blade",
                 "description": "Just a normal knife.",
                 "activity": ["general"],
-                "potential_weapon": true,
+                "suspicious": true,
                 "barks": [
                     "Sharp.",
                     "Deadly.",
@@ -18,7 +18,7 @@
                 "name": "cobbler_hammer",
                 "description": "The cobbler's hammer. Looks like any old hammer, but its tail is solid and curved.",
                 "activity": ["cobbler"],
-                "potential_weapon": true,
+                "suspicious": true,
                 "dialogue": [
                     "Shoe or a skull on its business end, the hammer will hammer regardless.",
                     "And that sharp bit sure ain't pretty.",
@@ -32,7 +32,7 @@
                 "name": "harpoon",
                 "description": "The harpoon. A big, barbed spear used for fishing.",
                 "activity": ["fishing"],
-                "potential_weapon": true,
+                "suspicious": true,
                 "dialogue": [
                     "Sharp. Heavy, too",
                     "This thing could take down one big fish.",
@@ -46,7 +46,7 @@
                 "name": "claw_hammer",
                 "description": "Claw hammer. I got one of these, but without the bells and whistles.",
                 "activity": ["carpentry"],
-                "potential_weapon": true,
+                "suspicious": true,
                 "dialogue": [
                     "What have you been used for, Mr. Hammer?",
                     "Drive a nail into hardwood? Drive a skull into pieces?",
@@ -60,7 +60,7 @@
                 "name": "arrow",
                 "description": "An arrow. Pretty quiver, ugly tip.",
                 "activity": ["archery"],
-                "potential_weapon": true,
+                "suspicious": true,
                 "dialogue": [
                     "Not an easy hobby, archery. Not safe, either.",
                     "You'd do well to stay well away from the business end of a bow.",
@@ -74,7 +74,7 @@
                 "name": "poison",
                 "description": "Well, this sure isn't a healing tonic, now is it?",
                 "activity": ["medicine"],
-                "potential_weapon": true,
+                "suspicious": true,
                 "dialogue": [
                     "Wouldn't want a spoonful of this stuff...",
                     "What does a doctor need a vial of poison for, anyway?",
@@ -202,6 +202,7 @@
                 "name": "books",
                 "description": "Chorg's library books...",
                 "activity": ["library"],
+                "suspicious": true,
                 "dialogue": [
                     "'Tonics 101.' OK, medicine man.",
                     "'100 Deadly Plants to Avoid.' Uh-huh...",
@@ -222,6 +223,7 @@
                 "name": "sil_portrait",
                 "description": "A portrait of Sil.",
                 "activity": ["general"],
+                "suspicious": true,
                 "dialogue": [
                     "Weird."
                 ]
@@ -288,14 +290,38 @@
             "Interesting. $suspect has a background in $activity. Just like whoever used that weapon.",
             "$activity connection. That's not nothing."
         ],
-        "potential_weapon": {
-            "prosecution": [
-                "What would $suspect need with a $object? Seems dangerous.",
+        "suspicious": {
+            "guilty": [
+                "What would $suspect need with this? Seems dangerous.",
                 "$suspect had this on hand. Make of that what you will."
             ],
-            "defense": [
+            "not_guilty": [
                 "So $suspect owned this. Plenty of innocent reasons to do so.",
                 "Could mean something. Could mean nothing."
+            ]
+        },
+        "role_reflection": {
+            "guilty": [
+                "And I'm going to prove they did it."
+            ],
+            "not_guilty": [
+                "But that alone doesn't prove their guilt."
+            ]
+        },
+        "motive_reflection": {
+            "guilty": [
+                "Now that's a motive worth looking into."
+            ],
+            "not_guilty": [
+                "But a complicated past doesn't make someone a killer."
+            ]
+        },
+        "found_weapon": {
+            "crime_scene": [
+                "$victim was murdered with a $object. Evidence points to $suspect."
+            ],
+            "elsewhere": [
+                "The murder weapon is in $suspect's $location."
             ]
         }
     }

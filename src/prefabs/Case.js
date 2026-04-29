@@ -102,74 +102,80 @@ export default class Case {
         return rooms;
     }
 
-    foundWeaponDialouge(suspect, location){
-        suspect = suspect.charAt(0).toUpperCase() + suspect.slice(1);   // capitalize
-        
-        const roleOpinionBank = { 
-            not_guilty: "But that alone doesn't prove their guilt.",
-            guilty: "And I'm going to prove they did it."
-        };
+    pickRaw(pool) {
+        return pool[Math.floor(Math.random() * pool.length)];
+    }
 
-        // TODO: more sophisticated reflections
-        let reflection = "";
-        if(this.playerRole === "defense"){  
-            // player is defense --> suggest defendant innocence, anyone else guilty
-            if(this.defendant.name.toLowerCase() === suspect.toLowerCase()){
-                reflection += roleOpinionBank.not_guilty
-            } else {
-                reflection += roleOpinionBank.guilty
-            }
-        } else {    
-            // player is prosecution --> suggest defendant guilt, anyone else innocent
-            if(this.defendant.name.toLowerCase() === suspect.toLowerCase()){
-                reflection += roleOpinionBank.guilty
-            } else { 
-                reflection += roleOpinionBank.not_guilty
-            }
-        }
-        
-        let dialogue = "";
+    resolve(raw, tokens = {}) {
+        return Object.entries(tokens).reduce(
+            (str, [key, val]) => str.replace(new RegExp(`\\$${key}`, 'g'), val),
+            raw
+        );
+    }
 
-        // initial discovery dialogue, 
-        //  when player goes to crime scene and discovers murder weapon
-        if(location == this.crime.scene){
-            dialogue = `${this.victim.name} was murdered with a ${this.crime.object.name.replace("_"," ")}. Locale points to ${suspect}.`
-        }
+    getReflection(suspect, type) {
+        const isDefendant = this.defendant.name.toLowerCase() === suspect.toLowerCase();
+        const isGuilty = this.playerRole === 'defense' ? !isDefendant : isDefendant;
+        const pool = this.metaDialogue[`${type}_reflection`][isGuilty ? 'guilty' : 'not_guilty'];
+        return this.pickRaw(pool);
+    }
 
-        // when player finds the crime object at its location in mind palace
-        if(location.includes("home")) location = "home";
-        location = location.replace("_"," ");
+    foundWeaponDialouge(suspect, location) {
+        suspect = suspect.charAt(0).toUpperCase() + suspect.slice(1);
 
-        dialogue = `The murder weapon is in ${suspect}'s ${location}.`
+        const isAtCrimeScene = location === this.crime.scene;
+        const pool = this.metaDialogue.found_weapon[isAtCrimeScene ? 'crime_scene' : 'elsewhere'];
 
-        return `${dialogue} ${reflection}`
+        if (location.includes('home')) location = 'home';
+        location = location.replace(/_/g, ' ');
+
+        const dialogue = this.resolve(this.pickRaw(pool), {
+            suspect,
+            victim: this.victim.name,
+            object: this.crime.object.name.replace(/_/g, ' '),
+            location,
+        });
+
+        return [`${dialogue}`,`${this.getReflection(suspect, "role")}`];
     }
 
     foundObjectDialogue(object, suspect, hasRelationToCrime) {
         suspect = suspect.charAt(0).toUpperCase() + suspect.slice(1);
         const lines = [];
 
-        // pick from object's own dialogue if it has any
-        const objectLine = object.description;
-        if(objectLine) lines.push(objectLine);
+        if (object.description) {
+            lines.push(this.resolve(object.description, {
+                suspect,
+                victim: this.victim.name,
+            }));
+        }
+
+        if (object.dialogue) {
+            for(const dialogue of object.dialogue){
+                lines.push(this.resolve(dialogue, {
+                    suspect,
+                    victim: this.victim.name,
+                }));
+            }
+        }
 
         if (hasRelationToCrime) {
-            const activity = hasRelationToCrime.replace(/_/g, ' ');
-            const pool = this.metaDialogue.relation_to_crime;
-            const raw = pool[Math.floor(Math.random() * pool.length)];
-            lines.push(raw
-                .replace(/\$suspect/g, suspect)
-                .replace(/\$activity/g, activity)
-            );
+            const raw = this.pickRaw(this.metaDialogue.relation_to_crime);
+            lines.push(this.resolve(raw, {
+                suspect,
+                activity: hasRelationToCrime.replace(/_/g, ' '),
+            }));
+        }
 
-        } else if (object.potential_weapon) {
-            const role = this.playerRole === 'prosecution' ? 'prosecution' : 'defense';
-            const pool = this.metaDialogue.potential_weapon[role];
-            const raw = pool[Math.floor(Math.random() * pool.length)];
-            lines.push(raw
-                .replace(/\$suspect/g, suspect)
-                .replace(/\$object/g, object.name.replace(/_/g, ' '))
-            );
+        if(object.suspicious){
+            const isDefendant = this.defendant.name.toLowerCase() === suspect.toLowerCase();
+            const isGuilty = this.playerRole === 'defense' ? !isDefendant : isDefendant;
+            const pickFrom = isGuilty ? 'guilty' : 'not_guilty';    
+            const raw = this.pickRaw(this.metaDialogue.suspicious[pickFrom]);
+            lines.push(this.resolve(raw, {
+                suspect,
+                object: object.name.replace(/_/g, ' '),
+            }));
         }
 
         return lines;
@@ -177,44 +183,12 @@ export default class Case {
 
     foundRelationshipEventDialogue(suspect, motive) {
         suspect = suspect.charAt(0).toUpperCase() + suspect.slice(1);
+        const tokens = { suspect, victim: this.victim.name };
 
-        const relationship = (Array.isArray(motive.relationship)
-            ? motive.relationship[0]
-            : motive.relationship
-        ).replace(/_/g, ' ');
+        const rel = this.resolve(motive.description, tokens);
+        const relEvent = this.resolve(this.pickRaw(motive.discovery_dialogue), tokens);
+        const reflection = this.getReflection(suspect, "motive");
 
-        const relRaw = motive.description;
-
-        // pick a random discovery_dialogue line
-        const pool = motive.discovery_dialogue;
-        const eventRaw = pool[Math.floor(Math.random() * pool.length)];
-
-        // swap in character names
-        const rel = relRaw
-            .replace(/\$suspect/g, suspect)
-            .replace(/\$victim/g, this.victim.name);
-
-        const relEvent = eventRaw
-            .replace(/\$suspect/g, suspect)
-            .replace(/\$victim/g, this.victim.name);
-
-        // role-based reflection
-        const roleOpinionBank = { 
-            not_guilty: "But a complicated past doesn't make someone a killer.",
-            guilty: "Now that's a motive worth looking into."
-        };
-        const isDefendant = this.defendant.name.toLowerCase() === suspect.toLowerCase();
-        let reflection;
-        if (this.playerRole === "defense") {
-            reflection = isDefendant
-                ? roleOpinionBank.not_guilty
-                : roleOpinionBank.guilty;
-        } else {
-            reflection = isDefendant
-                ? roleOpinionBank.guilty
-                : roleOpinionBank.not_guilty;
-        }
-
-        return [`${rel}`, `${relEvent}`, `${reflection}`];
+        return [rel, relEvent, reflection];
     }
 }
