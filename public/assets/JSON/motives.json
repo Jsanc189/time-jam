@@ -10,7 +10,7 @@
                     "$suspect despised $victim. That's no secret.",
                     "Bad blood between $suspect and $victim. Deep-rooted, by the looks of it."
                 ],
-                "witness_statement": ["enemy witness filler statement"]
+                "witness_statement": ["They hated each other."]
             }
         ],
         "neighbor": [
@@ -23,7 +23,7 @@
                     "$suspect and $victim had been fighting over land. For years, apparently.",
                     "A property dispute. Petty on the surface. Deadly underneath."
                 ],
-                "witness_statement": ["neighbor witness filler statement"]
+                "witness_statement": ["They lived next door to one another for a long time. Always arguing about fencing."]
             }
         ],
         "friend": [
@@ -35,7 +35,7 @@
                     "Something came between them. Friends one day, strangers the next."
                 ],
                 "relationship": ["friend"],
-                "witness_statement": ["friend argument witness filler statement"]
+                "witness_statement": ["They used to be thick as thieves. Ever since their fight, however..."]
             },
             {
                 "name": "betrayal",
@@ -45,7 +45,7 @@
                     "Trust, broken. By $victim, no less. $suspect wouldn't forget that."
                 ],
                 "relationship": ["friend"],
-                "witness_statement": ["friend betrayal witness filler statement"]
+                "witness_statement": ["They went everywhere together...until one of them went and ruined it all."]
             }
         ],
         "romance_unrequited": [
@@ -57,7 +57,7 @@
                     "Unrequited love. The worst kind of feeling to sit with."
                 ],
                 "relationship": ["romance_unrequited"],
-                "witness_statement": ["$characterA and $characterB"]
+                "witness_statement": ["They were close friends...one was closer than the other, though. If you catch my drift."]
             }
         ],
         "romance": [
@@ -69,7 +69,7 @@
                     "$suspect and $victim had been fighting. Badly, from what I can tell."
                 ],
                 "relationship": ["romance"],
-                "witness_statement": ["romance argument witness filler statement"]
+                "witness_statement": ["They loved each other, but they had a mean streak, too. Really mean."]
             },
             {
                 "name": "betrayal",
@@ -79,7 +79,7 @@
                     "Betrayed by the one person you trusted most. That'll do something to you."
                 ],
                 "relationship": ["romance"],
-                "witness_statement": ["romance betrayal witness filler statement"]
+                "witness_statement": ["Trouble in paradise, those two. Everyone knew it. Everyone."]
             },
             {
                 "name": "jealousy",
@@ -89,7 +89,7 @@
                     "Green-eyed and dangerous. $suspect was watching $victim closely."
                 ],
                 "relationship": ["romance"],
-                "witness_statement": ["romance jealousy witness filler statement"]
+                "witness_statement": ["They were together, but no good for each other. No trust, you know?"]
             },
             {
                 "name": "crime_of_passion",
@@ -99,7 +99,7 @@
                     "So $suspect snapped. Heat of the moment. That's the only explanation."
                 ],
                 "relationship": ["romance"],
-                "witness_statement": ["romance crime_of_passion witness filler statement"]
+                "witness_statement": ["It was very passionate between them. It could get heated. Ugly."]
             }
         ]
     }
