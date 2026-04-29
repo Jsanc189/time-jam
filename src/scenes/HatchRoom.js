@@ -34,12 +34,6 @@ export default class HatchRoomScene extends Phaser.Scene {
             this.scale.height - 120, // near bottom of screen
             'paper1',
         );
-
-        // this.dialogueBox.showDialogue(
-        //     'testing testing testing testing testing testing testing testing ' +
-        //         'testing testing testing testing testing testing testing.',
-        //     'Test Speaker',
-        // );
     }
 
     create(){
@@ -119,10 +113,10 @@ export default class HatchRoomScene extends Phaser.Scene {
         // OBJECTIVE HANDLING
         // mark room as current in objectivesControl
         //      so controller knows which objective/room to poll for object handler
-        this.dialogueBox.showDialogue(
-            this.objectivesControl.onRoomVisited(this.objective.roomID), 
-            'YOU'
-        );
+        this.dialogueBox.showDialogue({
+            messages: this.objectivesControl.onRoomVisited(this.objective.roomID), 
+            speaker: 'YOU'
+        });
 
         // put objects in scene!
         this.placeObjects();
@@ -199,20 +193,20 @@ export default class HatchRoomScene extends Phaser.Scene {
                             allDialouge.push(...object.dialogue);
                         }
 
-                        this.dialogueBox.showDialogue(allDialouge, 'YOU');
+                        this.dialogueBox.showDialogue({messages: allDialouge, speaker: 'YOU'});
                     }
 
                     // is it the murder weapon?
                     const caseInfo = this.objectivesControl.case;
                     const crime = caseInfo.crime;
                     if (object.name === crime.object.name) {
-                        this.dialogueBox.showDialogue(
-                            caseInfo.foundWeaponDialouge(
+                        this.dialogueBox.showDialogue({
+                            messages: caseInfo.foundWeaponDialouge(
                                 this.objective.suspect,
                                 this.objective.roomType,
                             ),
-                            'YOU',
-                        );
+                            speaker: 'YOU',
+                        });
                     } else {
                         if (object.implicates) {
                             // is it associated with the same activity that the murder weapon is associated with?
@@ -221,25 +215,32 @@ export default class HatchRoomScene extends Phaser.Scene {
                                 crime.object,
                             );
 
-                            this.dialogueBox.showDialogue(
-                                caseInfo.foundObjectDialogue(
+                            this.dialogueBox.showDialogue({
+                                messages: caseInfo.foundObjectDialogue(
                                     object.name,
                                     this.objective.suspect,
                                     relation,
                                 ),
-                                'YOU',
-                            );
+                                speaker: 'YOU',
+                            });
                         }
 
                         // if its a motive room, what does this motive imply about the relationship between the suspect and the victim?
                         if (object.relationship) {
-                            this.dialogueBox.showDialogue(
-                                caseInfo.foundRelationshipEventDialogue(
-                                    this.objective.suspect,
-                                    object
-                                ),
-                                'YOU',
-                            );
+                            const allDialouge = [];
+                            if(object.witness_statement){
+                                allDialouge.push({
+                                    messages: object.witness_statement,
+                                    speaker: 'WITNESS',
+                                });
+                            }
+
+                            allDialouge.push({
+                                messages: caseInfo.foundRelationshipEventDialogue(this.objective.suspect,object),
+                                speaker: 'YOU'
+                            });
+
+                            this.dialogueBox.showDialogue(allDialouge);
                         }
                     }
                 },

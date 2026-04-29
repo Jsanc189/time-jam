@@ -70,28 +70,32 @@ export default class DialogueBox extends GameText {
         });
     }
 
-    showDialogue(messages, speaker = null) {
+    showDialogue(dialogue) {
         this.stopTypewriter();
-
-        if (speaker) {
-            this.setSpeaker(speaker);
+        this.queue = [];
+        const normalized = Array.isArray(dialogue) ? dialogue : [dialogue];
+        for (const { messages, speaker } of normalized) {
+            this.queueDialogue(messages, speaker);
         }
-
-        this.queue = Array.isArray(messages) ? [...messages] : [messages];
         this.showNext();
     }
 
     showNext() {
         if (this.queue.length === 0) return;
-
-        const message = this.queue.shift();
-
+        const { text, speaker } = this.queue.shift();
+        if (speaker) this.setSpeaker(speaker);
         this.setText('');
         this.setVisible(true);
         this.bg.setVisible(true);
         this.speakerLabel.setVisible(true);
+        this.playTypewriter(text);
+    }
 
-        this.playTypewriter(message);
+    queueDialogue(messages, speaker = null) {
+        const lines = Array.isArray(messages) ? messages : [messages];
+        for (const text of lines) {
+            this.queue.push({ text, speaker });
+        }
     }
 
     completeDialogue() {
