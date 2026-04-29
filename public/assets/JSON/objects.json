@@ -169,7 +169,7 @@
                 "activity": ["medicine"],
                 "dialogue": [
                     "Looks like Chorg owns this shop.",
-                    "Must now your way around tonics.",
+                    "Must know your way around tonics.",
                     "And their nastier counterparts. Poison."
                 ]
             }
@@ -240,7 +240,7 @@
                 "name": "chorg_sculpture",
                 "description": "A wood carving of Chorg.",
                 "activity": ["general"],
-                "bardialogueks": [
+                "dialogue": [
                     "Lovebird."
                 ]
             },

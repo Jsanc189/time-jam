@@ -38,7 +38,7 @@
                 "crime_objects": ["pyromancy"],
                 "character_objects": ["chorg"],
                 "location_objects": ["house"],
-                "enter": "Looks like a gobline lives here."
+                "enter": "Looks like a goblin lives here."
             }
         },
         "sil": {
