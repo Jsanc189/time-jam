@@ -251,22 +251,20 @@ export default class HatchRoomScene extends Phaser.Scene {
                             speaker: 'YOU',
                         });
                     } else {
-                        if (object.implicates) {
-                            // is it associated with the same activity that the murder weapon is associated with?
-                            const relation = this.objectivesControl.areObjectsRelated(
-                                object,
-                                crime.object,
-                            );
+                        // is it associated with the same activity that the murder weapon is associated with?
+                        const relation = this.objectivesControl.areObjectsRelated(
+                            object,
+                            crime.object,
+                        );
 
-                            this.dialogueBox.showDialogue({
-                                messages: caseInfo.foundObjectDialogue(
-                                    object.name,
-                                    this.objective.suspect,
-                                    relation,
-                                ),
-                                speaker: 'YOU',
-                            });
-                        }
+                        this.dialogueBox.showDialogue({
+                            messages: caseInfo.foundObjectDialogue(
+                                object,
+                                this.objective.suspect,
+                                relation,
+                            ),
+                            speaker: 'YOU',
+                        });
 
                         // if its a motive room, what does this motive imply about the relationship between the suspect and the victim?
                         if (object.relationship) {

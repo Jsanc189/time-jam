@@ -34,6 +34,7 @@ export default class Case {
         this.investigationLocations = this.getLocations(grammar);
 
         this.playerRole = null; // selected by player on game start
+        this.metaDialogue = grammar.getObjectMetaDialogue();
     }
 
     getCrimeScene(grammar) {
@@ -144,18 +145,34 @@ export default class Case {
         return `${dialogue} ${reflection}`
     }
 
-    foundObjectDialogue(object, suspect, hasRelationToCrime){
+    foundObjectDialogue(object, suspect, hasRelationToCrime) {
+        suspect = suspect.charAt(0).toUpperCase() + suspect.slice(1);
+        const lines = [];
+
+        // pick from object's own dialogue if it has any
+        const objectLine = object.description;
+        if(objectLine) lines.push(objectLine);
+
         if (hasRelationToCrime) {
-            return `Looks like ${suspect} may be involved with ${hasRelationToCrime}`;
-            
-        } else {
-            // if its a crime object but not related to case, how can it be framed to make suspect look guilty anyways?
-            if (object.potential_weapon) {
-                return `What would ${suspect} need with a ${object.name}? Seems dangerous.`;
-            }
+            const activity = hasRelationToCrime.replace(/_/g, ' ');
+            const pool = this.metaDialogue.relation_to_crime;
+            const raw = pool[Math.floor(Math.random() * pool.length)];
+            lines.push(raw
+                .replace(/\$suspect/g, suspect)
+                .replace(/\$activity/g, activity)
+            );
+
+        } else if (object.potential_weapon) {
+            const role = this.playerRole === 'prosecution' ? 'prosecution' : 'defense';
+            const pool = this.metaDialogue.potential_weapon[role];
+            const raw = pool[Math.floor(Math.random() * pool.length)];
+            lines.push(raw
+                .replace(/\$suspect/g, suspect)
+                .replace(/\$object/g, object.name.replace(/_/g, ' '))
+            );
         }
 
-        return `${object}? Interesting`;
+        return lines;
     }
 
     foundRelationshipEventDialogue(suspect, motive) {

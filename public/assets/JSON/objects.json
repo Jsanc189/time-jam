@@ -281,5 +281,22 @@
                 ]
             }
         ]
+    },
+    "meta_dialogue": {
+        "relation_to_crime": [
+            "$suspect knows their way around $activity. Same trade as the murder weapon.",
+            "Interesting. $suspect has a background in $activity. Just like whoever used that weapon.",
+            "$activity connection. That's not nothing."
+        ],
+        "potential_weapon": {
+            "prosecution": [
+                "What would $suspect need with a $object? Seems dangerous.",
+                "$suspect had this on hand. Make of that what you will."
+            ],
+            "defense": [
+                "So $suspect owned this. Plenty of innocent reasons to do so.",
+                "Could mean something. Could mean nothing."
+            ]
+        }
     }
 }
