@@ -3,7 +3,7 @@
         "general": [
             {
                 "name": "blade",
-                "description": "blade description filler",
+                "description": "Just a normal knife.",
                 "activity": ["general"],
                 "potential_weapon": true,
                 "barks": [
@@ -16,65 +16,70 @@
         "cobbler": [
             {
                 "name": "cobbler_hammer",
-                "description": "cobbler_hammer description filler",
+                "description": "The cobbler's hammer. Looks like any old hammer, but its tail is solid and curved.",
                 "activity": ["cobbler"],
                 "potential_weapon": true,
                 "dialogue": [
-                    "Get a load of that stain. Doesn't look like shoe polish to me.",
                     "Shoe or a skull on its business end, the hammer will hammer regardless.",
-                    "That sharp end sure ain't pretty."
+                    "And that sharp bit sure ain't pretty.",
+                    "Get a load of that stain.",
+                    "Doesn't look like shoe polish to me."
                 ]
             }
         ],
         "fishing": [
             {
                 "name": "harpoon",
-                "description": "harpoon description filler",
+                "description": "The harpoon. A big, barbed spear used for fishing.",
                 "activity": ["fishing"],
                 "potential_weapon": true,
                 "dialogue": [
-                    "This thing could take down one big fish.",
                     "Sharp. Heavy, too",
-                    "Gotta know how to handle a tool like this."
+                    "This thing could take down one big fish.",
+                    "Gotta know how to handle a tool like this.",
+                    "Wouldn't want to be the fish to meet this thing's wielder."
                 ]
             }
         ],
         "carpentry": [
             {
                 "name": "claw_hammer",
-                "description": "claw_hammer description filler",
+                "description": "Claw hammer. I got one of these, but without the bells and whistles.",
                 "activity": ["carpentry"],
                 "potential_weapon": true,
                 "dialogue": [
-                    "Wouldn't even have to swing it very hard.",
-                    "That stain doesn't look like rust to me.",
-                    "Drive a nail into hardwood. Drive a skull into pieces."
+                    "What have you been used for, Mr. Hammer?",
+                    "Drive a nail into hardwood? Drive a skull into pieces?",
+                    "Honest. Wouldn't even have to swing very hard.",
+                    "Hmph. That stain doesn't look like rust to me."
                 ]
             }
         ],
         "archery": [
             {
                 "name": "arrow",
-                "description": "arrow description filler",
+                "description": "An arrow. Pretty quiver, ugly tip.",
                 "activity": ["archery"],
                 "potential_weapon": true,
                 "dialogue": [
                     "Not an easy hobby, archery. Not safe, either.",
                     "You'd do well to stay well away from the business end of a bow.",
-                    "Interesting stain there. Looks like this one wasn't just used for practice."
+                    "Hm. Interesting stain there.",
+                    "Looks like this one wasn't just used for practice."
                 ]
             }
         ],
         "medicine": [
             {
                 "name": "poison",
-                "description": "poison description filler",
+                "description": "Well, this sure isn't a healing tonic, now is it?",
                 "activity": ["medicine"],
                 "potential_weapon": true,
                 "dialogue": [
-                    "Well, this sure isn't a healing tonic, now is it?",
-                    "This'll give you one hell of a stomach ache.",
-                    "Wouldn't want a spoonful of this stuff..."
+                    "Wouldn't want a spoonful of this stuff...",
+                    "What does a doctor need a vial of poison for, anyway?",
+                    "It'd give you one hell of a stomach ache.",
+                    "Right before you keel over."
                 ]
             }
         ]
@@ -83,28 +88,29 @@
         "cobbler": [
             {
                 "name": "shoes",
-                "description": "shoes description filler",
+                "description": "A pile of shoes in varying level of disrepair.",
                 "activity": ["cobbler"],
                 "dialogue": [
                     "Seems a skilled cobbler fixed these right up",
-                    "Brand new nails in the sole. Woulda needed a specialized hammer."
+                    "Brand new nails in the sole.",
+                    "Woulda needed a specialized hammer."
                 ]
             },
             {
                 "name": "cobbler_customer_invoices",
-                "description": "cobbler_customer_invoices description filler",
+                "description": "Invoices.",
                 "activity": ["cobbler"],
                 "dialogue": [
                     "Looks like Enfrin owns this shop.",
-                    "Well, well done Enfrin. Must be real handy with that hammer.",
-                    "Popular shop. Good for its owner...good for Enfrin."
+                    "This wildly popular shop, that is.",
+                    "Well done Enfrin. Must be real handy with that hammer."
                 ]
             }
         ],
         "fishing": [
             {
                 "name": "rowboat",
-                "description": "rowboat description filler",
+                "description": "Rowboat. The fisherman's steed.",
                 "activity": ["fishing"],
                 "dialogue": [
                     "Registered to Enfrin. Interesting",
@@ -115,32 +121,33 @@
         "carpentry": [
             {
                 "name": "lumber",
-                "description": "lumber description filler",
+                "description": "Big pile of planks.",
                 "activity": ["carpentry"],
                 "dialogue": [
                     "Lots of supply. Must get good business, here.",
-                    "Hardwood. Fixed with nails, not screws. Bet the owner of this shop has a trusty hammer."
+                    "Hardwood. Fixed with nails, not screws.",
+                    "Bet the owner of this shop has a trusty hammer."
                 ]
             },
             {
                 "name": "carpentry_customer_invoices",
-                "description": "carpentry_customer_invoices description filler",
+                "description": "Invoices.",
                 "activity": ["carpentry"],
                 "implicates": ["sil"],
                 "dialogue": [
                     "Looks like Sil owns this shop.",
-                    "Well, well done Sil. Must be real handy with that hammer.",
-                    "Popular shop. Good for its owner...good for Sil."
+                    "Well, well done Sil.",
+                    "Must be real handy with that hammer of yours."
                 ]
             }
         ],
         "archery": [
             {
                 "name": "target",
-                "description": "target description filler",
+                "description": "A target, used for archery.",
                 "activity": ["archery"],
                 "dialogue": [
-                    "One hell of an archer practiced with this.",
+                    "One hell of a shooter practiced with this.",
                     "Look at all those bullseyes."
                 ]
             }
@@ -148,28 +155,29 @@
         "medicine": [
             {
                 "name": "medicine",
-                "description": "medicine description filler",
+                "description": "Tonics, tonics, tonics.",
                 "activity": ["medicine"],
                 "dialogue": [
-                    "So many tonics. One wrong ingredient and healing turns to hurting.",
+                    "So many tonics.",
+                    "One wrong ingredient and healing turns to hurting.",
                     "Gotta be real well-read to know what you're doing with this stuff."
                 ]
             },
             {
                 "name": "medicine_customer_invoices",
-                "description": "medicine_customer_invoices description filler",
+                "description": "Invoices.",
                 "activity": ["medicine"],
                 "dialogue": [
                     "Looks like Chorg owns this shop.",
-                    "Well, well done Chorg. Must be one hell of a doctor.",
-                    "Popular shop. Good for its owner...good for Chorg."
+                    "Must now your way around tonics.",
+                    "And their nastier counterparts. Poison."
                 ]
             }
         ],
         "library": [
             {
                 "name": "books",
-                "description": "books description filler",
+                "description": "Pile of books. Medicinal.",
                 "activity": ["library"],
                 "dialogue": [
                     "'Do's and Don't's of Tonic Crafting.' Gotta know how to make poison to avoid it? Right.",
@@ -178,7 +186,7 @@
             },
             {
                 "name": "borrow_list",
-                "description": "borrow_list description filler",
+                "description": "The borrow list...",
                 "activity": ["library"],
                 "dialogue": [
                     "Chorg spent a lot of time here. Reading all about tonic crafting.",
@@ -192,35 +200,35 @@
         "chorg": [
             {
                 "name": "books",
-                "description": "books description filler",
+                "description": "Chorg's library books...",
                 "activity": ["library"],
                 "dialogue": [
-                    "Chorg's library books...",
-                    "'How To Get Away With Murder.' Not a good look.",
-                    "'100 Deadly Plants to Avoid.' Uh-huh..."
+                    "'Tonics 101.' OK, medicine man.",
+                    "'100 Deadly Plants to Avoid.' Uh-huh...",
+                    "'How To Get Away With Murder.' Not a good look."
                 ]
             },
             {
                 "name": "sil_portrait",
-                "description": "sil_portrait description filler",
+                "description": "A portrait of Sil.",
                 "activity": ["general"],
                 "dialogue": [
-                    "A portrait of Sil. Lovebird."
+                    "Lovebird."
                 ]
             }
         ],
         "enfrin": [
             {
                 "name": "sil_portrait",
-                "description": "sil_portrait description filler",
+                "description": "A portrait of Sil.",
                 "activity": ["general"],
                 "dialogue": [
-                    "A portrait of Sil. Weird."
+                    "Weird."
                 ]
             },
             {
                 "name": "fountain_pen",
-                "description": "fountain_pen description filler",
+                "description": "This pen has seen some use, alright.",
                 "activity": ["general"],
                 "dialogue": [
                     "Waxing poetic, Enfrin?"
@@ -230,16 +238,16 @@
         "sil": [
             {
                 "name": "chorg_sculpture",
-                "description": "chorg_sculpture description filler",
+                "description": "A wood carving of Chorg.",
                 "activity": ["general"],
                 "bardialogueks": [
-                    "A wood carving of Chorg. Lovebird."
+                    "Lovebird."
                 ]
             },
             {
                 "name": "anon_love_letter",
                 "activity": ["general"],
-                "description": "anon_love_letter description filler",
+                "description": "A love letter, huh? Signed from anonymous.",
                 "dialogue": [
                     "Looks like it was written with a fountain pen."
                 ]
@@ -250,7 +258,7 @@
         "house": [
             {
                 "name": "bed",
-                "description": "bed description filler",
+                "description": "Standard bed.",
                 "activity": ["general"],
                 "barks": [
                     "Cozy."
@@ -258,7 +266,7 @@
             },
             {
                 "name": "sofa",
-                "description": "sofa description filler",
+                "description": "Just a sofa.",
                 "activity": ["general"],
                 "barks": [
                     "Cozy."
@@ -266,7 +274,7 @@
             },
             {
                 "name": "table",
-                "description": "table description filler",
+                "description": "Hello, table.",
                 "activity": ["general"],
                 "barks": [
                     "Right."
