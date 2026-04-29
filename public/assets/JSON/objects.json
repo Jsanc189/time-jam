@@ -13,11 +13,11 @@
                 ]
             }
         ],
-        "cobbler": [
+        "cobbling": [
             {
                 "name": "cobbler_hammer",
                 "description": "The cobbler's hammer. Looks like any old hammer, but its tail is solid and curved.",
-                "activity": ["cobbler"],
+                "activity": ["cobbling"],
                 "suspicious": true,
                 "dialogue": [
                     "Shoe or a skull on its business end, the hammer will hammer regardless.",
@@ -85,11 +85,11 @@
         ]
     },
     "activity_objects": {
-        "cobbler": [
+        "cobbling": [
             {
                 "name": "shoes",
                 "description": "A pile of shoes in varying level of disrepair.",
-                "activity": ["cobbler"],
+                "activity": ["cobbling"],
                 "dialogue": [
                     "Seems a skilled cobbler fixed these right up",
                     "Brand new nails in the sole.",
@@ -99,7 +99,7 @@
             {
                 "name": "cobbler_customer_invoices",
                 "description": "Invoices.",
-                "activity": ["cobbler"],
+                "activity": ["cobbling"],
                 "dialogue": [
                     "Looks like Enfrin owns this shop.",
                     "This wildly popular shop, that is.",
@@ -292,7 +292,7 @@
         ],
         "suspicious": {
             "guilty": [
-                "What would $suspect need with this? Seems dangerous.",
+                "Why would $suspect have this? Seems odd.",
                 "$suspect had this on hand. Make of that what you will."
             ],
             "not_guilty": [
@@ -305,7 +305,7 @@
                 "And I'm going to prove they did it."
             ],
             "not_guilty": [
-                "But that alone doesn't prove their guilt."
+                "That alone doesn't prove their guilt."
             ]
         },
         "motive_reflection": {
@@ -313,7 +313,7 @@
                 "Now that's a motive worth looking into."
             ],
             "not_guilty": [
-                "But a complicated past doesn't make someone a killer."
+                "A complicated past doesn't make someone a killer."
             ]
         },
         "found_weapon": {

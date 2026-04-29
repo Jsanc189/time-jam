@@ -161,10 +161,14 @@ export default class Case {
 
         if (hasRelationToCrime) {
             const raw = this.pickRaw(this.metaDialogue.relation_to_crime);
-            lines.push(this.resolve(raw, {
+            let line = this.resolve(raw, {
                 suspect,
                 activity: hasRelationToCrime.replace(/_/g, ' '),
-            }));
+            });
+
+            line = line.charAt(0).toUpperCase() + line.slice(1);
+
+            lines.push(line);
         }
 
         if(object.suspicious){
@@ -176,6 +180,8 @@ export default class Case {
                 suspect,
                 object: object.name.replace(/_/g, ' '),
             }));
+
+            lines.push(this.getReflection(suspect, "role"));
         }
 
         return lines;

@@ -9,8 +9,8 @@
             },
             "cobbler_shop": {
                 "floor_frames": [4, 5, 6, 7],
-                "activity_objects": ["cobbler"],
-                "crime_objects": ["cobbler"],
+                "activity_objects": ["cobbling"],
+                "crime_objects": ["cobbling"],
                 "enter": "A cobbler's shop..."
             },
             "fairy_home": {
