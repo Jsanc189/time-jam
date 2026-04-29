@@ -16,6 +16,10 @@ export default class MenuScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.setBackgroundColor('#6e3318');
+        this.audio = this.game.audio;
+        if (!this.currentMusic) {
+            this.audio.playMusic('mainTheme');
+        }
 
         const BUTTON_SPACING = 150;
         new GameText(
@@ -40,7 +44,19 @@ export default class MenuScene extends Phaser.Scene {
             undefined,
             () => {
                 this.game.audio.playSFX("gavel");
-                this.scene.start('MainScene');
+                this.tweens.add({
+                    targets: this.audio.currentMusic,
+                    volume: 0,
+                    duration: 800,
+                    onComplete: () => {
+                        this.audio.stopMusic();
+                        
+                    }
+                });
+                this.cameras.main.fadeOut(800, 0, 0, 0);   
+                this.cameras.main.once('camerafadeoutcomplete', ()=>{
+                    this.scene.start('MainScene');
+                })             
             },
         );
 
@@ -74,4 +90,5 @@ export default class MenuScene extends Phaser.Scene {
             },
         );
     }
+
 }

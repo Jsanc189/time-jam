@@ -14,6 +14,7 @@ import Case from '../prefabs/Case';
 import Button from '../prefabs/Button';
 import ObjectivesController from "../prefabs/Objectives";
 import { Game } from "phaser";
+import AudioManager from '../audio/AudioManager';
 
 export default class MainScene extends Phaser.Scene {
     constructor() {
@@ -25,6 +26,11 @@ export default class MainScene extends Phaser.Scene {
         this.NUM_OBJECTIVES = 10;
         this.DEFENSE_ROLE = 'defense';
         this.PROSECUTE_ROLE = 'prosecution';
+        this.audio = this.game.audio;
+        this.time.delayedCall(500, () => {
+            this.audio.playMusic("mindPalace");
+        });
+
 
         if (!this.registry.get('case')) {
             this.grammar = this.registry.get('grammar');
@@ -50,8 +56,12 @@ export default class MainScene extends Phaser.Scene {
             () => {
                 this.registry.set('case', null);
                 this.registry.set('objectivesControl', null);
-                this.scene.start('MenuScene');
                 this.game.audio.playSFX("gavel");
+                this.audio.stopMusic();
+                this.cameras.main.fadeOut(800, 0, 0, 0);   
+                this.cameras.main.once('camerafadeoutcomplete', ()=>{
+                    this.scene.start('MenuScene');
+                })             
             },
         );
         this.mapLaunched = false;
@@ -65,13 +75,41 @@ export default class MainScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
-                this.scene.sleep();
                 this.game.audio.playSFX("gavel");
+                // Create a fullscreen black overlay
+                const overlay = this.add.rectangle(
+                    0, 
+                    0,
+                    this.cameras.main.width,
+                    this.cameras.main.height,
+                    0x000000,
+                    0
+                ).setOrigin(0).setDepth(9999);
+
                 if (!this.mapLaunched){
-                    this.scene.launch('MapScene');
-                    this.mapLaunched = true;
+                    this.tweens.add({
+                        targets: overlay,
+                        alpha: 1,
+                        duration: 500,
+                        onComplete: () => {
+                            // Launch MapScene behind the black screen
+                            this.audio.stopMusic();
+                            this.scene.launch('MapScene', { fadeIn: true });
+                            this.scene.sleep(); // pause MainScene
+                        }
+                    });
                 } else {
-                    this.scene.wake('MapScene');
+                    this.tweens.add({
+                        targets: overlay,
+                        alpha: 1,
+                        duration: 400,
+                        onComplete: () => {
+                            this.audio.stopMusic();
+                            // Launch MapScene behind the black screen
+                            this.scene.wake('MapScene', { fadeIn: true });
+                            this.scene.sleep(); // pause MainScene
+                        }
+                    });
                 }
 
             },
@@ -219,6 +257,8 @@ export default class MainScene extends Phaser.Scene {
         .setVisible(false);
 
     }
+
+
 
     // TEMP TESTING CODE
     testObjectives() {
