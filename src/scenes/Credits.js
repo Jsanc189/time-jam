@@ -19,18 +19,18 @@ export default class CreditsScene extends Phaser.Scene {
 
         //credits to display in the credits scene
         this.credits = [
-            'Producer:\n\nWatchOutJackie',
-            'Game Designers:\n\nRaven Ruiz\n\nWatchOutJackie',
-            'Level Designers:\n\nRaven Ruiz\n\nWatchOutJackie',
-            'Lead Artist:\n\nSunnysquid',
-            'Background Artist:\n\nSunnysquid',
-            'Assets Artist:\n\nSunnysquid',
-            'Character Artist:\n\nMarstheluminary',
-            'Music Designer:\n\nSimon Blidener',
-            'SFX Designer:\n\nSimon Blidener',
-            'UI Designer:\n\nSunnysquid',
+            'Producer:\n\nWatchOutJackie\n\n',
+            'Game Designers:\n\nRaven Ruiz\n\nWatchOutJackie\n\n',
+            'Level Designers:\n\nRaven Ruiz\n\nWatchOutJackie\n\n',
+            'Lead Artist:\n\nSunnysquid\n\n',
+            'Background Artist:\n\nSunnysquid\n\n',
+            'Assets Artist:\n\nSunnysquid\n\n',
+            'Character Artist:\n\nMarstheluminary\n\n',
+            'Music Designer:\n\nSimon Blidener\n\n',
+            'SFX Designer:\n\nSimon Blidener\n\n\n',
+            'UI Designers:\n\nSunnysquid\n\nRaven Ruiz\n\nWatchOutJackie\n\n',
             'Fonts:\n\nCinzel\nDesigned by Astigmatic\n\nUsed under the SIL Open Font License',
-            'Special Thanks:\n\nEveryone who supported the development of this game!',
+            'Special Thanks:\n\nEveryone who supported\n\nthe development of this game!',
         ];
 
         this.currentCreditIndex = 0;
@@ -49,13 +49,17 @@ export default class CreditsScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setAlpha(0);
 
-        this.showNextCredit();
+        this.creditObjects = [];
+        this.scrollSpeed = 3;
+
+        this.createCreditBlocks();
+        //this.showNextCredit();
 
         //button to get back to MenuScene
         const BUTTON_SPACING = 450;
         const MENU_BUTTON = new Button(
             this,
-            this.cameras.main.centerX,
+            this.cameras.main.centerX * 1.75,
             this.cameras.main.centerY + BUTTON_SPACING,
             300,
             100,
@@ -68,33 +72,38 @@ export default class CreditsScene extends Phaser.Scene {
         );
     }
 
-    showNextCredit() {
-        //go back to menu scene after all credits have been shown
-        if (this.currentCreditIndex >= this.credits.length) {
-            this.scene.start('MenuScene');
-            return;
-        }
+    createCreditBlocks() {
+        let y = 1000;
 
-        const text = this.credits[this.currentCreditIndex];
-        this.creditScrollText.setText(text);
-
-        this.tweens.add({
-            targets: this.creditScrollText,
-            alpha: 1,
-            duration: 2000,
-            onComplete: () => {
-                this.time.delayedCall(2000, () => {
-                    this.tweens.add({
-                        targets: this.creditScrollText,
-                        alpha: 0,
-                        duration: 2000,
-                        onComplete: () => {
-                            this.currentCreditIndex++;
-                            this.showNextCredit();
-                        },
-                    });
-                });
-            },
+        this.credits.forEach((line) => {
+            const t = new GameText (
+                this,
+                this.cameras.main.centerX,
+                y,
+                line,
+                {
+                    fontSize: '96px',
+                    color: '#fff',
+                    align: 'center',
+                },
+            )
+            .setOrigin(0.5)
+            this.creditObjects.push(t);
+            y += t.height + 100;
         });
+        this.lastCredit = this.creditObjects[this.creditObjects.length - 1];
+
+    }
+
+    update() {
+        this.creditObjects.forEach(t => {
+            t.y -= this.scrollSpeed;
+        });
+
+        // When the last credit scrolls off the top, end scene
+        if (this.lastCredit.y + this.lastCredit.height < 0) {
+            this.scene.start('MenuScene');
+        }
+    
     }
 }
