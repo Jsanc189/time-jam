@@ -53,7 +53,13 @@ export default class BootScene extends Phaser.Scene {
       frameWidth: 256,
       frameHeight: 256
     });
-  
+
+    //NPC assets
+    this.load.image('fairy_out', 'assets/images/fairy_outline.png');
+    this.load.image('goblin_out', 'assets/images/goblin_outline.png');
+    this.load.image('human_out', 'assets/images/human_outline.png');
+    this.load.image('orc_out', 'assets/images/orc_outline.png');
+    this.load.image('elf_out', 'assets/images/elf_outline.png'); 
 
     //object assets
     this.load.spritesheet('stools', 'assets/images/stools.png',{

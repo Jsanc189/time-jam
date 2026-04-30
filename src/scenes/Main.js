@@ -179,6 +179,9 @@ export default class MainScene extends Phaser.Scene {
                     juryText.setVisible(true);
                     EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
+                    for (let i = 0; i < this.jurorSprites.length; i++) {
+                        this.jurorSprites[i].setVisible(true);
+                    }
 
                     //this.testObjectives();
                 },
@@ -211,6 +214,9 @@ export default class MainScene extends Phaser.Scene {
                     juryText.setVisible(true);
                     EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
+                    for (let i = 0; i < this.jurorSprites.length; i++) {
+                        this.jurorSprites[i].setVisible(true);
+                    }
 
                     //this.testObjectives();
                 },
@@ -237,6 +243,29 @@ export default class MainScene extends Phaser.Scene {
         .setVisible(false);
 
         //jury stand placeholer
+        const jurors = ['fairy_out', 'goblin_out','human_out','orc_out','elf_out'];
+        let jurorX = this.cameras.main.centerX * 1.28;
+        let jurorY = this.cameras.main.centerY * 1.05;
+        this.jurorSprites = []
+
+        //this.add.sprite(jurorX, jurorY, jurors[0]).setOrigin(0.5).setScale(0.5);
+        for (let i = 0; i < jurors.length; i++){
+            const newJuror = this.add.sprite(
+                jurorX,
+                jurorY,
+                jurors[i]
+            ).setOrigin(0.5).setScale(0.5).setVisible(false);
+            if (jurors[i + 1] === 'goblin_out'){
+                jurorY -= 40;
+            } else if (jurors[i] === 'goblin_out' && jurors[i+1] != 'goblin_out') {
+                jurorY += 115;
+            } else {
+                jurorY + 80;
+            }
+            jurorX += 152;
+            this.jurorSprites.push(newJuror);
+        };
+
         const g = this.add.graphics();
         g.fillStyle(0x2e2a24, 1);
         const x = this.cameras.main.centerX * 1.6;
