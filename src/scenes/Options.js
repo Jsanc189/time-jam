@@ -14,7 +14,11 @@ export default class OptionsScene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor('#6e3318');
+        this.settings_bg = this.add.image(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            'option_credit_bg'
+        ).setOrigin(0.5).setScale(1.5);
         const BUTTON_SPACING = 200;
         const POSITION_X= this.cameras.main.centerX;
         const POSITION_Y = this.cameras.main.centerY / 2.5;

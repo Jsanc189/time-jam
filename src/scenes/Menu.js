@@ -15,28 +15,41 @@ export default class MenuScene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor('#6e3318');
+        const menu_bg = this.add.image(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY,
+            'menu_bg'
+        ).setOrigin(0.5).setScale(1.5);
+
         this.audio = this.game.audio;
         if (!this.currentMusic) {
             this.audio.playMusic('mainTheme');
         }
 
+        const STARTY = this.cameras.main.centerY * 1.25;
         const BUTTON_SPACING = 150;
+
+        //title
+        this.text_bg = this.add.image(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY * 1.15,
+            'text_bg'
+        ).setOrigin(0.5).setScale(1.54);
         new GameText(
             this,
             this.cameras.main.centerX,
-            this.cameras.main.centerY - BUTTON_SPACING,
-            'Mystery Game Menu',
+            this.cameras.main.centerY * 0.75,
+            'Mind Palace:\nRunning Out of Time',
             {
                 fontSize: '128px',
-                color: '#fff',
+                color: '#160402',
             },
         ).setOrigin(0.5);
 
         const PLAY_BUTTON = new Button(
             this,
             this.cameras.main.centerX,
-            this.cameras.main.centerY,
+            STARTY,
             300,
             100,
             'Start Game',
@@ -63,10 +76,10 @@ export default class MenuScene extends Phaser.Scene {
         const OPTIONS_BUTTON = new Button(
             this,
             this.cameras.main.centerX,
-            this.cameras.main.centerY + BUTTON_SPACING,
+            STARTY + BUTTON_SPACING,
             300,
             100,
-            'Options',
+            'Settings',
             undefined,
             undefined,
             () => {
@@ -78,7 +91,7 @@ export default class MenuScene extends Phaser.Scene {
         const CREDITS_BUTTON = new Button(
             this,
             this.cameras.main.centerX,
-            this.cameras.main.centerY + BUTTON_SPACING * 2,
+            STARTY + BUTTON_SPACING * 2,
             300,
             100,
             'Credits',

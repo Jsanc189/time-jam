@@ -44,7 +44,12 @@ export default class MainScene extends Phaser.Scene {
             this.registry.set('ledger', this.ledger)
         }
 
-        this.cameras.main.setBackgroundColor('#6e3318');
+       const main_bg = this.add.image(
+        this.cameras.main.centerX,
+        this.cameras.main.centerY,
+        'courtroom_bg'
+       ).setOrigin(0.5).setScale(2);
+
         //button to get back to MenuScene
         const BUTTON_SPACING = 150;
 
@@ -178,9 +183,9 @@ export default class MainScene extends Phaser.Scene {
                     PICK_SIDE_PROSECUTION.hide();
                     MAP_BUTTON.show();
                     this.judgeStand.setVisible(true);
-                    judge.setVisible(true);
-                    g.setVisible(true);
-                    juryText.setVisible(true);
+                    //this.judge.setVisible(true);
+                    this.jury_back.setVisible(true);
+                    this.jury_front.setVisible(true);
                     EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
@@ -213,9 +218,9 @@ export default class MainScene extends Phaser.Scene {
                     PICK_SIDE_PROSECUTION.hide();
                     MAP_BUTTON.show();
                     this.judgeStand.setVisible(true);
-                    judge.setVisible(true);
-                    g.setVisible(true);
-                    juryText.setVisible(true);
+                    //this.judge.setVisible(true);
+                    this.jury_back.setVisible(true);
+                    this.jury_front.setVisible(true);
                     EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
@@ -227,32 +232,27 @@ export default class MainScene extends Phaser.Scene {
             );
         }
 
-        //judge placeholder
-        const judgeWidth = 800;
-        const judgeHeight = 600;
-        this.judgeStand = this.add.rectangle(
-            this.cameras.main.centerX / 2,
-            this.cameras.main.centerY * 1.30 ,
-            judgeWidth,
-            judgeHeight,
-            0x3b2f2f
-        ).setStrokeStyle(4, 0xfffff)
-        .setVisible(false);
-        const judge = new GameText(
-            this,
-            this.judgeStand.x,
-            this.judgeStand.y,
-            "JUDGE"
-        ).setOrigin(0.5)
-        .setVisible(false);
+        //judge stand
+        this.judgeStand = this.add.image(
+            this.cameras.main.centerX * 0.95,
+            this.cameras.main.centerY * 1.20 ,
+            'judge_stand'
+        ).setOrigin(0.5).setScale(1.75).setVisible(false);
+      
 
         //jury stand placeholer
+        const juryX = 1.13;
+        const juryY = 1.2;
+        this.jury_back = this.add.image(
+            this.cameras.main.centerX * juryX,
+            this.cameras.main.centerY * juryY,
+            'jury_back'
+        ).setOrigin(0.5).setScale(1.75).setVisible(false);
         const jurors = ['fairy_out', 'goblin_out','human_out','orc_out','elf_out'];
         let jurorX = this.cameras.main.centerX * 1.28;
-        let jurorY = this.cameras.main.centerY * 1.05;
+        let jurorY = this.cameras.main.centerY * 1.1;
         this.jurorSprites = []
 
-        //this.add.sprite(jurorX, jurorY, jurors[0]).setOrigin(0.5).setScale(0.5);
         for (let i = 0; i < jurors.length; i++){
             const newJuror = this.add.sprite(
                 jurorX,
@@ -270,24 +270,11 @@ export default class MainScene extends Phaser.Scene {
             this.jurorSprites.push(newJuror);
         };
 
-        const g = this.add.graphics();
-        g.fillStyle(0x2e2a24, 1);
-        const x = this.cameras.main.centerX * 1.6;
-        const y = this.cameras.main.centerY * 1.5;
-        g.moveTo(x - 420, y - 220);   // top-left (pulled back)
-        g.lineTo(x + 420, y - 50);   // top-right (pulled back)
-        g.lineTo(x + 420, y + 300);  // bottom-right (closer)
-        g.lineTo(x - 420, y + 100);  // bottom-left (closer)
-        g.closePath();
-        g.fillPath();
-        g.setVisible(false);
-        const juryText = new GameText(
-            this,
-            x,
-            y,
-            "JURY"
-        ).setOrigin(0.5)
-        .setVisible(false);
+        this.jury_front = this.add.image(
+            this.cameras.main.centerX * juryX,
+            this.cameras.main.centerY * juryY,
+            'jury_front'
+        ).setOrigin(0.5).setScale(1.75).setVisible(false);
 
     }
 
