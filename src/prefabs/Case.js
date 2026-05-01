@@ -34,6 +34,7 @@ export default class Case {
         this.investigationLocations = this.getLocations(grammar);
 
         this.playerRole = null; // selected by player on game start
+        this.metaDialogue = grammar.getObjectMetaDialogue();
     }
 
     getCrimeScene(grammar) {
@@ -99,5 +100,101 @@ export default class Case {
         }
 
         return rooms;
+    }
+
+    pickRaw(pool) {
+        return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    resolve(raw, tokens = {}) {
+        return Object.entries(tokens).reduce(
+            (str, [key, val]) => str.replace(new RegExp(`\\$${key}`, 'g'), val),
+            raw
+        );
+    }
+
+    getReflection(suspect, type) {
+        const isDefendant = this.defendant.name.toLowerCase() === suspect.toLowerCase();
+        const isGuilty = this.playerRole === 'defense' ? !isDefendant : isDefendant;
+        const pool = this.metaDialogue[`${type}_reflection`][isGuilty ? 'guilty' : 'not_guilty'];
+        return this.pickRaw(pool);
+    }
+
+    foundWeaponDialouge(suspect, location) {
+        suspect = suspect.charAt(0).toUpperCase() + suspect.slice(1);
+
+        const isAtCrimeScene = location === this.crime.scene;
+        const pool = this.metaDialogue.found_weapon[isAtCrimeScene ? 'crime_scene' : 'elsewhere'];
+
+        if (location.includes('home')) location = 'home';
+        location = location.replace(/_/g, ' ');
+
+        const dialogue = this.resolve(this.pickRaw(pool), {
+            suspect,
+            victim: this.victim.name,
+            object: this.crime.object.name.replace(/_/g, ' '),
+            location,
+        });
+
+        return [`${dialogue}`,`${this.getReflection(suspect, "role")}`];
+    }
+
+    foundObjectDialogue(object, suspect, hasRelationToCrime) {
+        suspect = suspect.charAt(0).toUpperCase() + suspect.slice(1);
+        const lines = [];
+
+        if (object.description) {
+            lines.push(this.resolve(object.description, {
+                suspect,
+                victim: this.victim.name,
+            }));
+        }
+
+        if (object.dialogue) {
+            for(const dialogue of object.dialogue){
+                lines.push(this.resolve(dialogue, {
+                    suspect,
+                    victim: this.victim.name,
+                }));
+            }
+        }
+
+        if (hasRelationToCrime) {
+            const raw = this.pickRaw(this.metaDialogue.relation_to_crime);
+            let line = this.resolve(raw, {
+                suspect,
+                activity: hasRelationToCrime.replace(/_/g, ' '),
+            });
+
+            line = line.charAt(0).toUpperCase() + line.slice(1);
+
+            lines.push(line);
+        }
+
+        if(object.suspicious){
+            const isDefendant = this.defendant.name.toLowerCase() === suspect.toLowerCase();
+            const isGuilty = this.playerRole === 'defense' ? !isDefendant : isDefendant;
+            const pickFrom = isGuilty ? 'guilty' : 'not_guilty';    
+            const raw = this.pickRaw(this.metaDialogue.suspicious[pickFrom]);
+            lines.push(this.resolve(raw, {
+                suspect,
+                object: object.name.replace(/_/g, ' '),
+            }));
+
+            lines.push(this.getReflection(suspect, "role"));
+        }
+
+        return lines;
+    }
+
+    foundRelationshipEventDialogue(suspect, motive) {
+        suspect = suspect.charAt(0).toUpperCase() + suspect.slice(1);
+        const tokens = { suspect, victim: this.victim.name };
+
+        const rel = this.resolve(motive.description, tokens);
+        const relEvent = this.resolve(this.pickRaw(motive.discovery_dialogue), tokens);
+        const reflection = this.getReflection(suspect, "motive");
+
+        return [rel, relEvent, reflection];
     }
 }

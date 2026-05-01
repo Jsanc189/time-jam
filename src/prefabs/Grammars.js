@@ -97,11 +97,11 @@ export default class Grammar {
             crime_objects:    this.getList('crime_objects'),
             activity_objects: this.getList('activity_objects'),
             character_objects: this.getList('character_objects'),
-            location_objects: this.getList('location_objects')
+            location_objects: this.getList('location_objects'),
         };
     }
 
-    getAllObjectDialogue(){
-        return this.getList("object_dialogue");
+    getObjectMetaDialogue(){
+        return this.getList("meta_dialogue");
     }
 }
