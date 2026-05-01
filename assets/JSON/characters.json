@@ -3,7 +3,7 @@
         {
             "name": "Enfrin",
             "archetype": "fairy",
-            "occupation": "cobbler",
+            "occupation": "cobbling",
             "hobbies": ["fishing", "trickery"],
             "locations": ["river", "cobbler_shop", "fairy_home"],
             "relationships": {
