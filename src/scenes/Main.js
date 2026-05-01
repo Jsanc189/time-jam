@@ -15,6 +15,7 @@ import Button from '../prefabs/Button';
 import ObjectivesController from "../prefabs/Objectives";
 import { Game } from "phaser";
 import AudioManager from '../audio/AudioManager';
+import Ledger from '../prefabs/Ledger';
 
 export default class MainScene extends Phaser.Scene {
     constructor() {
@@ -38,6 +39,9 @@ export default class MainScene extends Phaser.Scene {
 
             this.registry.set('case', this.case);
             // this.testObjectives();
+
+            this.ledger = new Ledger();
+            this.registry.set('ledger', this.ledger)
         }
 
         this.cameras.main.setBackgroundColor('#6e3318');

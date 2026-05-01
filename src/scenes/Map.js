@@ -17,6 +17,7 @@ import Player from '../prefabs/Player';
 import Clock from '../prefabs/Clock';
 import Rooms from '../prefabs/Rooms';
 import Button from '../prefabs/Button';
+import DialogueBox from "../prefabs/DialogueBox";
 
 export default class MapScene extends Phaser.Scene {
     constructor() {
@@ -142,8 +143,8 @@ export default class MapScene extends Phaser.Scene {
         const BUTTON_SPACING = 120;
         const MAIN_BUTTON = new Button(
             this,
-            this.cameras.main.centerX / 5,
-            this.cameras.main.centerY + BUTTON_SPACING,
+            this.cameras.main.centerX / 6 + 50,
+            this.cameras.main.centerY / 6,
             300,
             100,
             'Back to Main',
@@ -161,8 +162,8 @@ export default class MapScene extends Phaser.Scene {
         //button to click to move clock up into view
         const CLOCK_BUTTON = new Button(
             this,
-            this.cameras.main.centerX / 5,
-            this.cameras.main.centerY + BUTTON_SPACING * 2,
+            this.cameras.main.centerX * 1.8,
+            this.cameras.main.centerY / 6,
             300,
             100,
             'Reveal Clock',
@@ -182,7 +183,14 @@ export default class MapScene extends Phaser.Scene {
         );
         CLOCK_BUTTON.setScrollFactor(0);
 
+        this.dialogueBox = new DialogueBox(
+            this,
+            this.scale.width / 2, // centered X
+            this.scale.height - 120, // near bottom of screen
+            'paper1',
+        );  
 
+        this.ledger = this.registry.get('ledger');
     }
 
     update() {
@@ -229,6 +237,16 @@ export default class MapScene extends Phaser.Scene {
             // Reset for next frame
             sprite.setData('isActive', false);
         });
+
+        if(this.ledger.newDiscovery){   // this means that a room objective has been completed!
+            // let player choose whether to write evidence in their ledger
+            this.dialogueBox.showDialogue({
+                messages: "new discovery",
+                speaker: 'YOU',
+            });
+
+            this.ledger.record();
+        }
 
     }
 

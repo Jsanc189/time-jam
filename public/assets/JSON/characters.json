@@ -72,5 +72,42 @@
             }
         }
     ],
-    "archetype": ["fairy", "goblin", "elf", "human", "orc"]
+    "archetype": ["fairy", "goblin", "elf", "human", "orc"],
+    "jury": [
+        {
+            "convinced": {
+                "guilty": [ 
+                    "$defendant had to have done it!"
+                ],
+                "not_guilty": [ 
+                    "$defendant is innocent!"
+                ]
+            },
+            "almost_convinced": {
+                "guilty": [ 
+                    "Maybe $defendant did do it..."
+                ],
+                "not_guilty": [ 
+                    "Maybe $defendant didn't do it..."
+                ]
+            },
+            "unsure": {
+                "guilty": [ 
+                    "I just don't know..."
+                ],
+                "not_guilty": [ 
+                    "I just don't know..."
+                ]
+            }
+        }
+    ],
+    "judge": [
+        {
+            "barks": [
+                "Hmmm...",
+                "I see.",
+                "Interesting"
+            ]
+        }
+    ]
 }

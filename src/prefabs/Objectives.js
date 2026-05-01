@@ -189,7 +189,6 @@ export default class ObjectivesController {
 
         if(allFound){
             this.completeById(objective.id);
-            console.log("[Objective]", "OBJECTIVE COMPLETED!")
         }      
 
         return allFound;
