@@ -17,28 +17,45 @@ export default class LoadScene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor('#6e3318');
-        new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, 'Mystery Game', {
+        const load_bg = this.add.image(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY,
+            'menu_bg'
+        ).setOrigin(0.5).setScale(1.5);
+
+        //title
+        this.text_bg = this.add.image(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY * 1.15,
+            'text_bg'
+        ).setOrigin(0.5).setScale(1.54);
+
+        new GameText(
+            this, 
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY * 0.75, 
+            'Mind Palace:\nRunning Out of Time', 
+            {
             fontFamily: 'Special Elite',
             fontSize: '128px',
-            color: '#fff',
-        }).setOrigin(0.5);
+            color: '#160402',
+            }).setOrigin(0.5);
 
         const BUTTON_SPACING = 200;
         const STARTBUTTON = new Button(
             this,
             this.cameras.main.centerX,
-            this.cameras.main.centerY + BUTTON_SPACING,
+            this.cameras.main.centerY * 1.25,
             300,
             100,
-            'Start Game',
+            'Start',
             undefined,
             undefined,
             () => {
                 this.scene.start('MenuScene');
                 this.game.audio.playSFX("gavel");
             },
-        );
+        ).setOrigin(0.5);
 
                 //Player animation
         this.anims.create({

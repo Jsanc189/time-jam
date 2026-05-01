@@ -15,7 +15,12 @@ export default class CreditsScene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor('#6e3318');
+        this.credits_bg = this.add.image(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            'option_credit_bg'
+        ).setOrigin(0.5).setScale(1.5);
+
 
         //credits to display in the credits scene
         this.credits = [

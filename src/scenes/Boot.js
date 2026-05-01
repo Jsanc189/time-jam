@@ -54,6 +54,12 @@ export default class BootScene extends Phaser.Scene {
       frameHeight: 256
     });
 
+    //Backgrounds
+    this.load.image('courtroom_bg', 'assets/images/courtroom_bg.png');
+    this.load.image('option_credit_bg', 'assets/images/options-credits_bg.png');
+    this.load.image('menu_bg', 'assets/images/main_menu_bg.png');
+    this.load.image('text_bg', 'assets/images/text_bg.png');
+
     //NPC assets
     this.load.image('fairy_out', 'assets/images/fairy_outline.png');
     this.load.image('goblin_out', 'assets/images/goblin_outline.png');
@@ -86,6 +92,10 @@ export default class BootScene extends Phaser.Scene {
       frameWidth: 512,
       frameHeigh: 512
     })
+    this.load.image('judge_stand', 'assets/images/judge_stand.png');
+    this.load.image('jury_front', 'assets/images/jury_front.png');
+    this.load.image('jury_back', 'assets/images/jury_back.png')
+
 
     //ui assets
     this.load.image('paper1', 'assets/images/paper_1.png');
