@@ -14,7 +14,10 @@ export default class Ledger {
     }
 
     record(){
-        this.discoveries.push(this.newDiscovery);
+        const latestDiscovery = this.newDiscovery;
+        this.discoveries.push(latestDiscovery);
         this.newDiscovery = null;
+
+        return latestDiscovery;
     }
 }

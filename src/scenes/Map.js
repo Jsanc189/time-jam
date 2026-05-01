@@ -241,11 +241,10 @@ export default class MapScene extends Phaser.Scene {
         if(this.ledger.newDiscovery){   // this means that a room objective has been completed!
             // let player choose whether to write evidence in their ledger
             this.dialogueBox.showDialogue({
-                messages: "new discovery",
+                messages: this.ledger.record(),
                 speaker: 'YOU',
             });
-
-            this.ledger.record();
+            ;
         }
 
     }
