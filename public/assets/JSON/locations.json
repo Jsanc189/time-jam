@@ -7,7 +7,10 @@
                 "crime_objects": ["fishing"],
                 "enter": "Whoever frequents here must be an avid fisherman.",
                 "discovery": [
-                    "Enfrin fishes with a harpoon."
+                    {
+                        "key": "harpoon",
+                        "text": "Enfrin fishes with a harpoon."
+                    }
                 ]
             },
             "cobbler_shop": {
@@ -16,7 +19,10 @@
                 "crime_objects": ["cobbling"],
                 "enter": "A cobbler's shop...",
                 "discovery": [
-                    "Enfrin is a cobbler."
+                    {
+                        "key": "cobbler",
+                        "text": "Enfrin is a cobbler."
+                    }
                 ]
             },
             "fairy_home": {
@@ -25,7 +31,10 @@
                 "location_objects": ["house"],
                 "enter": "Looks like a fairy lives here.",
                 "discovery": [
-                    "Enfrin has feelings for Sil."
+                    {
+                        "key": "crush",
+                        "text": "Enfrin has feelings for Sil."
+                    }
                 ]
             }
         },
@@ -35,7 +44,10 @@
                 "activity_objects": ["library"],
                 "enter": "All kinds of books to read here.",
                 "discovery": [
-                    "Chorg borrowed suspicious library books."
+                    {
+                        "key": "library books",
+                        "text": "Chorg borrowed suspicious library books."
+                    }
                 ]
             },
             "hospital": {
@@ -44,7 +56,10 @@
                 "crime_objects": ["medicine"],
                 "enter": "A hospital. It's a place of healing. And of death.",
                 "discovery": [
-                    "Chorg has access to poison."
+                    {
+                        "key": "poison",
+                        "text": "Chorg has access to poison."
+                    }
                 ]
             },
             "goblin_home": {
@@ -53,8 +68,10 @@
                 "location_objects": ["house"],
                 "enter": "Looks like a goblin lives here.",
                 "discovery": [
-                    "Chorg has suspicious library books.",
-                    "Chorg and Sil were together."
+                    {
+                        "key": "library books",
+                        "text": "Chorg has suspicious library books."
+                    }
                 ]
             }
         },
@@ -64,14 +81,24 @@
                 "activity_objects": ["archery"],
                 "crime_objects": ["archery"],
                 "enter": "Good place to practice your archery.",
-                "discovery": ["Sil is a skilled archer."]
+                "discovery": [
+                    {
+                        "key": "archer",
+                        "text": "Sil is a skilled archer."
+                    }
+                ]
             },
             "carpentry_shop": {
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["carpentry"],
                 "crime_objects": ["carpentry"],
                 "enter": "Smells like felled trees.",
-                "discovery": ["Sil is a carpenter."]
+                "discovery": [
+                    {
+                        "key": "carpenter",
+                        "text": "Sil is a carpenter."
+                    }
+                ]
             },
             "elf_home": {
                 "floor_frames": [4, 5, 6, 7],
@@ -79,8 +106,10 @@
                 "location_objects": ["house"],
                 "enter": "This is the dwelling of an elf.",
                 "discovery": [
-                    "Sil has a secret admirer.",
-                    "Chorg and Sil were together."
+                    {
+                        "key": "secret admirer",
+                        "text": "Sil has a secret admirer."
+                    }
                 ]
             }
         },

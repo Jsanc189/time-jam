@@ -114,4 +114,10 @@ export default class Button extends Phaser.GameObjects.Sprite {
         this.newButton.setVisible(false).disableInteractive();
         this.buttonText.setVisible(false);
     }
+
+    destroy() {
+        this.newButton.destroy();
+        this.buttonText.destroy();
+        super.destroy();
+    }
 }

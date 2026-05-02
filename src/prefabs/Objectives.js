@@ -64,7 +64,10 @@ export default class ObjectivesController {
             foundObjects: new Set(),
             alwaysSpawn: true,
             suspect: suspect,
-            discovery: location.discovery
+            discovery: [{
+                key: "murder weapon",
+                text: `${this.case.victim.name} was killed with a ${crime.object}`
+            }]
         });
     }
 
@@ -181,9 +184,14 @@ export default class ObjectivesController {
     }
 
     // TODO: move all of this text to JSON
-    buildDiscovery(suspect, motive) {
+    buildMotiveDiscovery(suspect, motive) {
         const dialogue = [];
-        dialogue.push(`${suspect} had motive: ${this.fmt(motive.name)}; ${motive.description}`);
+        dialogue.push(
+            {
+                key: `${this.fmt(motive.name)}`,
+                text: `${suspect} had motive: ${this.fmt(motive.name)}; ${motive.description}`
+            }
+        );
 
         return dialogue;
     }
@@ -239,7 +247,7 @@ export default class ObjectivesController {
         if (!obj) return null;
 
         if(obj.motive){
-            obj.discovery = this.buildDiscovery(obj.suspect, obj.motive);
+            obj.discovery = this.buildMotiveDiscovery(obj.suspect, obj.motive);
         }
 
         obj.discovery.push(this.addDiscoveryFlavorText(obj.redHerring));

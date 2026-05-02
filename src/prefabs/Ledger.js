@@ -16,14 +16,15 @@ export default class Ledger {
     }
 
     record(){
-        for(let i = 0; i < this.awaitingPlayerChoice.length - 1; i++){ // ignores flavor text, which should always be the last string in the array
-            this.discoveries.push(this.awaitingPlayerChoice[i]);    
+        for(let i = 0; i < this.awaitingPlayerChoice.length; i++){
+            const discovery = this.awaitingPlayerChoice[i];
+            if(!discovery.key){ continue; } // ignores flavor text
+           
+            this.discoveries.push(this.awaitingPlayerChoice[i]);
         }
         
         this.awaitingPlayerChoice = null;
         this.newDiscovery = false;
-
-        return this.discoveries[this.discoveries.length - 1];
     }
 
     dismiss(){
@@ -33,6 +34,18 @@ export default class Ledger {
 
     acknowledge(){
         this.newDiscovery = false;
-        return this.awaitingPlayerChoice;
+        return this.getTexts();
+    }
+
+    getTexts(){
+        const texts = [];
+        for(const discoveryText of this.awaitingPlayerChoice){
+            if(discoveryText.text){
+                texts.push(discoveryText.text);
+            } else {
+                texts.push(discoveryText);
+            }
+        }
+        return texts;
     }
 }
