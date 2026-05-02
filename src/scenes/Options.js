@@ -63,7 +63,7 @@ export default class OptionsScene extends Phaser.Scene {
             POSITION_X + BUTTON_SPACING,
             POSITION_Y + BUTTON_SPACING * 2,
             SLIDER_WIDTH, 
-            this.game.audio.sfxVol,
+            this.game.audio.sfxVolume,
             percent => this.game.audio.setSFXVolume(percent),
             () => this.game.audio.playSFX("gavel")
         )

@@ -29,15 +29,14 @@ export default class MapScene extends Phaser.Scene {
         this.registry.set("okToFade", true);
         this.fadeIn();
         this.gameOverTriggered = false;
+        this.audio.playMusic("mindPalace");
+        this.audio.currentMusic.setVolume(0);
 
         // Fade in music
         this.time.delayedCall(300, () => {
-            this.audio.playMusic("mindPalace");
-            this.audio.currentMusic.setVolume(0);
-
             this.tweens.add({
                 targets: this.audio.currentMusic,
-                volume: 1,
+                volume: this.audio.musicVolume,
                 duration: 800
             });
         });
@@ -129,7 +128,7 @@ export default class MapScene extends Phaser.Scene {
         this.registry.set('clockStartTime', 0); //start time in seconds
         this.registry.set('maxSeconds', 43200); //12 hours in seconds
         this.registry.set('taskTime', CLOCK_ITERATION_TIME); // 30 minutes in seconds
-        //this.registry.set('taskTime', 39600);
+        // this.registry.set('taskTime', 39600); //11 hours in seconds for testing
 
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
 
@@ -197,7 +196,7 @@ export default class MapScene extends Phaser.Scene {
         //check if player is almost out of time and play urgent clock sound
         const timeLeft = this.registry.get('maxSeconds') - this.registry.get('clockStartTime');
 
-        if (timeLeft <= 3600 && !this.clockwarning) {
+        if (timeLeft <= 3600 && !this.clockwarning && timeLeft > 0) {
             let quickClockTick;
             this.clockwarning = true;
             quickClockTick = this.game.audio.playSFX("clockUrgent");
@@ -206,7 +205,7 @@ export default class MapScene extends Phaser.Scene {
             });
         }
 
-        // --- CHECK IF PLAYER MOVED AWAY FROM HATCH ---
+        // check if player has moved away from hatch without entering
         if (this.currentHatch) {
             const touching = Phaser.Geom.Intersects.RectangleToRectangle(
                 this.player.getBounds(),
@@ -219,6 +218,7 @@ export default class MapScene extends Phaser.Scene {
             }
         }
 
+        // if player is in range of hatch and presses interact key, enter hatch
         if (this.currentHatch) {
             this.interactText.setVisible(true);
             
@@ -255,7 +255,7 @@ export default class MapScene extends Phaser.Scene {
     }
 
     endGame() {
-        console.log("Here are the cameras:", this.cameras.cameras);
+        //make player unable to move and hide UI
         if (this.player && this.player.body) {
             this.player.body.setVelocity(0, 0);
             this.player.body.enable = false;
@@ -265,7 +265,7 @@ export default class MapScene extends Phaser.Scene {
         this.clockbutton.hide();
         this.mainButton.hide();
 
-
+        // Dim the background
         const dimmer = this.add.rectangle(
             this.cameras.main.centerX,
             this.cameras.main.centerY,
@@ -307,10 +307,15 @@ export default class MapScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
+                this.game.audio.stopSFX();
                 this.scene.stop('MapScene');
                 this.scene.wake('MainScene');
             }
         ).setDepth(1000);
+
+
+        //set flag to trigger main.js end game sequence
+        this.registry.set('outOfTime', true);
     }
 
     findSafePlayerSpawn() {
