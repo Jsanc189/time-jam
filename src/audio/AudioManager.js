@@ -20,6 +20,7 @@ export default class AudioManager {
         this.sfxMute = localStorage.getItem("sfxMute") === ("true");
 
         this.currentMusic = null;
+        this.currentSFX = null;
     }
 
     playMusic(key) {
@@ -60,6 +61,13 @@ export default class AudioManager {
         });
 
         return sound;
+    }
+
+    stopSFX(){
+        if (this.currentSFX) {
+            this.currentSFX.stop();
+            this.currentSFX = null;
+        }
     }
 
     setMusicVolume(value) {

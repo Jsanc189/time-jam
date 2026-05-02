@@ -153,6 +153,22 @@ export default class MainScene extends Phaser.Scene {
         .setScale(.90);
 
         // player chooses defense or prosecution 
+        this.choiceTextBG = this.add.image(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY * 1.49,
+            'text_bg2'
+        ).setOrigin(0.5).setScale(1.49).setVisible(true);
+        this.choiceText = new GameText(
+            this,
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            'Choose your side:',
+            {
+                fontSize: '124px',
+                fill: '#160402'
+            }).setOrigin(0.5).setVisible(true);
+
+
         if(!this.case.playerRole){
             MAP_BUTTON.hide();
             EVIDENCE_BUTTON.hide();
@@ -182,6 +198,8 @@ export default class MainScene extends Phaser.Scene {
                     //this.judge.setVisible(true);
                     this.jury_back.setVisible(true);
                     this.jury_front.setVisible(true);
+                    this.choiceText.setVisible(false);
+                    this.choiceTextBG.setVisible(false);
                     EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
@@ -217,6 +235,8 @@ export default class MainScene extends Phaser.Scene {
                     //this.judge.setVisible(true);
                     this.jury_back.setVisible(true);
                     this.jury_front.setVisible(true);
+                    this.choiceText.setVisible(false);
+                    this.choiceTextBG.setVisible(false);
                     EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
