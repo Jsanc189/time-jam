@@ -16,7 +16,7 @@ export default class AudioManager {
         this.musicMute = localStorage.getItem("musicMute") ==="true";
 
         let sfxVol = parseFloat(localStorage.getItem("sfxVolume")) || 1;
-        this.sfxVol = sfxVol;
+        this.sfxVolume = sfxVol;
         this.sfxMute = localStorage.getItem("sfxMute") === ("true");
 
         this.currentMusic = null;

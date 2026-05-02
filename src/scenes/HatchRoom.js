@@ -287,6 +287,8 @@ export default class HatchRoomScene extends Phaser.Scene {
                 },
             );
             objectButton.setDepth(4);
+
+            
         }
     }
 
@@ -314,7 +316,6 @@ export default class HatchRoomScene extends Phaser.Scene {
             boundary.body.allowGravity = false;
             this.physics.add.collider(this.player, boundary);
         }
-        console.log("this is the config:", config);
     }
 
     // Two rows of bookshelves
