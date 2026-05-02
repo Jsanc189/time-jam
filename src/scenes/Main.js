@@ -315,7 +315,7 @@ export default class MainScene extends Phaser.Scene {
                 undefined,
                 undefined,
                 () => {
-                    console.log("presenting discovery", discovery.text)
+                    console.log("[Main]: presenting discovery", discovery.text)
                 }
             ));
 
