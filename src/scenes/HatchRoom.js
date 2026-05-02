@@ -354,7 +354,7 @@ export default class HatchRoomScene extends Phaser.Scene {
 
             const bounds = table.getBounds();
             table.body.setSize(bounds.width * 1.7, bounds.height * 0.5);
-            console.log("width: " + table.width + " scale: " + table.scaleX + " bounds width: " + bounds.width);
+            //console.log("width: " + table.width + " scale: " + table.scaleX + " bounds width: " + bounds.width);
             table.body.setOffset(40, bounds.height * .003)
             this.furnitureGroup.add(table);
 

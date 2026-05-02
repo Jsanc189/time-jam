@@ -43,11 +43,10 @@ export default class MapScene extends Phaser.Scene {
         });
 
         // World Setup
-        this.cameras.main.setBackgroundColor('#6e3318');
         this.tileWidth = 128;
         this.tileHeight = 128;
-        this.worldWidth = this.cameras.main.width * 3;
-        this.worldHeight = this.cameras.main.height * 3;
+        this.worldWidth = this.cameras.main.width * 2;
+        this.worldHeight = this.cameras.main.height * 2;
 
         const FLOOR_FRAMES = [0, 1, 2, 3];
         const TILER = new Rooms(this, 'floorTiles', this.tileWidth, this.tileHeight);
@@ -125,11 +124,12 @@ export default class MapScene extends Phaser.Scene {
         const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
         const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
         const CLOCK_ITERATION_TIME = 1800; //30 minutes in seconds
+        this.clockwarning = false;
 
         this.registry.set('clockStartTime', 0); //start time in seconds
         this.registry.set('maxSeconds', 43200); //12 hours in seconds
         this.registry.set('taskTime', CLOCK_ITERATION_TIME); // 30 minutes in seconds
-        //this.registry.set('taskTime', 43200);
+        //this.registry.set('taskTime', 39600);
 
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
 
@@ -153,7 +153,6 @@ export default class MapScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
-                clockTick.stop();
                 this.game.audio.playSFX("gavel");
                 this.scene.sleep();
                 this.scene.wake('MainScene');
@@ -193,6 +192,18 @@ export default class MapScene extends Phaser.Scene {
         this.player.update();
         if(this.registry.get("okToFade")) {
             this.fadeIn();
+        }
+
+        //check if player is almost out of time and play urgent clock sound
+        const timeLeft = this.registry.get('maxSeconds') - this.registry.get('clockStartTime');
+
+        if (timeLeft <= 3600 && !this.clockwarning) {
+            let quickClockTick;
+            this.clockwarning = true;
+            quickClockTick = this.game.audio.playSFX("clockUrgent");
+            this.time.delayedCall(3000, () => {
+                quickClockTick.stop();
+            });
         }
 
         // --- CHECK IF PLAYER MOVED AWAY FROM HATCH ---

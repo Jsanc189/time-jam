@@ -106,7 +106,7 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         let x = Math.floor(Math.random() * (xRange + 1)) * this.x.step + this.x.min;
         let y = Math.floor(Math.random() * (yRange + 1)) * this.y.step + this.y.min
 
-        while(this.isTileOccupied(x,y)){
+        while(this.isTileOccupied(x,y) || this.isTileNearOccupied(x, y, 3) || this.isNearEdge(x, y, 2)){
             x = Math.floor(Math.random() * (xRange + 1)) * this.x.step + this.x.min;
             y = Math.floor(Math.random() * (yRange + 1)) * this.y.step + this.y.min
         }
@@ -115,9 +115,23 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
     }
 
     isTileOccupied(x, y){
-        const tiles = this.occupiedTiles.filter((t) => { t.x == x && t.y == y});
-        
-        return tiles.length !== 0;
+        return this.occupiedTiles.some((t) => { t.x === x && t.y === y});
+    }
+
+    isTileNearOccupied(x, y, bufferTiles){
+        return this.occupiedTiles.some((t) => {
+            const xDiff = Math.abs(t.x - x);
+            const yDiff = Math.abs(t.y - y);
+            return xDiff <= bufferTiles * this.x.step && yDiff <= bufferTiles * this.y.step;
+        });
+    }
+
+    isNearEdge(x, y, edgeBuffer){
+        const nearLeft = x <= this.x.min + edgeBuffer * this.x.tileWidth;
+        const nearRight = x >= this.x.max - edgeBuffer * this.x.tileWidth;
+        const nearTop = y <= this.y.min + edgeBuffer * this.y.tileHeight;
+        const nearBottom = y >= this.y.max - edgeBuffer * this.y.tileHeight;
+        return nearLeft || nearRight || nearTop || nearBottom;
     }
 
 }

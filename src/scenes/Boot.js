@@ -59,6 +59,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('option_credit_bg', 'assets/images/options-credits_bg.png');
     this.load.image('menu_bg', 'assets/images/main_menu_bg.png');
     this.load.image('text_bg', 'assets/images/text_bg.png');
+    this.load.image('text_bg2', 'assets/images/text_bg2.png');
 
     //NPC assets
     this.load.image('fairy_out', 'assets/images/fairy_outline.png');
