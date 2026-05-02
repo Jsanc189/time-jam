@@ -25,7 +25,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.width * 0.5,
             this.height * 0.63
         )
-
+        this.animating = true;
 
         //input for the player to move for WASD and arrow keys
         this.cursors = scene.input.keyboard.createCursorKeys();
@@ -63,19 +63,24 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         //play animations based on movement direction
-        if (velocityX === 0 && velocityY === 0) {
-            this.anims.play('playerIdle', true);
-        } else if (velocityX > 0) {
-            this.anims.play('playerWalkRight', true);
-        } else if (velocityX < 0) {
-            this.anims.play('playerWalkLeft', true);
-        } else if (velocityY < 0) {
-            this.anims.play('playerWalkUp', true);
-        } else if (velocityY > 0) {
-            this.anims.play('playerWalkDown', true);
+        if(this.animating){
+            if (velocityX === 0 && velocityY === 0) {
+                this.anims.play('playerIdle', true);
+            } else if (velocityX > 0) {
+                this.anims.play('playerWalkRight', true);
+            } else if (velocityX < 0) {
+                this.anims.play('playerWalkLeft', true);
+            } else if (velocityY < 0) {
+                this.anims.play('playerWalkUp', true);
+            } else if (velocityY > 0) {
+                this.anims.play('playerWalkDown', true);
+            }
         }
 
     }
 
+    stop(){
+        this.animating = false;
+    }
 
 }

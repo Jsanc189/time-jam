@@ -86,7 +86,7 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         .setScale(0.5)
         .setInteractive({ cursor: 'pointer' });
 
-        // 🔹 Attach the label directly to the sprite
+        //  Attach the label directly to the sprite
         hatch.setData('label'       , roomData.roomType);
         hatch.setData('floorFrames' , roomData.floorFrames);
 
@@ -95,29 +95,6 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         hatch.setData('objective'   , roomData.requiredObjects ? roomData : null);
         hatch.setData('idleFrame'   , this.hatchSprite.frame);
         hatch.setData('activeFrame' , this.hatchSprite.activeFrame);
-
-        // Label text above the hatch
-        const LABELTEXT = this.scene.add.text(
-            x,
-            y - 40,
-            roomData.type +"\n" + roomData.objectives
-        )
-        .setOrigin(0.5)
-        .setDepth(999)
-        .setVisible(false);
-
-        // Hover behavior
-        hatch.on('pointerover', () => {
-            LABELTEXT.setVisible(true);
-            hatch.setTint(0xffff99);
-            hatch.setScale(0.6);
-        });
-
-        hatch.on('pointerout', () => {
-            LABELTEXT.setVisible(false);
-            hatch.clearTint();
-            hatch.setScale(0.5);
-        });
 
         return hatch;
     }

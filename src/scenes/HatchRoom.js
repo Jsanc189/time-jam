@@ -187,7 +187,7 @@ export default class HatchRoomScene extends Phaser.Scene {
 
     returnToMap() {
         this.cameras.main.fadeOut(300, 0, 0);
-        this.scene.get('MapScene').events.emit('timeSpent', 1800);//30 minutes
+        this.scene.get('MapScene').events.emit('timeSpent', this.registry.get('taskTime'));//30 minutes
         this.scene.stop();
         this.scene.wake('MapScene');
     }

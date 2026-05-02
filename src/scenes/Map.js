@@ -28,6 +28,7 @@ export default class MapScene extends Phaser.Scene {
         this.audio = this.game.audio;
         this.registry.set("okToFade", true);
         this.fadeIn();
+        this.gameOverTriggered = false;
 
         // Fade in music
         this.time.delayedCall(300, () => {
@@ -127,7 +128,8 @@ export default class MapScene extends Phaser.Scene {
 
         this.registry.set('clockStartTime', 0); //start time in seconds
         this.registry.set('maxSeconds', 43200); //12 hours in seconds
-        this.registry.set('taskTime', 1800); // 30 minutes in seconds
+        this.registry.set('taskTime', CLOCK_ITERATION_TIME); // 30 minutes in seconds
+        //this.registry.set('taskTime', 43200);
 
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
 
@@ -136,30 +138,33 @@ export default class MapScene extends Phaser.Scene {
             current += seconds;
             this.registry.set('clockStartTime', current)
             this.clock.updateTime(current);
+            this.checkEndGame();
         });
 
         //UI buttons
         const BUTTON_SPACING = 120;
-        const MAIN_BUTTON = new Button(
+        this.mainButton = new Button(
             this,
             this.cameras.main.centerX / 5,
             this.cameras.main.centerY + BUTTON_SPACING,
             300,
             100,
-            'Back to Main',
+            'Back to Court',
             undefined,
             undefined,
             () => {
-
+                clockTick.stop();
                 this.game.audio.playSFX("gavel");
                 this.scene.sleep();
                 this.scene.wake('MainScene');
+                
             },
         );
-        MAIN_BUTTON.setScrollFactor(0);
+        this.mainButton.setScrollFactor(0);
 
         //button to click to move clock up into view
-        const CLOCK_BUTTON = new Button(
+        let clockTick;
+        this.clockbutton = new Button(
             this,
             this.cameras.main.centerX / 5,
             this.cameras.main.centerY + BUTTON_SPACING * 2,
@@ -174,14 +179,13 @@ export default class MapScene extends Phaser.Scene {
                 } else {
                     this.clock.moveTo(CLOCK_POSITIONX, CLOCK_POSITIONY);
                 }
-                const clockTick = this.game.audio.playSFX("clockCalm");
+                clockTick = this.game.audio.playSFX("clockCalm");
                 this.time.delayedCall(2000, ()=>{ 
-                    clockTick.stop()
+                   clockTick.stop();
                 });
             },
         );
-        CLOCK_BUTTON.setScrollFactor(0);
-
+        this.clockbutton.setScrollFactor(0);
 
     }
 
@@ -232,12 +236,70 @@ export default class MapScene extends Phaser.Scene {
 
     }
 
+    checkEndGame (){
+        if (this.registry.get('clockStartTime') >= this.registry.get('maxSeconds')) {
+            this.gameOverTriggered = true;
+            this.endGame();
+        }
+    }
+
     endGame() {
-        console.log("Game Over - time ran out!");
-        this.time.delayedCall(50, () =>{
-            alert("GameOver!");
-            this.clockStartTime = 0;
-        });
+        console.log("Here are the cameras:", this.cameras.cameras);
+        if (this.player && this.player.body) {
+            this.player.body.setVelocity(0, 0);
+            this.player.body.enable = false;
+            this.player.stop();
+        }
+        this.interactText.setDepth(-1);
+        this.clockbutton.hide();
+        this.mainButton.hide();
+
+
+        const dimmer = this.add.rectangle(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            this.cameras.main.width,
+            this.cameras.main.height,
+            0x000000,
+            0.6
+        ).setScrollFactor(0).setDepth(900);
+
+        // End‑game message
+        const msgBG = this.add.sprite(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY * 1.25,
+            'text_bg'
+        ).setScrollFactor(0).setScale(1.8);
+        const msg = new GameText(
+            this,
+            this.cameras.main.centerX,
+            this.cameras.main.centerY - 100,
+            "You have run out of time in your \nMind Palace.\nTime to give your argument to the court.",
+            {
+                fontSize: '75px',
+                color: '#ffffff',
+                align: 'center',
+            }
+        )
+        .setScrollFactor(0)
+        .setOrigin(0.5)
+        .setDepth(1000);
+
+        // Button to return to MainScene
+        const btn = new Button(
+            this,
+            this.cameras.main.centerX,
+            this.cameras.main.centerY + 150,
+            300,
+            100,
+            "Return to Court",
+            undefined,
+            undefined,
+            () => {
+                this.scene.stop('MapScene');
+                this.scene.wake('MainScene');
+            }
+        ).setDepth(1000);
     }
 
     findSafePlayerSpawn() {
@@ -318,6 +380,24 @@ export default class MapScene extends Phaser.Scene {
             onComplete: () => overlay.destroy()
         });
         this.registry.set("okToFade", false);
+    }
+
+    fadeOut() {
+        const overlay = this.add.rectangle(
+            0,
+            0,
+            this.cameras.main.width,
+            this.cameras.main.height,
+            0x000000,
+            0
+        ).setOrigin(0).setDepth(9999);
+
+        this.tweens.add({
+            targets: overlay,
+            alpha: 1,
+            duration: 1000,
+            ease: "Linear",
+        });
     }
 
 }
