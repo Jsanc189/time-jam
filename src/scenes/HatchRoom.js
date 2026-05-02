@@ -287,7 +287,7 @@ export default class HatchRoomScene extends Phaser.Scene {
                         }
                     }
 
-                    if(handled === true){   // this means that the objective has been completed!
+                    if(this.objective.completed && this.objective.discovery){   // this means that the objective has been completed!
                         this.ledger.discover(this.objective.discovery);
                     }
 

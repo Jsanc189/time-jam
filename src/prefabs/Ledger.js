@@ -5,19 +5,34 @@
 */
 export default class Ledger {
     constructor(characterData, role) {
-        this.newDiscovery = null;
+        this.newDiscovery = false;
+        this.awaitingPlayerChoice = null;
         this.discoveries = [];
     }
 
     discover(evidenceObject){
-        this.newDiscovery = evidenceObject;
+        this.newDiscovery = true;
+        this.awaitingPlayerChoice = evidenceObject;
     }
 
     record(){
-        const latestDiscovery = this.newDiscovery;
-        this.discoveries.push(latestDiscovery);
-        this.newDiscovery = null;
+        for(let i = 0; i < this.awaitingPlayerChoice.length - 1; i++){ // ignores flavor text, which should always be the last string in the array
+            this.discoveries.push(this.awaitingPlayerChoice[i]);    
+        }
+        
+        this.awaitingPlayerChoice = null;
+        this.newDiscovery = false;
 
-        return latestDiscovery;
+        return this.discoveries[this.discoveries.length - 1];
+    }
+
+    dismiss(){
+        this.awaitingPlayerChoice = null;
+        this.newDiscovery = false;
+    }
+
+    acknowledge(){
+        this.newDiscovery = false;
+        return this.awaitingPlayerChoice;
     }
 }

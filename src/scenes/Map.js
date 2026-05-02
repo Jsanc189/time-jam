@@ -190,7 +190,43 @@ export default class MapScene extends Phaser.Scene {
             'paper1',
         );  
 
+
+        // recording case discoveries
         this.ledger = this.registry.get('ledger');
+
+        this.RECORD_BUTTON = new Button(
+            this,
+            this.cameras.main.centerX * 1.3,
+            this.cameras.main.centerY + 100,
+            300,
+            100,
+            'Record',
+            undefined,
+            undefined,
+            () => {
+                this.ledger.record();
+                this.RECORD_BUTTON.hide();
+                this.DISMISS_BUTTON.hide();
+            },
+        );
+        this.RECORD_BUTTON.hide();
+
+        this.DISMISS_BUTTON = new Button(
+            this,
+            this.cameras.main.centerX * 1.65,
+            this.cameras.main.centerY + 100,
+            300,
+            100,
+            'Dismiss',
+            undefined,
+            undefined,
+            () => {
+                this.ledger.dismiss();
+                this.RECORD_BUTTON.hide();
+                this.DISMISS_BUTTON.hide();
+            },
+        );
+        this.DISMISS_BUTTON.hide();
     }
 
     update() {
@@ -239,12 +275,14 @@ export default class MapScene extends Phaser.Scene {
         });
 
         if(this.ledger.newDiscovery){   // this means that a room objective has been completed!
-            // let player choose whether to write evidence in their ledger
+            // ask player whether to record evidence in their ledger
+            this.DISMISS_BUTTON.show();
+            this.RECORD_BUTTON.show();
+
             this.dialogueBox.showDialogue({
-                messages: this.ledger.record(),
+                messages: this.ledger.acknowledge(),
                 speaker: 'YOU',
             });
-            ;
         }
 
     }

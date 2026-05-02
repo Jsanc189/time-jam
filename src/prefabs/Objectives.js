@@ -42,8 +42,9 @@ export default class ObjectivesController {
 
             suspect = sus;
             const susLocations = this.case.investigationLocations[sus];
+            let location;
             for (const loc in susLocations) {
-                const location = susLocations[loc];
+                location = susLocations[loc];
                 if (loc === crime.scene) {
                     floor = location.floor_frames;
                     break;
@@ -63,11 +64,7 @@ export default class ObjectivesController {
             foundObjects: new Set(),
             alwaysSpawn: true,
             suspect: suspect,
-            discoveryType: 'crime_scene',
-            discoveryTokens: {
-                object: crime.object.name,
-                scene: this.fmt(crime.scene),
-            },
+            discovery: location.discovery
         });
     }
 
@@ -119,12 +116,7 @@ export default class ObjectivesController {
                     requiredObjects: new Set(allItems),
                     foundObjects: new Set(),
                     suspect: suspect.name,
-                    discoveryType: 'suspect_room',
-                    discoveryTokens: {
-                        suspect: suspect.name,
-                        room: this.fmt(roomName),
-                        // objects is deferred — built from foundObjects on completion
-                    },
+                    discovery: roomData.discovery
                 };
 
                 if (!redHerring) {
@@ -179,38 +171,28 @@ export default class ObjectivesController {
                     foundObjects: new Set(),
                     redHerring: redHerring,
                     suspect: suspect.name,
-                    discoveryType: 'motive',
-                    discoveryTokens: {
-                        suspect: suspect.name,
-                        motiveName: motive.name,
-                        motiveDesc: motive.description,
-                    },
+                    motive: {
+                        name: motive.name,
+                        description: motive.description
+                    }
                 });
             }
         }
     }
 
-    buildDiscovery(objective) {
-        const discovery = objective.discoveryTokens;
+    // TODO: move all of this text to JSON
+    buildDiscovery(suspect, motive) {
+        const dialogue = [];
+        dialogue.push(`${suspect} had motive: ${this.fmt(motive.name)}; ${motive.description}`);
 
-        switch (objective.discoveryType) {
-            case 'crime_scene':
-                return `Found ${discovery.object} at the ${discovery.scene} where ${this.case.victim.name} was found dead.`;
+        return dialogue;
+    }
 
-            case 'suspect_room': {
-                const found = [...objective.foundObjects]
-                    .filter(o => o.suspicious)
-                    .map(o => this.fmt(o.name))
-                    .join(', ');
-                return `Found ${found} in ${discovery.suspect}'s ${discovery.room}.`;
-            }
-
-            case 'motive':
-                return `${discovery.suspect} had motive: ${discovery.motiveName}; ${discovery.motiveDesc}`;
-
-            default:
-                return null;
-        }
+    addDiscoveryFlavorText(redHerring){
+        const flavor = redHerring ? 
+            "Is this even relevant?" :
+            "Could sway some jurors.";
+        return flavor;
     }
 
     onRoomVisited(roomID) {
@@ -255,8 +237,15 @@ export default class ObjectivesController {
     completeByRoomID(roomID) {
         const obj = this.getByRoomID(roomID);
         if (!obj) return null;
+
+        if(obj.motive){
+            obj.discovery = this.buildDiscovery(obj.suspect, obj.motive);
+        }
+
+        obj.discovery.push(this.addDiscoveryFlavorText(obj.redHerring));
+
         obj.completed = true;
-        obj.discovery = this.buildDiscovery(obj);
+        
         return obj;
     }
 
