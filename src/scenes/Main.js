@@ -194,7 +194,7 @@ export default class MainScene extends Phaser.Scene {
                     PICK_SIDE_PROSECUTION.hide();
                     this.mapButton.show();
                     this.judgeStand.setVisible(true);
-                    //this.judge.setVisible(true);
+                    this.judge.setVisible(true);
                     this.jury_back.setVisible(true);
                     this.jury_front.setVisible(true);
                     this.choiceText.setVisible(false);
@@ -231,7 +231,7 @@ export default class MainScene extends Phaser.Scene {
                     PICK_SIDE_PROSECUTION.hide();
                     this.mapButton.show();
                     this.judgeStand.setVisible(true);
-                    //this.judge.setVisible(true);
+                    this.judge.setVisible(true);
                     this.jury_back.setVisible(true);
                     this.jury_front.setVisible(true);
                     this.choiceText.setVisible(false);
@@ -247,7 +247,12 @@ export default class MainScene extends Phaser.Scene {
             );
         }
 
-        //judge stand
+        //judge and stand
+        this.judge = this.add.image(
+            this.cameras.main.centerX * 0.49,
+            this.cameras.main.centerY * 0.85,
+            'judge'
+        ).setOrigin(0.5).setScale(0.5).setVisible(false);
         this.judgeStand = this.add.image(
             this.cameras.main.centerX * 0.95,
             this.cameras.main.centerY * 1.20 ,
