@@ -67,6 +67,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('human_out', 'assets/images/human_outline.png');
     this.load.image('orc_out', 'assets/images/orc_outline.png');
     this.load.image('elf_out', 'assets/images/elf_outline.png'); 
+    this.load.image('judge', 'assets/images/judge.png');
 
     //object assets
     this.load.spritesheet('stools', 'assets/images/stools.png',{
