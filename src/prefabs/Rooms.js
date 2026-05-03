@@ -86,7 +86,7 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         .setScale(0.5)
         .setInteractive({ cursor: 'pointer' });
 
-        // 🔹 Attach the label directly to the sprite
+        //  Attach the label directly to the sprite
         hatch.setData('label'       , roomData.roomType);
         hatch.setData('floorFrames' , roomData.floorFrames);
 
@@ -95,29 +95,6 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         hatch.setData('objective'   , roomData.requiredObjects ? roomData : null);
         hatch.setData('idleFrame'   , this.hatchSprite.frame);
         hatch.setData('activeFrame' , this.hatchSprite.activeFrame);
-
-        // Label text above the hatch
-        const LABELTEXT = this.scene.add.text(
-            x,
-            y - 40,
-            roomData.type +"\n" + roomData.objectives
-        )
-        .setOrigin(0.5)
-        .setDepth(999)
-        .setVisible(false);
-
-        // Hover behavior
-        hatch.on('pointerover', () => {
-            LABELTEXT.setVisible(true);
-            hatch.setTint(0xffff99);
-            hatch.setScale(0.6);
-        });
-
-        hatch.on('pointerout', () => {
-            LABELTEXT.setVisible(false);
-            hatch.clearTint();
-            hatch.setScale(0.5);
-        });
 
         return hatch;
     }
@@ -129,7 +106,7 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
         let x = Math.floor(Math.random() * (xRange + 1)) * this.x.step + this.x.min;
         let y = Math.floor(Math.random() * (yRange + 1)) * this.y.step + this.y.min
 
-        while(this.isTileOccupied(x,y)){
+        while(this.isTileOccupied(x,y) || this.isTileNearOccupied(x, y, 3) || this.isNearEdge(x, y, 2)){
             x = Math.floor(Math.random() * (xRange + 1)) * this.x.step + this.x.min;
             y = Math.floor(Math.random() * (yRange + 1)) * this.y.step + this.y.min
         }
@@ -138,9 +115,23 @@ export default class Rooms extends Phaser.GameObjects.Sprite {
     }
 
     isTileOccupied(x, y){
-        const tiles = this.occupiedTiles.filter((t) => { t.x == x && t.y == y});
-        
-        return tiles.length !== 0;
+        return this.occupiedTiles.some((t) => { t.x === x && t.y === y});
+    }
+
+    isTileNearOccupied(x, y, bufferTiles){
+        return this.occupiedTiles.some((t) => {
+            const xDiff = Math.abs(t.x - x);
+            const yDiff = Math.abs(t.y - y);
+            return xDiff <= bufferTiles * this.x.step && yDiff <= bufferTiles * this.y.step;
+        });
+    }
+
+    isNearEdge(x, y, edgeBuffer){
+        const nearLeft = x <= this.x.min + edgeBuffer * this.x.tileWidth;
+        const nearRight = x >= this.x.max - edgeBuffer * this.x.tileWidth;
+        const nearTop = y <= this.y.min + edgeBuffer * this.y.tileHeight;
+        const nearBottom = y >= this.y.max - edgeBuffer * this.y.tileHeight;
+        return nearLeft || nearRight || nearTop || nearBottom;
     }
 
 }

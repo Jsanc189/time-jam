@@ -27,6 +27,7 @@ export default class MainScene extends Phaser.Scene {
         this.NUM_OBJECTIVES = 10;
         this.DEFENSE_ROLE = 'defense';
         this.PROSECUTE_ROLE = 'prosecution';
+        this.outOfTime = this.registry.set('outOfTime', false);
         this.audio = this.game.audio;
         this.time.delayedCall(500, () => {
             this.audio.playMusic("mindPalace");
@@ -52,7 +53,6 @@ export default class MainScene extends Phaser.Scene {
 
         //button to get back to MenuScene
         const BUTTON_SPACING = 150;
-
         const MENU_BUTTON = new Button(
             this,
             this.cameras.main.centerX / 6 + 50,
@@ -74,7 +74,7 @@ export default class MainScene extends Phaser.Scene {
             },
         );
         this.mapLaunched = false;
-        const MAP_BUTTON = new Button(
+        this.mapButton = new Button(
             this,
             this.cameras.main.centerX * 1.8,
             this.cameras.main.centerY / 6 + BUTTON_SPACING,
@@ -125,6 +125,7 @@ export default class MainScene extends Phaser.Scene {
         );
 
         this.evidenceButtons = [];  // holds evidence player finds in mind palace
+        //button to open evidence notes
         const EVIDENCE_BUTTON = new Button(
             this,
             this.cameras.main.centerX * 1.8,
@@ -161,7 +162,6 @@ export default class MainScene extends Phaser.Scene {
                 this.game.audio.playSFX("notebook");
             }
         )
-
         let notesOpen = false;
         this.evidenceNotes = this.add.sprite(
             this.cameras.main.centerX * 3,
@@ -173,8 +173,24 @@ export default class MainScene extends Phaser.Scene {
 
 
         // player chooses defense or prosecution 
+        this.choiceTextBG = this.add.image(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY * 1.49,
+            'text_bg2'
+        ).setOrigin(0.5).setScale(1.49).setVisible(true);
+        this.choiceText = new GameText(
+            this,
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            'Choose your side:',
+            {
+                fontSize: '124px',
+                fill: '#160402'
+            }).setOrigin(0.5).setVisible(true);
+
+
         if(!this.case.playerRole){
-            MAP_BUTTON.hide();
+            this.mapButton.hide();
             EVIDENCE_BUTTON.hide();
             
             const PICK_SIDE_DEFENSE = new Button(
@@ -197,11 +213,13 @@ export default class MainScene extends Phaser.Scene {
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
-                    MAP_BUTTON.show();
+                    this.mapButton.show();
                     this.judgeStand.setVisible(true);
-                    //this.judge.setVisible(true);
+                    this.judge.setVisible(true);
                     this.jury_back.setVisible(true);
                     this.jury_front.setVisible(true);
+                    this.choiceText.setVisible(false);
+                    this.choiceTextBG.setVisible(false);
                     EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
@@ -232,11 +250,13 @@ export default class MainScene extends Phaser.Scene {
 
                     PICK_SIDE_DEFENSE.hide();
                     PICK_SIDE_PROSECUTION.hide();
-                    MAP_BUTTON.show();
+                    this.mapButton.show();
                     this.judgeStand.setVisible(true);
-                    //this.judge.setVisible(true);
+                    this.judge.setVisible(true);
                     this.jury_back.setVisible(true);
                     this.jury_front.setVisible(true);
+                    this.choiceText.setVisible(false);
+                    this.choiceTextBG.setVisible(false);
                     EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
@@ -248,14 +268,20 @@ export default class MainScene extends Phaser.Scene {
             );
         }
 
-        //judge stand
-        this.judgeStand = this.add
-            .image(this.cameras.main.centerX * 0.95, this.cameras.main.centerY * 1.2, 'judge_stand')
-            .setOrigin(0.5)
-            .setScale(1.75)
-            .setVisible(false);
+        //judge and stand
+        this.judge = this.add.image(
+            this.cameras.main.centerX * 0.49,
+            this.cameras.main.centerY * 0.85,
+            'judge'
+        ).setOrigin(0.5).setScale(0.5).setVisible(false);
+        this.judgeStand = this.add.image(
+            this.cameras.main.centerX * 0.95,
+            this.cameras.main.centerY * 1.20 ,
+            'judge_stand'
+        ).setOrigin(0.5).setScale(1.75).setVisible(false);
+      
 
-        //jury stand placeholer
+        //jury stand and jury
         const juryX = 1.13;
         const juryY = 1.2;
         this.jury_back = this.add
@@ -316,7 +342,12 @@ export default class MainScene extends Phaser.Scene {
             .setVisible(false);
     }
 
-    update() {}
+    update() {
+        if (this.registry.get('outOfTime')) {
+            this.mapButton.hide();
+        }
+
+    }
 
     evidenceFound() {
         this.evidenceNotes.x = this.cameras.main.centerX;

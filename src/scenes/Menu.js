@@ -46,6 +46,7 @@ export default class MenuScene extends Phaser.Scene {
             },
         ).setOrigin(0.5);
 
+        //buttons for the menu, settings, and credits
         const PLAY_BUTTON = new Button(
             this,
             this.cameras.main.centerX,
@@ -56,6 +57,7 @@ export default class MenuScene extends Phaser.Scene {
             undefined,
             undefined,
             () => {
+                this.game.audio.setSFXVolume(this.audio.sfxVolume);
                 this.game.audio.playSFX("gavel");
                 this.tweens.add({
                     targets: this.audio.currentMusic,
