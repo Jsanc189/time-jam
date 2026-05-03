@@ -249,49 +249,71 @@ export default class MainScene extends Phaser.Scene {
         }
 
         //judge stand
-        this.judgeStand = this.add.image(
-            this.cameras.main.centerX * 0.95,
-            this.cameras.main.centerY * 1.20 ,
-            'judge_stand'
-        ).setOrigin(0.5).setScale(1.75).setVisible(false);
-      
+        this.judgeStand = this.add
+            .image(this.cameras.main.centerX * 0.95, this.cameras.main.centerY * 1.2, 'judge_stand')
+            .setOrigin(0.5)
+            .setScale(1.75)
+            .setVisible(false);
 
         //jury stand placeholer
         const juryX = 1.13;
         const juryY = 1.2;
-        this.jury_back = this.add.image(
-            this.cameras.main.centerX * juryX,
-            this.cameras.main.centerY * juryY,
-            'jury_back'
-        ).setOrigin(0.5).setScale(1.75).setVisible(false);
-        const jurors = ['fairy_out', 'goblin_out','human_out','orc_out','elf_out'];
+        this.jury_back = this.add
+            .image(
+                this.cameras.main.centerX * juryX,
+                this.cameras.main.centerY * juryY,
+                'jury_back',
+            )
+            .setOrigin(0.5)
+            .setScale(1.75)
+            .setVisible(false);
+        const jurors = ['fairy_out', 'goblin_out', 'human_out', 'orc_out', 'elf_out'];
         let jurorX = this.cameras.main.centerX * 1.28;
         let jurorY = this.cameras.main.centerY * 1.1;
-        this.jurorSprites = []
+        this.jurorSprites = [];
 
-        for (let i = 0; i < jurors.length; i++){
-            const newJuror = this.add.sprite(
+        this.jurorsSwayed = 0;
+        this.jurorStatus = [];
+        for (let i = 0; i < jurors.length; i++) {
+            const newJuror = this.add
+                .sprite(jurorX, jurorY, jurors[i])
+                .setOrigin(0.5)
+                .setScale(0.5)
+                .setVisible(false);
+
+            // add labels
+            const newJurorLabel = new GameText(
+                this,
                 jurorX,
-                jurorY,
-                jurors[i]
-            ).setOrigin(0.5).setScale(0.5).setVisible(false);
-            if (jurors[i + 1] === 'goblin_out'){
+                this.cameras.main.centerY / 1.4,
+                this.grammar.getJurorText('unsure', this.DEFENSE_ROLE),
+                {
+                    wordWrap: { width: 150 },
+                },
+            );
+
+            this.jurorStatus.push(newJurorLabel);
+
+            if (jurors[i + 1] === 'goblin_out') {
                 jurorY -= 40;
-            } else if (jurors[i] === 'goblin_out' && jurors[i+1] != 'goblin_out') {
+            } else if (jurors[i] === 'goblin_out' && jurors[i + 1] != 'goblin_out') {
                 jurorY += 115;
             } else {
                 jurorY + 80;
             }
             jurorX += 152;
             this.jurorSprites.push(newJuror);
-        };
+        }
 
-        this.jury_front = this.add.image(
-            this.cameras.main.centerX * juryX,
-            this.cameras.main.centerY * juryY,
-            'jury_front'
-        ).setOrigin(0.5).setScale(1.75).setVisible(false);
-
+        this.jury_front = this.add
+            .image(
+                this.cameras.main.centerX * juryX,
+                this.cameras.main.centerY * juryY,
+                'jury_front',
+            )
+            .setOrigin(0.5)
+            .setScale(1.75)
+            .setVisible(false);
     }
 
     update() {}
@@ -300,26 +322,50 @@ export default class MainScene extends Phaser.Scene {
         this.evidenceNotes.x = this.cameras.main.centerX;
     }
 
-    presentEvidence(){
-        let x = this.evidenceNotes.x - this.evidenceNotes.width / 4; 
+    presentEvidence() {
+        let x = this.evidenceNotes.x - this.evidenceNotes.width / 4;
         let y = this.evidenceNotes.y - this.evidenceNotes.height / 3;
 
-        for(const discovery of this.ledger.discoveries){
-            this.evidenceButtons.push(new Button(
-                this,
-                x,
-                y,
-                300,
-                100,
-                `${discovery.key}`,
-                undefined,
-                undefined,
-                () => {
-                    console.log("[Main]: presenting discovery", discovery.text)
-                }
-            ));
+        for (const discovery of this.ledger.discoveries) {
+            this.evidenceButtons.push(
+                new Button(this, x, y, 300, 100, `${discovery.key}`, undefined, undefined, () => {
+                    console.log(
+                        '[Main]: presenting discovery',
+                        discovery.text,
+                        discovery.redHerring,
+                    );
+                    this.updateJury(discovery.redHerring);
+                }),
+            );
 
             y += 150;
         }
+    }
+
+    updateJury(redHerring) {
+        if (!redHerring) {
+            // add a point
+            this.jurorsSwayed++;
+            this.jurorStatus[this.jurorsSwayed-1].text = this.grammar.getJurorText('convinced', this.case.playerRole);
+
+            if (this.jurorsSwayed === this.jurorStatus.length) {
+                this.gameWin();
+            }
+        } else {
+            // subtract a point
+            if (this.jurorsSwayed > 0) {
+                const notPlayerRole = this.case.playerRole === this.DEFENSE_ROLE ? this.PROSECUTE_ROLE : this.DEFENSE_ROLE;
+                this.jurorStatus[this.jurorsSwayed-1].text = this.grammar.getJurorText('convinced', notPlayerRole);
+                this.jurorsSwayed--;
+            }
+        }
+
+        /// TODO: left off here; needs testing
+    }
+
+    gameWin() {
+        new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, 'SUCCESS!', {
+            fontSize: '120px',
+        });
     }
 }

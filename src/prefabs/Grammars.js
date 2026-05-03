@@ -104,4 +104,9 @@ export default class Grammar {
     getObjectMetaDialogue(){
         return this.getList("meta_dialogue");
     }
+
+    getJurorText(status, conviction){
+        const jurorStatus = this.listPick(this.getList("jury"), false);
+        return this.listPick(jurorStatus[status][conviction], false);
+    }
 }

@@ -66,7 +66,7 @@ export default class ObjectivesController {
             suspect: suspect,
             discovery: [{
                 key: "murder weapon",
-                text: `${this.case.victim.name} was killed with a ${crime.object}`
+                text: `${this.case.victim.name} was killed with a ${crime.object.name}`
             }]
         });
     }
@@ -122,6 +122,8 @@ export default class ObjectivesController {
                     discovery: roomData.discovery
                 };
 
+                newRoom.discovery[0].redHerring = redHerring;
+
                 if (!redHerring) {
                     objectivePool.push(newRoom);
                 } else {
@@ -176,7 +178,8 @@ export default class ObjectivesController {
                     suspect: suspect.name,
                     motive: {
                         name: motive.name,
-                        description: motive.description
+                        description: motive.description,
+                        redHerring: redHerring,
                     }
                 });
             }

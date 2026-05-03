@@ -76,26 +76,26 @@
     "jury": [
         {
             "convinced": {
-                "guilty": [ 
-                    "$defendant had to have done it!"
+                "prosecution": [ 
+                    "They had to have done it!"
                 ],
-                "not_guilty": [ 
-                    "$defendant is innocent!"
+                "defense": [ 
+                    "They are innocent!"
                 ]
             },
             "almost_convinced": {
-                "guilty": [ 
-                    "Maybe $defendant did do it..."
+                "prosecution": [ 
+                    "Maybe they did do it..."
                 ],
-                "not_guilty": [ 
-                    "Maybe $defendant didn't do it..."
+                "defense": [ 
+                    "Maybe they didn't do it..."
                 ]
             },
             "unsure": {
-                "guilty": [ 
+                "prosecution": [ 
                     "I just don't know..."
                 ],
-                "not_guilty": [ 
+                "defense": [ 
                     "I just don't know..."
                 ]
             }
