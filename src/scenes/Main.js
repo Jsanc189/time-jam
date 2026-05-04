@@ -30,9 +30,19 @@ export default class MainScene extends Phaser.Scene {
         this.PROSECUTE_ROLE = 'prosecution';
         this.outOfTime = this.registry.set('outOfTime', false);
         this.audio = this.game.audio;
-        this.time.delayedCall(500, () => {
-            this.audio.playMusic("courtroom");
+        this.registry.set('audioIsPlaying', false);
+        this.audio.playMusic("courtroom");
+        this.registry.set('audioIsPlaying', true);
+        this.audio.currentMusic.setVolume(0);
+        //Fade in music
+        this.time.delayedCall(300, () => {
+            this.tweens.add({
+                targets: this.audio.currentMusic,
+                volume: this.audio.musicVolume,
+                duration: 800
+            });
         });
+
 
 
         if (!this.registry.get('case')) {
@@ -357,6 +367,10 @@ export default class MainScene extends Phaser.Scene {
     update() {
         if (this.registry.get('outOfTime')) {
             this.mapButton.hide();
+        }
+        if (this.registry.get('audioIsPlaying') == false) {
+            this.audio.playMusic("courtroom");
+            this.registry.set('audioIsPlaying', true);
         }
 
     }

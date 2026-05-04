@@ -155,6 +155,8 @@ export default class MapScene extends Phaser.Scene {
             () => {
                 this.game.audio.playSFX("gavel");
                 this.scene.sleep();
+                this.game.audio.stopMusic();
+                this.registry.set('audioIsPlaying', false);
                 this.scene.wake('MainScene');
                 
             },
@@ -236,6 +238,11 @@ export default class MapScene extends Phaser.Scene {
         this.player.update();
         if(this.registry.get("okToFade")) {
             this.fadeIn();
+        }
+
+        if(this.registry.get('musicIsPlaying') == false) {
+            this.audio.playMusic("mindPalace");
+            this.registry.set('musicIsPlaying', true);
         }
 
         //check if player is almost out of time and play urgent clock sound
