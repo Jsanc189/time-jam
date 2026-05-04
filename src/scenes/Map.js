@@ -41,6 +41,25 @@ export default class MapScene extends Phaser.Scene {
                 duration: 800
             });
         });
+        
+        //script for player instruction at start of scene
+        this.dialogueStartBox = new DialogueBox(
+            this,
+            this.scale.width / 2, // centered X
+            this.scale.height - 120, // near bottom of screen
+            'paper1',
+        );
+        const introMessages = {
+            messages: [
+            "I have entered my Mind Palace.",
+            "This is where I will piece together the case and prepare my argument for court.",
+            "I can move with arrow keys or WASD.",
+            "Let's start by exploring the rooms in my Mind Palace.",
+            "I will record any important discoveries in my ledger.",
+            ],
+            speaker: 'YOU',
+        };
+        this.dialogueStartBox.showDialogue(introMessages);
 
         // World Setup
         this.tileWidth = 128;
@@ -123,12 +142,12 @@ export default class MapScene extends Phaser.Scene {
         //clock logic
         const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
         const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
-        const CLOCK_ITERATION_TIME = 1800; //30 minutes in seconds
+        const CLOCK_ITERATION_TIME = 2700; //45 minutes in seconds
         this.clockwarning = false;
 
         this.registry.set('clockStartTime', 0); //start time in seconds
         this.registry.set('maxSeconds', 43200); //12 hours in seconds
-        this.registry.set('taskTime', CLOCK_ITERATION_TIME); // 30 minutes in seconds
+        this.registry.set('taskTime', CLOCK_ITERATION_TIME); // 45 minutes in seconds
         // this.registry.set('taskTime', 39600); //11 hours in seconds for testing
 
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
@@ -176,7 +195,7 @@ export default class MapScene extends Phaser.Scene {
             undefined,
             () => {
                 if (this.clock.y > this.cameras.main.centerY) {
-                    this.clock.moveTo(this.cameras.main.centerX / 3, this.cameras.main.centerY / 2);
+                    this.clock.moveTo(this.cameras.main.centerX / 3, this.cameras.main.centerY * 0.80);
                 } else {
                     this.clock.moveTo(CLOCK_POSITIONX, CLOCK_POSITIONY);
                 }

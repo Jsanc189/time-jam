@@ -15,10 +15,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, 'playerSheet', 0);
         this.footsteps = scene.sound.add('footsteps', {
              loop: true, 
-             volume: scene.game.audio.sfxVolume, 
+             volume: localStorage.getItem("sfxVolume"), 
         }).setRate(0.76);
+        //console.log(this.footsteps.getSFXVolume());
         this.ismoving = false;
-        
+
         //add the player to the scene and enable physics for world interactions
         scene.add.existing(this);
         scene.physics.add.existing(this);

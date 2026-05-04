@@ -33,6 +33,7 @@ export default class MainScene extends Phaser.Scene {
         this.registry.set('audioIsPlaying', false);
         this.audio.playMusic("courtroom");
         this.registry.set('audioIsPlaying', true);
+        this.gameStarting = false;
         this.audio.currentMusic.setVolume(0);
         //Fade in music
         this.time.delayedCall(300, () => {
@@ -43,15 +44,11 @@ export default class MainScene extends Phaser.Scene {
             });
         });
 
-
-
         if (!this.registry.get('case')) {
             this.grammar = this.registry.get('grammar');
             this.case = new Case(this.grammar, this.NUM_SUSPECTS);
 
             this.registry.set('case', this.case);
-            // this.testObjectives();
-
             this.ledger = new Ledger();
             this.registry.set('ledger', this.ledger)
         }
@@ -232,6 +229,7 @@ export default class MainScene extends Phaser.Scene {
                     this.choiceText.setVisible(false);
                     this.choiceTextBG.setVisible(false);
                     this.EVIDENCE_BUTTON.show();
+                    this.gameStarting = true;
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
                         this.jurorSprites[i].setVisible(true);
@@ -270,6 +268,7 @@ export default class MainScene extends Phaser.Scene {
                     this.choiceText.setVisible(false);
                     this.choiceTextBG.setVisible(false);
                     this.EVIDENCE_BUTTON.show();
+                    this.gameStarting = true;
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
                         this.jurorSprites[i].setVisible(true);
@@ -372,6 +371,10 @@ export default class MainScene extends Phaser.Scene {
             this.audio.playMusic("courtroom");
             this.registry.set('audioIsPlaying', true);
         }
+        if(this.gameStarting){
+            this.gameStart();
+            this.gameStarting = false;
+        }
 
     }
 
@@ -453,5 +456,20 @@ export default class MainScene extends Phaser.Scene {
         new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, 'SUCCESS!', {
             fontSize: '120px',
         });
+    }
+
+    gameStart() {
+        const startingDialogue = [
+            { messages: 'Welcome to the courtroom.', speaker: 'JUDGE' },
+            { messages: 'Your mind is your greatest asset, and your most dangerous weapon.', speaker: 'JUDGE' },
+            { messages: 'Use your wits to find evidence, sway the jury, and win your case!', speaker: 'JUDGE' },
+            { messages: 'But be careful, the clock is ticking...', speaker: 'JUDGE' },
+            { messages: 'I just got the case file today, and it looks like a doozy.', speaker: 'YOU' },
+            { messages: 'Better get to work! I\'m going to my mind palace to sort through the facts.', speaker: 'YOU' },
+            { messages: 'Hopefully, I don\'t get too distracted in there...', speaker: 'YOU' },
+        ];
+
+        this.dialogueBox.showDialogue(startingDialogue);
+        
     }
 }

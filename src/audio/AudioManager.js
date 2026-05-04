@@ -23,6 +23,10 @@ export default class AudioManager {
         this.currentSFX = null;
     }
 
+    getSFXVolume() {
+        return this.sfxVolume;
+    }
+
     playMusic(key) {
         //If we are playing the correct track, return
         if (this.currentMusic?.key === key) {
