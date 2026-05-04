@@ -17,6 +17,7 @@ import Player from '../prefabs/Player';
 import Clock from '../prefabs/Clock';
 import Rooms from '../prefabs/Rooms';
 import Button from '../prefabs/Button';
+import DialogueBox from "../prefabs/DialogueBox";
 
 export default class MapScene extends Phaser.Scene {
     constructor() {
@@ -144,8 +145,8 @@ export default class MapScene extends Phaser.Scene {
         const BUTTON_SPACING = 120;
         this.mainButton = new Button(
             this,
-            this.cameras.main.centerX / 5,
-            this.cameras.main.centerY + BUTTON_SPACING,
+            this.cameras.main.centerX / 6 + 50,
+            this.cameras.main.centerY / 6,
             300,
             100,
             'Back to Court',
@@ -164,8 +165,8 @@ export default class MapScene extends Phaser.Scene {
         let clockTick;
         this.clockbutton = new Button(
             this,
-            this.cameras.main.centerX / 5,
-            this.cameras.main.centerY + BUTTON_SPACING * 2,
+            this.cameras.main.centerX * 1.8,
+            this.cameras.main.centerY / 6,
             300,
             100,
             'Reveal Clock',
@@ -185,6 +186,50 @@ export default class MapScene extends Phaser.Scene {
         );
         this.clockbutton.setScrollFactor(0);
 
+        this.dialogueBox = new DialogueBox(
+            this,
+            this.scale.width / 2, // centered X
+            this.scale.height - 120, // near bottom of screen
+            'paper1',
+        );  
+
+
+        // recording case discoveries
+        this.ledger = this.registry.get('ledger');
+
+        this.RECORD_BUTTON = new Button(
+            this,
+            this.cameras.main.centerX * 1.3,
+            this.cameras.main.centerY + 100,
+            300,
+            100,
+            'Record',
+            undefined,
+            undefined,
+            () => {
+                this.ledger.record();
+                this.RECORD_BUTTON.hide();
+                this.DISMISS_BUTTON.hide();
+            },
+        );
+        this.RECORD_BUTTON.hide();
+
+        this.DISMISS_BUTTON = new Button(
+            this,
+            this.cameras.main.centerX * 1.65,
+            this.cameras.main.centerY + 100,
+            300,
+            100,
+            'Dismiss',
+            undefined,
+            undefined,
+            () => {
+                this.ledger.dismiss();
+                this.RECORD_BUTTON.hide();
+                this.DISMISS_BUTTON.hide();
+            },
+        );
+        this.DISMISS_BUTTON.hide();
     }
 
     update() {
@@ -244,6 +289,17 @@ export default class MapScene extends Phaser.Scene {
             // Reset for next frame
             sprite.setData('isActive', false);
         });
+
+        if(this.ledger.newDiscovery){   // this means that a room objective has been completed!
+            // ask player whether to record evidence in their ledger
+            this.DISMISS_BUTTON.show();
+            this.RECORD_BUTTON.show();
+
+            this.dialogueBox.showDialogue({
+                messages: this.ledger.acknowledge(),
+                speaker: 'YOU',
+            });
+        }
 
     }
 

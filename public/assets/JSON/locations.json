@@ -5,40 +5,74 @@
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["fishing"],
                 "crime_objects": ["fishing"],
-                "enter": "Whoever frequents here must be an avid fisherman."
+                "enter": "Whoever frequents here must be an avid fisherman.",
+                "discovery": [
+                    {
+                        "key": "harpoon",
+                        "text": "Enfrin fishes with a harpoon."
+                    }
+                ]
             },
             "cobbler_shop": {
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["cobbling"],
                 "crime_objects": ["cobbling"],
-                "enter": "A cobbler's shop..."
+                "enter": "A cobbler's shop...",
+                "discovery": [
+                    {
+                        "key": "cobbler",
+                        "text": "Enfrin is a cobbler."
+                    }
+                ]
             },
             "fairy_home": {
                 "floor_frames": [4, 5, 6, 7],
                 "character_objects": ["enfrin"],
                 "location_objects": ["house"],
-                "enter": "Looks like a fairy lives here."
+                "enter": "Looks like a fairy lives here.",
+                "discovery": [
+                    {
+                        "key": "crush",
+                        "text": "Enfrin has feelings for Sil."
+                    }
+                ]
             }
         },
         "chorg": {
             "library": {
                 "floor_frames": [10],
                 "activity_objects": ["library"],
-                "enter": "All kinds of books to read here."
+                "enter": "All kinds of books to read here.",
+                "discovery": [
+                    {
+                        "key": "library books",
+                        "text": "Chorg borrowed suspicious library books."
+                    }
+                ]
             },
             "hospital": {
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["medicine"],
                 "crime_objects": ["medicine"],
-                "enter": "A hospital. It's a place of healing. And of death."
+                "enter": "A hospital. It's a place of healing. And of death.",
+                "discovery": [
+                    {
+                        "key": "poison",
+                        "text": "Chorg has access to poison."
+                    }
+                ]
             },
             "goblin_home": {
                 "floor_frames": [4, 5, 6, 7],
-                "activity_objects": ["pyromancy"],
-                "crime_objects": ["pyromancy"],
                 "character_objects": ["chorg"],
                 "location_objects": ["house"],
-                "enter": "Looks like a goblin lives here."
+                "enter": "Looks like a goblin lives here.",
+                "discovery": [
+                    {
+                        "key": "library books",
+                        "text": "Chorg has suspicious library books."
+                    }
+                ]
             }
         },
         "sil": {
@@ -46,19 +80,37 @@
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["archery"],
                 "crime_objects": ["archery"],
-                "enter": "Good place to practice your archery."
+                "enter": "Good place to practice your archery.",
+                "discovery": [
+                    {
+                        "key": "archer",
+                        "text": "Sil is a skilled archer."
+                    }
+                ]
             },
             "carpentry_shop": {
                 "floor_frames": [4, 5, 6, 7],
                 "activity_objects": ["carpentry"],
                 "crime_objects": ["carpentry"],
-                "enter": "Smells like felled trees."
+                "enter": "Smells like felled trees.",
+                "discovery": [
+                    {
+                        "key": "carpenter",
+                        "text": "Sil is a carpenter."
+                    }
+                ]
             },
             "elf_home": {
                 "floor_frames": [4, 5, 6, 7],
                 "character_objects": ["sil"],
                 "location_objects": ["house"],
-                "enter": "This is the dwelling of an elf."
+                "enter": "This is the dwelling of an elf.",
+                "discovery": [
+                    {
+                        "key": "secret admirer",
+                        "text": "Sil has a secret admirer."
+                    }
+                ]
             }
         },
         "misc": {

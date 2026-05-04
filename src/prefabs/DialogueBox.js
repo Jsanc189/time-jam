@@ -52,6 +52,10 @@ export default class DialogueBox extends GameText {
         if (this.speakerLabel) this.speakerLabel.setDepth(11);
         this.setDepth(12);
 
+        this.bg.setScrollFactor(0);
+        this.speakerLabel.setScrollFactor(0);
+        this.setScrollFactor(0); 
+        
         this.setVisible(false);
         this.bg.setVisible(false);
         if (this.speakerLabel) this.speakerLabel.setVisible(false);

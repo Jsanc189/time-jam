@@ -37,14 +37,15 @@ export default class ObjectivesController {
 
         let floor;
         let suspect;
-        for(const sus in this.case.investigationLocations){
-            if(floor) break;
+        for (const sus in this.case.investigationLocations) {
+            if (floor) break;
 
             suspect = sus;
             const susLocations = this.case.investigationLocations[sus];
-            for(const loc in susLocations){
-                const location = susLocations[loc];
-                if(loc === crime.scene){
+            let location;
+            for (const loc in susLocations) {
+                location = susLocations[loc];
+                if (loc === crime.scene) {
                     floor = location.floor_frames;
                     break;
                 }
@@ -56,13 +57,17 @@ export default class ObjectivesController {
             label: `Examine the ${this.fmt(crime.scene)}`,
             description: `Visit the scene of the ${crime.type}.`,
             onEnter: 'So this is where it happened...',
-            roomType: crime.scene,              
-            roomID: 'crime_scene',              
-            floorFrames: floor,         // picks background art
-            requiredObjects: new Set([crime.object]),    // all must be interacted with; picks object sprites
-            foundObjects : new Set(),
+            roomType: crime.scene,
+            roomID: 'crime_scene',
+            floorFrames: floor, // picks background art
+            requiredObjects: new Set([crime.object]), // all must be interacted with; picks object sprites
+            foundObjects: new Set(),
             alwaysSpawn: true,
-            suspect: suspect
+            suspect: suspect,
+            discovery: [{
+                key: "murder weapon",
+                text: `${this.case.victim.name} was killed with a ${crime.object.name}`
+            }]
         });
     }
 
@@ -72,14 +77,14 @@ export default class ObjectivesController {
         const objectivePool = [];
 
         for (const suspect of suspects) {
-            const isDefendant = (suspect.name === defendant.name);
+            const isDefendant = suspect.name === defendant.name;
             let redHerring = false;
-            if(isDefendant && this.role === "defense"){
-                redHerring = true;   // defense is NOT looking for evidence against defendant
+            if (isDefendant && this.role === 'defense') {
+                redHerring = true; // defense is NOT looking for evidence against defendant
             }
 
-            if(!isDefendant && this.role === "prosecution"){
-                redHerring = true;   // prosecution is ONLY looking for evidence against defendant
+            if (!isDefendant && this.role === 'prosecution') {
+                redHerring = true; // prosecution is ONLY looking for evidence against defendant
             }
 
             const key = suspect.name.toLowerCase();
@@ -87,15 +92,21 @@ export default class ObjectivesController {
             if (!rooms) continue;
 
             for (const [roomName, roomData] of Object.entries(rooms)) {
-                if(roomName === crime.scene) continue;
+                if (roomName === crime.scene) continue;
 
                 // notable items inside each room
                 const resolvedItems = [
                     ...this.resolveObjects(roomData.crime_objects, this.objectsData.crime_objects),
-                    ...this.resolveObjects(roomData.character_objects, this.objectsData.character_objects),
-                    ...this.resolveObjects(roomData.activity_objects, this.objectsData.activity_objects),
+                    ...this.resolveObjects(
+                        roomData.character_objects,
+                        this.objectsData.character_objects,
+                    ),
+                    ...this.resolveObjects(
+                        roomData.activity_objects,
+                        this.objectsData.activity_objects,
+                    ),
                 ];
-                const allItems = [...new Set(resolvedItems)]
+                const allItems = [...new Set(resolvedItems)];
 
                 const newRoom = {
                     id: `room_${key}_${roomName}`,
@@ -108,9 +119,12 @@ export default class ObjectivesController {
                     requiredObjects: new Set(allItems),
                     foundObjects: new Set(),
                     suspect: suspect.name,
+                    discovery: roomData.discovery
                 };
 
-                if(!redHerring){
+                newRoom.discovery[0].redHerring = redHerring;
+
+                if (!redHerring) {
                     objectivePool.push(newRoom);
                 } else {
                     newRoom.redHerring = true;
@@ -121,9 +135,12 @@ export default class ObjectivesController {
             objectivePool.forEach((o) => this.add(o));
 
             // fluff rooms with random selection from the red herring pool
-            const selections = this.shuffle(herringPool).slice(0, this.max - objectivePool.length - 1);
+            const selections = this.shuffle(herringPool).slice(
+                0,
+                this.max - objectivePool.length - 1,
+            );
 
-            for(const obj of selections){
+            for (const obj of selections) {
                 this.add(obj);
             }
         }
@@ -133,53 +150,76 @@ export default class ObjectivesController {
         const { suspects, defendant, crime, investigationLocations } = this.case;
 
         for (const suspect of suspects) {
-                const isDefendant = (suspect.name === defendant.name);
-                let redHerring = false;
-                if(isDefendant && this.role === "defense"){
-                    redHerring = true;   // defense is NOT looking for evidence against defendant
-                }
-
-                if(!isDefendant && this.role === "prosecution"){
-                    redHerring = true;   // prosecution is ONLY looking for evidence against defendant
-                }
-
-                if (!suspect.motives?.length) continue;
-
-                for(const motive of suspect.motives){
-                    // console.log("[Objectives]", suspect.name, allMotives)
-                    this.add({
-                        id: `uncover_${motive.name}_motive_${suspect.name.toLowerCase()}`,
-                        label: `Uncover ${suspect.name}'s motive`,
-                        description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
-                        onEnter: 'This witness must have some vital information for me',
-                        roomType: "interrogation",
-                        roomID: `${suspect.name}_${motive.name}_motive_interrogation`,
-                        floorFrames: investigationLocations.misc.interrogation.floor_frames,
-                        requiredObjects: new Set([motive]),
-                        foundObjects: new Set(),
-                        redHerring: redHerring,
-                        suspect: suspect.name
-                    });
-                }
+            const isDefendant = suspect.name === defendant.name;
+            let redHerring = false;
+            if (isDefendant && this.role === 'defense') {
+                redHerring = true; // defense is NOT looking for evidence against defendant
             }
+
+            if (!isDefendant && this.role === 'prosecution') {
+                redHerring = true; // prosecution is ONLY looking for evidence against defendant
+            }
+
+            if (!suspect.motives?.length) continue;
+
+            for (const motive of suspect.motives) {
+                // console.log("[Objectives]", suspect.name, allMotives)
+                this.add({
+                    id: `uncover_${motive.name}_motive_${suspect.name.toLowerCase()}`,
+                    label: `Uncover ${suspect.name}'s motive`,
+                    description: `Find evidence of why ${suspect.name} might have committed the ${crime.type}.`,
+                    onEnter: 'This witness must have some vital information for me',
+                    roomType: 'interrogation',
+                    roomID: `${suspect.name}_${motive.name}_motive_interrogation`,
+                    floorFrames: investigationLocations.misc.interrogation.floor_frames,
+                    requiredObjects: new Set([motive]),
+                    foundObjects: new Set(),
+                    redHerring: redHerring,
+                    suspect: suspect.name,
+                    motive: {
+                        name: motive.name,
+                        description: motive.description,
+                        redHerring: redHerring,
+                    }
+                });
+            }
+        }
+    }
+
+    // TODO: move all of this text to JSON
+    buildMotiveDiscovery(suspect, motive) {
+        const dialogue = [];
+        dialogue.push(
+            {
+                key: `${this.fmt(motive.name)}`,
+                text: `${suspect} had motive: ${this.fmt(motive.name)}; ${motive.description}`
+            }
+        );
+
+        return dialogue;
+    }
+
+    addDiscoveryFlavorText(redHerring){
+        const flavor = redHerring ? 
+            "Is this even relevant?" :
+            "Could sway some jurors.";
+        return flavor;
     }
 
     onRoomVisited(roomID) {
         this.currentRoomID = roomID;
 
-        return this.getByRoomID(roomID).onEnter;    // returns a room dialogue
+        return this.getByRoomID(roomID).onEnter; // returns a room dialogue
     }
 
     // call when player examines an item. returns newly completed objectives.
     onItemFound(itemName) {
-        if(!this.currentRoomID) return null;
+        if (!this.currentRoomID) return null;
 
-        const objective = this.rooms.find(
-            (o) => o.roomID === this.currentRoomID
-        );
-        if(!objective) return null;
-        if(!objective.requiredObjects.has(itemName)) return null;
-        if(objective.completed) return true;
+        const objective = this.rooms.find((o) => o.roomID === this.currentRoomID);
+        if (!objective) return null;
+        if (!objective.requiredObjects.has(itemName)) return null;
+        if (objective.completed) return true;
 
         objective.foundObjects.add(itemName);
 
@@ -187,17 +227,16 @@ export default class ObjectivesController {
         const checkFound = objective.requiredObjects.difference(objective.foundObjects);
         const allFound = checkFound.size === 0;
 
-        if(allFound){
-            this.completeById(objective.id);
-            console.log("[Objective]", "OBJECTIVE COMPLETED!")
-        }      
+        if (allFound) {
+            this.completeByRoomID(objective.roomID);
+        }
 
         return allFound;
     }
 
     isWinConditionMet() {
         const crimeSceneDone = this.isComplete('crime_scene');
-        const suspectObjectiveDone = this.rooms.every(o => o.completed);
+        const suspectObjectiveDone = this.rooms.every((o) => o.completed);
 
         return crimeSceneDone && suspectObjectiveDone;
     }
@@ -206,17 +245,25 @@ export default class ObjectivesController {
         this.rooms.push({ completed: false, ...room });
     }
 
-    completeById(id) {
-        const obj = this.rooms.find((o) => o.id === id && !o.completed);
+    completeByRoomID(roomID) {
+        const obj = this.getByRoomID(roomID);
         if (!obj) return null;
+
+        if(obj.motive){
+            obj.discovery = this.buildMotiveDiscovery(obj.suspect, obj.motive);
+        }
+
+        obj.discovery.push(this.addDiscoveryFlavorText(obj.redHerring));
+
         obj.completed = true;
+        
         return obj;
     }
 
     resolve(predicate) {
         return this.rooms
             .filter((o) => !o.completed && predicate(o))
-            .map((o) => this.completeById(o.id))
+            .map((o) => this.completeByRoomID(o.roomID))
             .filter(Boolean);
     }
 
@@ -226,10 +273,10 @@ export default class ObjectivesController {
 
     // fisher-yates shuffle
     // https://coreui.io/answers/how-to-shuffle-an-array-in-javascript/
-    shuffle(arr){
+    shuffle(arr) {
         const a = [...arr];
-        for(let i = a.length -1; i > 0; i--){
-            const j = Math.floor(Math.random() * (i+1));
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
             [a[i], a[j]] = [a[j], a[i]];
         }
 
@@ -272,7 +319,7 @@ export default class ObjectivesController {
     }
 
     getRoomProgress(roomType) {
-        const obj = this.rooms.find(o => o.roomType === roomType);
+        const obj = this.rooms.find((o) => o.roomType === roomType);
         if (!obj) return null;
         return {
             found: obj.foundObjects.size,
@@ -283,15 +330,15 @@ export default class ObjectivesController {
 
     // resolves array of keys w/ a lookup table + flattens the results
     // prevent listing keys as objects
-    resolveObjects(keys = [], table = {}){
+    resolveObjects(keys = [], table = {}) {
         return keys.flatMap((key) => table[key] ?? []);
     }
 
-    areObjectsRelated(objectA, objectB){
-        if(!objectA.activity || !objectB.activity) return null; 
+    areObjectsRelated(objectA, objectB) {
+        if (!objectA.activity || !objectB.activity) return null;
 
-        for(const a of objectA.activity){
-            if(objectB.activity.includes(a)){
+        for (const a of objectA.activity) {
+            if (objectB.activity.includes(a)) {
                 return a;
             }
         }

@@ -3,7 +3,8 @@
         "enemy": [
             {
                 "name": "hatred",
-                "description": "$suspect and $victim didn't get along.",
+                "description": "",
+                "relationship_description": "$suspect and $victim didn't get along.",
                 "barks": ["hatred bark filler"],
                 "relationship": ["enemy"],
                 "discovery_dialogue": [
@@ -16,64 +17,80 @@
         "neighbor": [
             {
                 "name": "property_dispute",
-                "description": "$suspect and $victim were neighbors, then.",
+                "description": "",
+                "relationship_description": "$suspect and $victim were neighbors, then.",
                 "barks": ["property_dispute bark filler"],
                 "relationship": ["neighbor"],
                 "discovery_dialogue": [
                     "$suspect and $victim had been fighting over land. For years, apparently.",
                     "A property dispute. Petty on the surface. Deadly underneath."
                 ],
-                "witness_statement": ["They lived next door to one another for a long time. Always arguing about fencing."]
+                "witness_statement": [
+                    "They lived next door to one another for a long time. Always arguing about fencing."
+                ]
             }
         ],
         "friend": [
             {
                 "name": "argument",
-                "description": "$suspect and $victim were friends.",
+                "description": "",
+                "relationship_description": "$suspect and $victim were friends.",
                 "discovery_dialogue": [
                     "Looks like $suspect and $victim weren't on speaking terms. Wonder what set them off.",
                     "Something came between them. Friends one day, strangers the next."
                 ],
                 "relationship": ["friend"],
-                "witness_statement": ["They used to be thick as thieves. Ever since their fight, however..."]
+                "witness_statement": [
+                    "They used to be thick as thieves. Ever since their fight, however..."
+                ]
             },
             {
                 "name": "betrayal",
-                "description": "$suspect and $victim got along.",
+                "description": "",
+                "relationship_description": "$suspect and $victim got along.",
                 "discovery_dialogue": [
                     "$suspect felt betrayed by $victim. That kind of wound doesn't close easy.",
                     "Trust, broken. By $victim, no less. $suspect wouldn't forget that."
                 ],
                 "relationship": ["friend"],
-                "witness_statement": ["They went everywhere together...until one of them went and ruined it all."]
+                "witness_statement": [
+                    "They went everywhere together...until one of them went and ruined it all."
+                ]
             }
         ],
         "romance_unrequited": [
             {
                 "name": "jealousy",
-                "description": "$suspect and $victim were just friends.",
+                "description": "",
+                "relationship_description": "$suspect and $victim were just friends.",
                 "discovery_dialogue": [
                     "$suspect wanted something from $victim they were never going to get.",
                     "Unrequited love. The worst kind of feeling to sit with."
                 ],
                 "relationship": ["romance_unrequited"],
-                "witness_statement": ["They were close friends...one was closer than the other, though. If you catch my drift."]
+                "witness_statement": [
+                    "They were close friends...one was closer than the other, though. If you catch my drift."
+                ]
             }
         ],
         "romance": [
             {
                 "name": "argument",
-                "description": "$suspect and $victim were together romantically.",
+                "description": "",
+                "relationship_description": "$suspect and $victim were together romantically.",
                 "discovery_dialogue": [
                     "Lovers' quarrel? Or something worse?",
                     "$suspect and $victim had been fighting. Badly, from what I can tell."
                 ],
                 "relationship": ["romance"],
-                "witness_statement": ["They loved each other, but they had a mean streak, too. Really mean."]
+                "witness_statement": [
+                    "They loved each other, but they had a mean streak, too. Really mean."
+                ]
             },
             {
                 "name": "betrayal",
-                "description": "$suspect and $victim were lovers.",
+                "description": "",
+                "relationship_description": "$suspect and $victim were lovers.",
                 "discovery_dialogue": [
                     "$victim did something unforgivable. And $suspect found out.",
                     "Betrayed by the one person you trusted most. That'll do something to you."
@@ -83,23 +100,29 @@
             },
             {
                 "name": "jealousy",
-                "description": "$suspect and $victim were partners.",
+                "description": "",
+                "relationship_description": "$suspect and $victim were partners.",
                 "discovery_dialogue": [
                     "$suspect couldn't let go. Even when $victim had moved on.",
                     "Green-eyed and dangerous. $suspect was watching $victim closely."
                 ],
                 "relationship": ["romance"],
-                "witness_statement": ["They were together, but no good for each other. No trust, you know?"]
+                "witness_statement": [
+                    "They were together, but no good for each other. No trust, you know?"
+                ]
             },
             {
                 "name": "crime_of_passion",
-                "description": "$suspect and $victim were in love.",
+                "description": "",
+                "relationship_description": "$suspect and $victim were in love.",
                 "discovery_dialogue": [
                     "Whatever happened between them...it wasn't planned. It was felt.",
                     "So $suspect snapped. Heat of the moment. That's the only explanation."
                 ],
                 "relationship": ["romance"],
-                "witness_statement": ["It was very passionate between them. It could get heated. Ugly."]
+                "witness_statement": [
+                    "It was very passionate between them. It could get heated. Ugly."
+                ]
             }
         ]
     }

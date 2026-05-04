@@ -249,6 +249,7 @@
             {
                 "name": "anon_love_letter",
                 "activity": ["general"],
+                "suspicious": true,
                 "description": "A love letter, huh? Signed from anonymous.",
                 "dialogue": [
                     "Looks like it was written with a fountain pen."

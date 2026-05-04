@@ -34,6 +34,8 @@ export default class HatchRoomScene extends Phaser.Scene {
             this.scale.height - 120, // near bottom of screen
             'paper1',
         );
+
+        this.ledger = this.registry.get('ledger');
     }
 
     create(){
@@ -284,6 +286,11 @@ export default class HatchRoomScene extends Phaser.Scene {
                             this.dialogueBox.showDialogue(allDialouge);
                         }
                     }
+
+                    if(this.objective.completed && this.objective.discovery){   // this means that the objective has been completed!
+                        this.ledger.discover(this.objective.discovery);
+                    }
+
                 },
             );
             objectButton.setDepth(4);

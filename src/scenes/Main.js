@@ -15,6 +15,8 @@ import Button from '../prefabs/Button';
 import ObjectivesController from "../prefabs/Objectives";
 import { Game } from "phaser";
 import AudioManager from '../audio/AudioManager';
+import Ledger from '../prefabs/Ledger';
+import DialogueBox from "../prefabs/DialogueBox";
 
 export default class MainScene extends Phaser.Scene {
     constructor() {
@@ -38,6 +40,10 @@ export default class MainScene extends Phaser.Scene {
             this.case = new Case(this.grammar, this.NUM_SUSPECTS);
 
             this.registry.set('case', this.case);
+            // this.testObjectives();
+
+            this.ledger = new Ledger();
+            this.registry.set('ledger', this.ledger)
         }
 
        const main_bg = this.add.image(
@@ -119,8 +125,9 @@ export default class MainScene extends Phaser.Scene {
             },
         );
 
+        this.evidenceButtons = [];  // holds evidence player finds in mind palace
         //button to open evidence notes
-        const EVIDENCE_BUTTON = new Button(
+        this.EVIDENCE_BUTTON = new Button(
             this,
             this.cameras.main.centerX * 1.8,
             this.cameras.main.centerY / 6,
@@ -129,20 +136,34 @@ export default class MainScene extends Phaser.Scene {
             'Evidence Found',
             undefined,
             undefined, () =>{
-                notesOpen = !notesOpen;
+                this.notesOpen = !this.notesOpen;
+
+                if (this.evidenceButtons) {
+                    this.evidenceButtons.forEach((btn) => {
+                        // btn.hide();
+                        btn.destroy();
+                    });
+                }
+                this.evidenceButtons = [];
 
                 this.tweens.add({
                     targets: this.evidenceNotes,
-                    x: notesOpen
+                    x: this.notesOpen
                         ? this.cameras.main.centerX
                         : this.cameras.main.centerX * 3,
                     duration: 1000,
-                    ease: 'Cubic.easeInOut'
+                    ease: 'Cubic.easeInOut',
+                    onComplete: () => {
+                        // only draw buttons once paper has slid in
+                        if (this.notesOpen) {
+                            this.presentEvidence();
+                        }
+                    }
                 })
                 this.game.audio.playSFX("notebook");
             }
         )
-        let notesOpen = false;
+        this.notesOpen = false;
         this.evidenceNotes = this.add.sprite(
             this.cameras.main.centerX * 3,
             this.cameras.main.centerY,
@@ -150,6 +171,7 @@ export default class MainScene extends Phaser.Scene {
         )
         .setDepth(10)
         .setScale(.90);
+
 
         // player chooses defense or prosecution 
         this.choiceTextBG = this.add.image(
@@ -170,7 +192,7 @@ export default class MainScene extends Phaser.Scene {
 
         if(!this.case.playerRole){
             this.mapButton.hide();
-            EVIDENCE_BUTTON.hide();
+            this.EVIDENCE_BUTTON.hide();
             
             const PICK_SIDE_DEFENSE = new Button(
                 this,
@@ -199,10 +221,11 @@ export default class MainScene extends Phaser.Scene {
                     this.jury_front.setVisible(true);
                     this.choiceText.setVisible(false);
                     this.choiceTextBG.setVisible(false);
-                    EVIDENCE_BUTTON.show();
+                    this.EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
                         this.jurorSprites[i].setVisible(true);
+                        this.jurorStatus[i].setVisible(true);
                     }
 
                     //this.testObjectives();
@@ -236,10 +259,11 @@ export default class MainScene extends Phaser.Scene {
                     this.jury_front.setVisible(true);
                     this.choiceText.setVisible(false);
                     this.choiceTextBG.setVisible(false);
-                    EVIDENCE_BUTTON.show();
+                    this.EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
                         this.jurorSprites[i].setVisible(true);
+                        this.jurorStatus[i].setVisible(true);
                     }
 
                     //this.testObjectives();
@@ -263,213 +287,71 @@ export default class MainScene extends Phaser.Scene {
         //jury stand and jury
         const juryX = 1.13;
         const juryY = 1.2;
-        this.jury_back = this.add.image(
-            this.cameras.main.centerX * juryX,
-            this.cameras.main.centerY * juryY,
-            'jury_back'
-        ).setOrigin(0.5).setScale(1.75).setVisible(false);
-        const jurors = ['fairy_out', 'goblin_out','human_out','orc_out','elf_out'];
+        this.jury_back = this.add
+            .image(
+                this.cameras.main.centerX * juryX,
+                this.cameras.main.centerY * juryY,
+                'jury_back',
+            )
+            .setOrigin(0.5)
+            .setScale(1.75)
+            .setVisible(false);
+        const jurors = ['fairy_out', 'goblin_out', 'human_out', 'orc_out', 'elf_out'];
         let jurorX = this.cameras.main.centerX * 1.28;
         let jurorY = this.cameras.main.centerY * 1.1;
-        this.jurorSprites = []
+        this.jurorSprites = [];
 
-        for (let i = 0; i < jurors.length; i++){
-            const newJuror = this.add.sprite(
+        this.jurorsSwayed = 0;
+        this.jurorStatus = [];
+        for (let i = 0; i < jurors.length; i++) {
+            const newJuror = this.add
+                .sprite(jurorX, jurorY, jurors[i])
+                .setOrigin(0.5)
+                .setScale(0.5)
+                .setVisible(false);
+
+            // add labels
+            const newJurorLabel = new GameText(
+                this,
                 jurorX,
-                jurorY,
-                jurors[i]
-            ).setOrigin(0.5).setScale(0.5).setVisible(false);
-            if (jurors[i + 1] === 'goblin_out'){
+                this.cameras.main.centerY / 1.4,
+                this.grammar.getJurorText('unsure', this.DEFENSE_ROLE),
+                {
+                    wordWrap: { width: 150 },
+                },
+            );
+
+            newJurorLabel.setVisible(false);
+
+            this.jurorStatus.push(newJurorLabel);
+
+            if (jurors[i + 1] === 'goblin_out') {
                 jurorY -= 40;
-            } else if (jurors[i] === 'goblin_out' && jurors[i+1] != 'goblin_out') {
+            } else if (jurors[i] === 'goblin_out' && jurors[i + 1] != 'goblin_out') {
                 jurorY += 115;
             } else {
                 jurorY + 80;
             }
             jurorX += 152;
             this.jurorSprites.push(newJuror);
-        };
-
-        this.jury_front = this.add.image(
-            this.cameras.main.centerX * juryX,
-            this.cameras.main.centerY * juryY,
-            'jury_front'
-        ).setOrigin(0.5).setScale(1.75).setVisible(false);
-
-    }
-
-
-
-    // TEMP TESTING CODE
-    testObjectives() {
-        const PLAYER_ROLE_OG = this.case.playerRole; // preserve
-
-        const OBJECTS = this.grammar.getAllObjects();
-
-        const LOG_ID = '[Main] testObjectives()';
-        const pass = (msg) => console.log(`${LOG_ID} PASS: ${msg}`);
-        const fail = (msg) => console.error(`${LOG_ID} FAIL: ${msg}`);
-        const assert = (condition, msg) => (condition ? pass(msg) : fail(msg));
-        const header = (title) => console.log(`${'_'.repeat(40)}\n--- ${title}\n${'_'.repeat(40)}\n${LOG_ID} ... `);
-
-        const testRole = (role) => {
-            header(`Initial Build ... testing ${role}`);
-            this.case.playerRole = role;
-            const ctrl = new ObjectivesController(this.case, OBJECTS, this.NUM_OBJECTIVES);
-            const all = ctrl.getAll();
-
-            assert(
-                all.length > 0,
-                `${LOG_ID} ... Generated ${ctrl.getAll().length} ${this.case.role} objectives`,
-            );
-            assert(
-                ctrl.getPending().length === all.length,
-                `${LOG_ID} ... All ${all.length} start as pending`,
-            );
-
-            // should always generate crime scene objectives
-            const crimeSceneObj = all.find((o) => o.id === 'crime_scene');
-            assert(!!crimeSceneObj, `Crime scene objective spawns`);
-
-            // suspect investigation objectives spawn, capped at NUM_OBJECTIVES
-            const roleObjs = all.filter((o) => o.suspect);
-            assert(
-                roleObjs.length <= this.NUM_OBJECTIVES,
-                `${LOG_ID} ... Suspect objectives (${roleObjs.length}) do not exceed NUM_OBJECTIVES (${this.NUM_OBJECTIVES})`,
-            );
-
-            const defendant = this.case.defendant;
-            if (role == this.PROSECUTE_ROLE) {
-                // prosecution should only ever target defendant
-                const wrongSuspect = roleObjs.find(
-                    (o) => o.suspect && o.suspect !== defendant.name,
-                );
-                assert(
-                    !wrongSuspect,
-                    `Prosecution objectives only target defendant (${defendant.name})`,
-                );
-            } else if (role == this.DEFENSE_ROLE) {
-                // defense should never target defendant
-                const wrongSuspect = roleObjs.find(
-                    (o) => o.suspect && o.suspect === defendant.name,
-                );
-                assert(
-                    !wrongSuspect,
-                    `Defense objectives never target defendant (${defendant.name})`,
-                );
-            }
-
-            console.log(`${LOG_ID} ... SUMMARY (${this.case.playerRole}):`, ctrl.getSummary());
-        };
-
-        testRole(this.PROSECUTE_ROLE);
-        testRole(this.DEFENSE_ROLE);
-
-        // simulate walking into a room and touching every required object
-        // (returns completed objective returned by the last onItemFound call)
-        const clearRoom = (ctrl, roomType) => {
-            ctrl.onRoomVisited(roomType);
-            const obj = ctrl.getAll().find((o) => o.roomType === roomType);
-            if (!obj) return null;
-            let result = null;
-            for (const item of obj.requiredObjects) {
-                result = ctrl.onItemFound(item);
-            }
-            return result; // returns the completed objective
-        };
-
-        // visiting rooms
-        header('testing onRoomVisited');
-
-        const ctrl = new ObjectivesController(this.case, 'prosecution', OBJECTS, this.NUM_OBJECTIVES);
-
-        const roomResult = ctrl.onRoomVisited(this.case.crime.scene);
-        assert(roomResult !== null, `onRoomVisited(crime scene) returned the active objective`);
-        assert(
-            roomResult?.roomType === this.case.crime.scene,
-            `Returned objective matches visited room (${this.case.crime.scene})`,
-        );
-
-        // Re-visiting a completed room returns null
-        clearRoom(ctrl, this.case.crime.scene); // complete it first
-        const revisit = ctrl.onRoomVisited(this.case.crime.scene);
-        // After completion there's no pending objective for this room
-        assert(
-            revisit === null || revisit?.completed,
-            `Re-visiting a completed room does not return a pending objective`,
-        );
-
-        // onItemFound
-        header('testing onItemFound');
-
-        const ctrl2 = new ObjectivesController(this.case, 'prosecution', OBJECTS, this.NUM_OBJECTIVES);
-        ctrl2.onRoomVisited(this.case.crime.scene);
-
-        // item outside the room requiredObjects returns null
-        const irrelevant = ctrl2.onItemFound('__nonexistent_item__');
-        assert(irrelevant === null, `onItemFound with irrelevant item returns null`);
-
-        // progress increments before completion
-        const crimeObj2 = ctrl2.getAll().find((o) => o.id === 'crime_scene');
-        if (crimeObj2.requiredObjects.length > 1) {
-            ctrl2.onItemFound(crimeObj2.requiredObjects[0]);
-            const progress = ctrl2.getRoomProgress(this.case.crime.scene);
-            assert(
-                progress.found === 1 && !progress.completed,
-                `Partial interaction: found ${progress.found}/${progress.required}, not yet complete`,
-            );
         }
 
-        // finding all required objects completes the objective
-        const completed = clearRoom(ctrl2, this.case.crime.scene);
-        assert(completed !== null, `clearRoom returned the completed objective`);
-        assert(
-            ctrl2.isComplete('crime_scene'),
-            `Crime scene objective is marked complete after all objects found`,
-        );
+        this.jury_front = this.add
+            .image(
+                this.cameras.main.centerX * juryX,
+                this.cameras.main.centerY * juryY,
+                'jury_front',
+            )
+            .setOrigin(0.5)
+            .setScale(1.75)
+            .setVisible(false);
 
-        // re-finding object in completed room does nothing
-        ctrl2.onRoomVisited(this.case.crime.scene);
-        const refind = ctrl2.onItemFound(this.case.crime.object);
-        assert(refind === null, `onItemFound in a completed room returns null`);
-
-        // room progress
-        header('testing getRoomProgress');
-
-        const ctrl3 = new ObjectivesController(this.case, 'prosecution', OBJECTS, this.NUM_OBJECTIVES);
-        const progBefore = ctrl3.getRoomProgress(this.case.crime.scene);
-        assert(progBefore !== null, `getRoomProgress returns data for a valid room`);
-        assert(
-            progBefore.found === 0 && progBefore.required > 0 && !progBefore.completed,
-            `Progress before interaction: found=${progBefore.found}, required=${progBefore.required}, completed=${progBefore.completed}`,
-        );
-
-        clearRoom(ctrl3, this.case.crime.scene);
-        const progAfter = ctrl3.getRoomProgress(this.case.crime.scene);
-        assert(
-            progAfter.completed,
-            `Progress after clearing room: completed=${progAfter.completed}`,
-        );
-
-        const noRoom = ctrl3.getRoomProgress('__fake_room__');
-        assert(noRoom === null, `getRoomProgress returns null for unknown room`);
-
-        // win condition
-        header('testing isWinConditionMet');
-
-        const ctrl4 = new ObjectivesController(this.case, 'prosecution', OBJECTS, this.NUM_OBJECTIVES);
-        assert(!ctrl4.isWinConditionMet(), `Win condition not met at start`);
-
-        for (const obj of ctrl4.getAll()) {
-            clearRoom(ctrl4, obj.roomType);
-        }
-        assert(ctrl4.isWinConditionMet(), `Win condition met after clearing all rooms`);
-
-        // final summary
-        header('final state');
-        console.log(`${LOG_ID} ... All objectives:`, ctrl4.getAll());
-        console.log(`${LOG_ID} ... Final summary:`, ctrl4.getSummary());
-        this.case.playerRole = PLAYER_ROLE_OG; // revert
+        this.dialogueBox = new DialogueBox(
+            this,
+            this.scale.width / 2, // centered X
+            this.scale.height - 120, // near bottom of screen
+            'paper1',
+        );  
     }
 
     update() {
@@ -481,5 +363,81 @@ export default class MainScene extends Phaser.Scene {
 
     evidenceFound() {
         this.evidenceNotes.x = this.cameras.main.centerX;
+    }
+
+    presentEvidence() {
+        let x = this.evidenceNotes.x - this.evidenceNotes.width / 4;
+        let y = this.evidenceNotes.y - this.evidenceNotes.height / 3;
+        for (let i = 0; i < this.ledger.discoveries.length; i++) {
+            const discovery = this.ledger.discoveries[i];
+            
+            let btn;
+            btn = new Button(this, x, y, 300, 100, `${discovery.key}`, undefined, undefined, () => {
+                console.log(
+                    '[Main]: presenting discovery',
+                    discovery.text,
+                    discovery.redHerring,
+                );
+                this.updateJury(discovery.redHerring);
+
+                // destroy and remove from array
+                btn.destroy();
+                this.ledger.discoveries.splice(i, 1);
+
+                // hide notes
+                if (this.evidenceButtons) {
+                    this.evidenceButtons.forEach((btn) => {
+                        // btn.hide();
+                        btn.destroy();
+                    });
+                }
+                this.evidenceButtons = [];
+
+                this.notesOpen = false;
+                this.tweens.add({
+                    targets: this.evidenceNotes,
+                    x: this.cameras.main.centerX * 3,
+                    duration: 1000,
+                    ease: 'Cubic.easeInOut',
+                });
+                this.game.audio.playSFX("notebook");
+
+                // evidence dialogue
+                let messages = [
+                    { messages: discovery.text, speaker: 'YOU' },
+                    { messages: this.grammar.getJudgeBark(discovery.redHerring), speaker: 'JUDGE' }
+                ]
+                this.dialogueBox.showDialogue(messages);
+            });
+            this.evidenceButtons.push(btn);
+            y += 150;
+        }
+    }
+
+    updateJury(redHerring) {
+        if (!redHerring) {
+            // add a point
+            this.jurorsSwayed++;
+            this.jurorStatus[this.jurorsSwayed-1].text = this.grammar.getJurorText('convinced', this.case.playerRole);
+
+            if (this.jurorsSwayed === this.jurorStatus.length) {
+                this.gameWin();
+            }
+        } else {
+            // subtract a point
+            if (this.jurorsSwayed > 0) {
+                const notPlayerRole = this.case.playerRole === this.DEFENSE_ROLE ? this.PROSECUTE_ROLE : this.DEFENSE_ROLE;
+                this.jurorStatus[this.jurorsSwayed-1].text = this.grammar.getJurorText('convinced', notPlayerRole);
+                this.jurorsSwayed--;
+            }
+        }
+
+        /// TODO: left off here; needs testing
+    }
+
+    gameWin() {
+        new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, 'SUCCESS!', {
+            fontSize: '120px',
+        });
     }
 }
