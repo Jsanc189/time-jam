@@ -13,12 +13,8 @@ import AudioManager from '../audio/AudioManager';
 export default class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y) {
         super(scene, x, y, 'playerSheet', 0);
-        this.footsteps = scene.sound.add('footsteps', {
-             loop: true, 
-             volume: localStorage.getItem("sfxVolume"), 
-        }).setRate(0.76);
-        //console.log(this.footsteps.getSFXVolume());
-        this.ismoving = false;
+        this.footsteps = null;
+        this.isMoving = false;
 
         //add the player to the scene and enable physics for world interactions
         scene.add.existing(this);
@@ -84,17 +80,32 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         const moving = velocityX !== 0 || velocityY !== 0;
-        if (moving && !this.ismoving) {
-            this.footsteps.play();
-            this.ismoving = true;
-        } else if (!moving && this.ismoving) {
-            this.footsteps.stop();
-            this.ismoving = false;
+        if (moving) {
+            this.startFootSteps();
+        } else {
+            this.stopFootSteps();
         }
     }
 
     stop(){
         this.animating = false;
+    }
+
+    startFootSteps() {
+        if (this.isMoving) return; // prevent multiple instances of footsteps
+
+        this.footsteps = this.scene.game.audio.playSFX("footsteps");
+        this.isMoving = true;
+    }
+
+    stopFootSteps() {
+        if(!this.isMoving) return;
+
+        if(this.footsteps) {
+            this.footsteps.stop();
+            this.footsteps = null;
+        }
+        this.isMoving = false;
     }
 
 }

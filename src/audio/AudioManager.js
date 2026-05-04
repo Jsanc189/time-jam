@@ -18,6 +18,7 @@ export default class AudioManager {
         let sfxVol = parseFloat(localStorage.getItem("sfxVolume")) || 1;
         this.sfxVolume = sfxVol;
         this.sfxMute = localStorage.getItem("sfxMute") === ("true");
+        this.sfxRate = 1;
 
         this.currentMusic = null;
         this.currentSFX = null;
@@ -26,6 +27,7 @@ export default class AudioManager {
     getSFXVolume() {
         return this.sfxVolume;
     }
+   
 
     playMusic(key) {
         //If we are playing the correct track, return
@@ -63,6 +65,8 @@ export default class AudioManager {
             volume: this.sfxVolume,
             mute: this.sfxMute  
         });
+
+        this.currentSFX = sound;
 
         return sound;
     }
