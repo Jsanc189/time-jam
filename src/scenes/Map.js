@@ -142,13 +142,13 @@ export default class MapScene extends Phaser.Scene {
         //clock logic
         const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
         const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
-        const CLOCK_ITERATION_TIME = 2700; //45 minutes in seconds
+        const CLOCK_ITERATION_TIME = 4500; //an hour and 15 minutes in seconds
         this.clockwarning = false;
 
         this.registry.set('clockStartTime', 0); //start time in seconds
         this.registry.set('maxSeconds', 43200); //12 hours in seconds
         this.registry.set('taskTime', CLOCK_ITERATION_TIME); // 45 minutes in seconds
-        this.registry.set('taskTime', 39600); //11 hours in seconds for testing
+        //this.registry.set('taskTime', 39600); //11 hours in seconds for testing
 
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
 
