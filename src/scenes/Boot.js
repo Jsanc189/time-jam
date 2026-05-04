@@ -106,6 +106,7 @@ export default class BootScene extends Phaser.Scene {
     //music
     this.load.audio('mainTheme', 'assets/audio/music/mystery-game_main-theme.mp3');
     this.load.audio('mindPalace', 'assets/audio/music/mind-palace-theme.mp3');
+    this.load.audio('courtroom', 'assets/audio/music/courtroom-theme.mp3');
     
     //SFX
     //this.load.audio('testVolume', 'assets/audio/sfx/select.wav');
