@@ -106,6 +106,7 @@ export default class BootScene extends Phaser.Scene {
     //music
     this.load.audio('mainTheme', 'assets/audio/music/mystery-game_main-theme.mp3');
     this.load.audio('mindPalace', 'assets/audio/music/mind-palace-theme.mp3');
+    this.load.audio('courtroom', 'assets/audio/music/courtroom-theme.mp3');
     
     //SFX
     //this.load.audio('testVolume', 'assets/audio/sfx/select.wav');
@@ -117,6 +118,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.audio('interact', 'assets/audio/sfx/sfx_interact.mp3');
     this.load.audio('notebook', 'assets/audio/sfx/sfx_notebook.mp3');
     this.load.audio('rope', 'assets/audio/sfx/sfx_rope.mp3');
+    this.load.audio('footsteps', 'assets/audio/sfx/footsteps.mp3');
 
 
   }

@@ -8,11 +8,16 @@
 */
 
 import Phaser from 'phaser';
+import AudioManager from '../audio/AudioManager';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y) {
         super(scene, x, y, 'playerSheet', 0);
-        
+        this.footsteps = scene.sound.add('footsteps', {
+             loop: true, 
+             volume: scene.game.audio.sfxVolume, 
+        }).setRate(0.76);
+        this.ismoving = false;
         
         //add the player to the scene and enable physics for world interactions
         scene.add.existing(this);
@@ -65,7 +70,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         //play animations based on movement direction
         if(this.animating){
             if (velocityX === 0 && velocityY === 0) {
-                this.anims.play('playerIdle', true);
+                this.anims.play('playerIdle', true);    
             } else if (velocityX > 0) {
                 this.anims.play('playerWalkRight', true);
             } else if (velocityX < 0) {
@@ -77,6 +82,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             }
         }
 
+        const moving = velocityX !== 0 || velocityY !== 0;
+        if (moving && !this.ismoving) {
+            this.footsteps.play();
+            this.ismoving = true;
+        } else if (!moving && this.ismoving) {
+            this.footsteps.stop();
+            this.ismoving = false;
+        }
     }
 
     stop(){

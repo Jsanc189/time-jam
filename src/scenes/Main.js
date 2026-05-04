@@ -31,7 +31,7 @@ export default class MainScene extends Phaser.Scene {
         this.outOfTime = this.registry.set('outOfTime', false);
         this.audio = this.game.audio;
         this.time.delayedCall(500, () => {
-            this.audio.playMusic("mindPalace");
+            this.audio.playMusic("courtroom");
         });
 
 
