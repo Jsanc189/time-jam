@@ -35,6 +35,7 @@ export default class MainScene extends Phaser.Scene {
         this.registry.set('audioIsPlaying', true);
         this.gameStarting = false;
         this.audio.currentMusic.setVolume(0);
+        this.endGameSoundPlayed = false;
         //Fade in music
         this.time.delayedCall(300, () => {
             this.tweens.add({
@@ -463,9 +464,14 @@ export default class MainScene extends Phaser.Scene {
         new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, 'SUCCESS!', {
             fontSize: '120px',
         });
+        if (!this.endGameSoundPlayed)  {
+            this.endGameSoundPlayed = true;
+            this.audio.playSFX("win");
+        }
+
 
         //delayed call to go back to credits after win
-        this.time.delayedCall(5000, () => {
+        this.time.delayedCall(6000, () => {
             this.scene.stop('MainScene');
             this.registry.reset();
             this.scene.remove('MainScene');
@@ -477,6 +483,12 @@ export default class MainScene extends Phaser.Scene {
         new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, 'OUT OF TIME!', {
             fontSize: '120px',
         });
+        if (!this.endGameSoundPlayed)  {
+            this.endGameSoundPlayed = true;
+            this.audio.playSFX("lose");
+        }
+
+        //delayed call to go back to credits after lose
         this.time.delayedCall(5000, () => {
             this.scene.stop('MainScene');
             this.scene.start('CreditsScene');
