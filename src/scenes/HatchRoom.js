@@ -64,12 +64,13 @@ export default class HatchRoomScene extends Phaser.Scene {
         const TITLE_TEXT = new GameText(
             this,
             this.cameras.main.centerX,
-            this.cameras.main.centerY,
-            this.label + isCrimeScene + '\nObjective: ' + this.objective.label + (this.objective.redHerring ? "\n[RED HERRING]" : ""),
+            this.cameras.main.centerY * 0.25,
+            this.label + isCrimeScene + '\nObjective: ' + this.objective.label,
             {
-               backgroundColor:'#43282b'
+                fontSize: '48px',
+                backgroundColor:'#43282b'
             }
-        );
+        ).setDepth(100);
 
         //Player sprite
         this.player = new Player(
@@ -210,7 +211,7 @@ export default class HatchRoomScene extends Phaser.Scene {
     // TEMP: objects as buttons
     // made this function for testing, but it also demonstrates how to get and handle objects in this.objective!
     placeObjects(){
-        const x = this.game.config.width - 300;
+        const x = this.game.config.width - 200;
         let y = 0;
         const yStep = 150;
         
