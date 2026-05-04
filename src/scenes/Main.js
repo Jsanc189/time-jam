@@ -16,6 +16,7 @@ import ObjectivesController from "../prefabs/Objectives";
 import { Game } from "phaser";
 import AudioManager from '../audio/AudioManager';
 import Ledger from '../prefabs/Ledger';
+import DialogueBox from "../prefabs/DialogueBox";
 
 export default class MainScene extends Phaser.Scene {
     constructor() {
@@ -126,7 +127,7 @@ export default class MainScene extends Phaser.Scene {
 
         this.evidenceButtons = [];  // holds evidence player finds in mind palace
         //button to open evidence notes
-        const EVIDENCE_BUTTON = new Button(
+        this.EVIDENCE_BUTTON = new Button(
             this,
             this.cameras.main.centerX * 1.8,
             this.cameras.main.centerY / 6,
@@ -135,7 +136,7 @@ export default class MainScene extends Phaser.Scene {
             'Evidence Found',
             undefined,
             undefined, () =>{
-                notesOpen = !notesOpen;
+                this.notesOpen = !this.notesOpen;
 
                 if (this.evidenceButtons) {
                     this.evidenceButtons.forEach((btn) => {
@@ -147,14 +148,14 @@ export default class MainScene extends Phaser.Scene {
 
                 this.tweens.add({
                     targets: this.evidenceNotes,
-                    x: notesOpen
+                    x: this.notesOpen
                         ? this.cameras.main.centerX
                         : this.cameras.main.centerX * 3,
                     duration: 1000,
                     ease: 'Cubic.easeInOut',
                     onComplete: () => {
                         // only draw buttons once paper has slid in
-                        if (notesOpen) {
+                        if (this.notesOpen) {
                             this.presentEvidence();
                         }
                     }
@@ -162,7 +163,7 @@ export default class MainScene extends Phaser.Scene {
                 this.game.audio.playSFX("notebook");
             }
         )
-        let notesOpen = false;
+        this.notesOpen = false;
         this.evidenceNotes = this.add.sprite(
             this.cameras.main.centerX * 3,
             this.cameras.main.centerY,
@@ -191,7 +192,7 @@ export default class MainScene extends Phaser.Scene {
 
         if(!this.case.playerRole){
             this.mapButton.hide();
-            EVIDENCE_BUTTON.hide();
+            this.EVIDENCE_BUTTON.hide();
             
             const PICK_SIDE_DEFENSE = new Button(
                 this,
@@ -220,7 +221,7 @@ export default class MainScene extends Phaser.Scene {
                     this.jury_front.setVisible(true);
                     this.choiceText.setVisible(false);
                     this.choiceTextBG.setVisible(false);
-                    EVIDENCE_BUTTON.show();
+                    this.EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
                         this.jurorSprites[i].setVisible(true);
@@ -258,7 +259,7 @@ export default class MainScene extends Phaser.Scene {
                     this.jury_front.setVisible(true);
                     this.choiceText.setVisible(false);
                     this.choiceTextBG.setVisible(false);
-                    EVIDENCE_BUTTON.show();
+                    this.EVIDENCE_BUTTON.show();
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
                         this.jurorSprites[i].setVisible(true);
@@ -344,6 +345,13 @@ export default class MainScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setScale(1.75)
             .setVisible(false);
+
+        this.dialogueBox = new DialogueBox(
+            this,
+            this.scale.width / 2, // centered X
+            this.scale.height - 120, // near bottom of screen
+            'paper1',
+        );  
     }
 
     update() {
@@ -360,19 +368,48 @@ export default class MainScene extends Phaser.Scene {
     presentEvidence() {
         let x = this.evidenceNotes.x - this.evidenceNotes.width / 4;
         let y = this.evidenceNotes.y - this.evidenceNotes.height / 3;
+        for (let i = 0; i < this.ledger.discoveries.length; i++) {
+            const discovery = this.ledger.discoveries[i];
+            
+            let btn;
+            btn = new Button(this, x, y, 300, 100, `${discovery.key}`, undefined, undefined, () => {
+                console.log(
+                    '[Main]: presenting discovery',
+                    discovery.text,
+                    discovery.redHerring,
+                );
+                this.updateJury(discovery.redHerring);
 
-        for (const discovery of this.ledger.discoveries) {
-            this.evidenceButtons.push(
-                new Button(this, x, y, 300, 100, `${discovery.key}`, undefined, undefined, () => {
-                    console.log(
-                        '[Main]: presenting discovery',
-                        discovery.text,
-                        discovery.redHerring,
-                    );
-                    this.updateJury(discovery.redHerring);
-                }),
-            );
+                // destroy and remove from array
+                btn.destroy();
+                this.ledger.discoveries.splice(i, 1);
 
+                // hide notes
+                if (this.evidenceButtons) {
+                    this.evidenceButtons.forEach((btn) => {
+                        // btn.hide();
+                        btn.destroy();
+                    });
+                }
+                this.evidenceButtons = [];
+
+                this.notesOpen = false;
+                this.tweens.add({
+                    targets: this.evidenceNotes,
+                    x: this.cameras.main.centerX * 3,
+                    duration: 1000,
+                    ease: 'Cubic.easeInOut',
+                });
+                this.game.audio.playSFX("notebook");
+
+                // evidence dialogue
+                let messages = [
+                    { messages: discovery.text, speaker: 'YOU' },
+                    { messages: this.grammar.getJudgeBark(discovery.redHerring), speaker: 'JUDGE' }
+                ]
+                this.dialogueBox.showDialogue(messages);
+            });
+            this.evidenceButtons.push(btn);
             y += 150;
         }
     }

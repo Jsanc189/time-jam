@@ -103,7 +103,12 @@
     ],
     "judge": [
         {
-            "barks": [
+            "redherring": [
+                "O...kay...",
+                "Your poor client...",
+                "Hmph."
+            ],
+            "not_redherring": [
                 "Hmmm...",
                 "I see.",
                 "Interesting"

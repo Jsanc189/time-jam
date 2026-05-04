@@ -87,18 +87,24 @@ export default class Button extends Phaser.GameObjects.Sprite {
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => {
                 isDown = true;
-                this.newButton.setTexture('ButtonClick');
+                if(this.newButton.active){
+                    this.newButton.setTexture('ButtonClick');
+                }
             })
             .on('pointerup', () => {
                 if (isDown) {
                     callback(); // only fires if it was actually pressed
                 }
                 isDown = false;
-                this.newButton.setTexture('ButtonHover');
+                if(this.newButton.active){
+                    this.newButton.setTexture('ButtonHover');
+                }
             })
             .on('pointerout', () => {
                 isDown = false;
-                this.newButton.setTexture('Button');
+                if(this.newButton.active){
+                    this.newButton.setTexture('Button');
+                }
             })
             .on('pointerover', () => {
                 if (!isDown) this.newButton.setTexture('ButtonHover');

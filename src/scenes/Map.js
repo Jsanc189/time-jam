@@ -184,7 +184,7 @@ export default class MapScene extends Phaser.Scene {
                 });
             },
         );
-        CLOCK_BUTTON.setScrollFactor(0);
+        this.clockbutton.setScrollFactor(0);
 
         this.dialogueBox = new DialogueBox(
             this,

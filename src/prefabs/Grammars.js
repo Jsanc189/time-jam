@@ -109,4 +109,10 @@ export default class Grammar {
         const jurorStatus = this.listPick(this.getList("jury"), false);
         return this.listPick(jurorStatus[status][conviction], false);
     }
+
+    getJudgeBark(redHerring){
+        const rh = redHerring ? "redherring" : "not_redherring";
+        const judgeBarks = this.listPick(this.getList("judge"), false);
+        return this.listPick(judgeBarks[rh], false);
+    }
 }
