@@ -70,6 +70,10 @@ export default class MenuScene extends Phaser.Scene {
                 });
                 this.cameras.main.fadeOut(800, 0, 0, 0);   
                 this.cameras.main.once('camerafadeoutcomplete', ()=>{
+                    this.registry.remove('case');
+                    this.registry.remove('objectivesControl');
+                    this.registry.remove('outOfTime');
+                    this.registry.remove('audioIsPlaying');
                     this.scene.start('MainScene');
                 })             
             },

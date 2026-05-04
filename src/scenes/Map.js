@@ -17,6 +17,7 @@ import Player from '../prefabs/Player';
 import Clock from '../prefabs/Clock';
 import Rooms from '../prefabs/Rooms';
 import Button from '../prefabs/Button';
+import DialogueBox from "../prefabs/DialogueBox";
 
 export default class MapScene extends Phaser.Scene {
     constructor() {
@@ -40,6 +41,25 @@ export default class MapScene extends Phaser.Scene {
                 duration: 800
             });
         });
+        
+        //script for player instruction at start of scene
+        this.dialogueStartBox = new DialogueBox(
+            this,
+            this.scale.width / 2, // centered X
+            this.scale.height - 120, // near bottom of screen
+            'paper1',
+        );
+        const introMessages = {
+            messages: [
+            "I have entered my Mind Palace.",
+            "This is where I will piece together the case and prepare my argument for court.",
+            "I can move with arrow keys or WASD.",
+            "Let's start by exploring the rooms in my Mind Palace.",
+            "I will record any important discoveries in my ledger.",
+            ],
+            speaker: 'YOU',
+        };
+        this.dialogueStartBox.showDialogue(introMessages);
 
         // World Setup
         this.tileWidth = 128;
@@ -122,13 +142,13 @@ export default class MapScene extends Phaser.Scene {
         //clock logic
         const CLOCK_POSITIONX = this.cameras.main.centerX / 3;
         const CLOCK_POSITIONY = this.cameras.main.centerY * 3;
-        const CLOCK_ITERATION_TIME = 1800; //30 minutes in seconds
+        const CLOCK_ITERATION_TIME = 2700; //45 minutes in seconds
         this.clockwarning = false;
 
         this.registry.set('clockStartTime', 0); //start time in seconds
         this.registry.set('maxSeconds', 43200); //12 hours in seconds
-        this.registry.set('taskTime', CLOCK_ITERATION_TIME); // 30 minutes in seconds
-        // this.registry.set('taskTime', 39600); //11 hours in seconds for testing
+        this.registry.set('taskTime', CLOCK_ITERATION_TIME); // 45 minutes in seconds
+        this.registry.set('taskTime', 39600); //11 hours in seconds for testing
 
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
 
@@ -144,8 +164,8 @@ export default class MapScene extends Phaser.Scene {
         const BUTTON_SPACING = 120;
         this.mainButton = new Button(
             this,
-            this.cameras.main.centerX / 5,
-            this.cameras.main.centerY + BUTTON_SPACING,
+            this.cameras.main.centerX / 6 + 50,
+            this.cameras.main.centerY / 6,
             300,
             100,
             'Back to Court',
@@ -154,6 +174,8 @@ export default class MapScene extends Phaser.Scene {
             () => {
                 this.game.audio.playSFX("gavel");
                 this.scene.sleep();
+                this.game.audio.stopMusic();
+                this.registry.set('audioIsPlaying', false);
                 this.scene.wake('MainScene');
                 
             },
@@ -164,8 +186,8 @@ export default class MapScene extends Phaser.Scene {
         let clockTick;
         this.clockbutton = new Button(
             this,
-            this.cameras.main.centerX / 5,
-            this.cameras.main.centerY + BUTTON_SPACING * 2,
+            this.cameras.main.centerX * 1.8,
+            this.cameras.main.centerY / 6,
             300,
             100,
             'Reveal Clock',
@@ -173,7 +195,7 @@ export default class MapScene extends Phaser.Scene {
             undefined,
             () => {
                 if (this.clock.y > this.cameras.main.centerY) {
-                    this.clock.moveTo(this.cameras.main.centerX / 3, this.cameras.main.centerY / 2);
+                    this.clock.moveTo(this.cameras.main.centerX / 3, this.cameras.main.centerY * 0.80);
                 } else {
                     this.clock.moveTo(CLOCK_POSITIONX, CLOCK_POSITIONY);
                 }
@@ -185,12 +207,61 @@ export default class MapScene extends Phaser.Scene {
         );
         this.clockbutton.setScrollFactor(0);
 
+        this.dialogueBox = new DialogueBox(
+            this,
+            this.scale.width / 2, // centered X
+            this.scale.height - 120, // near bottom of screen
+            'paper1',
+        );  
+
+
+        // recording case discoveries
+        this.ledger = this.registry.get('ledger');
+
+        this.RECORD_BUTTON = new Button(
+            this,
+            this.cameras.main.centerX * 1.3,
+            this.cameras.main.centerY + 100,
+            300,
+            100,
+            'Record',
+            undefined,
+            undefined,
+            () => {
+                this.ledger.record();
+                this.RECORD_BUTTON.hide();
+                this.DISMISS_BUTTON.hide();
+            },
+        );
+        this.RECORD_BUTTON.hide();
+
+        this.DISMISS_BUTTON = new Button(
+            this,
+            this.cameras.main.centerX * 1.65,
+            this.cameras.main.centerY + 100,
+            300,
+            100,
+            'Dismiss',
+            undefined,
+            undefined,
+            () => {
+                this.ledger.dismiss();
+                this.RECORD_BUTTON.hide();
+                this.DISMISS_BUTTON.hide();
+            },
+        );
+        this.DISMISS_BUTTON.hide();
     }
 
     update() {
         this.player.update();
         if(this.registry.get("okToFade")) {
             this.fadeIn();
+        }
+
+        if(this.registry.get('musicIsPlaying') == false) {
+            this.audio.playMusic("mindPalace");
+            this.registry.set('musicIsPlaying', true);
         }
 
         //check if player is almost out of time and play urgent clock sound
@@ -227,6 +298,9 @@ export default class MapScene extends Phaser.Scene {
                 const objective = this.currentHatch.getData('objective');
                 const floorFrames = this.currentHatch.getData('floorFrames')
                 const data = {label: label, objective: objective, floorFrames: floorFrames};
+                if (this.player.getFootsteps()) {
+                    this.player.getFootsteps().stop();
+                }
                 this.scene.sleep('MapScene');
                 this.scene.launch("HatchRoomScene", data);
                 const hatchSound = this.game.audio.playSFX('hatch');
@@ -244,6 +318,17 @@ export default class MapScene extends Phaser.Scene {
             // Reset for next frame
             sprite.setData('isActive', false);
         });
+
+        if(this.ledger.newDiscovery){   // this means that a room objective has been completed!
+            // ask player whether to record evidence in their ledger
+            this.DISMISS_BUTTON.show();
+            this.RECORD_BUTTON.show();
+
+            this.dialogueBox.showDialogue({
+                messages: this.ledger.acknowledge(),
+                speaker: 'YOU',
+            });
+        }
 
     }
 

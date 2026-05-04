@@ -41,7 +41,7 @@ export default class DialogueBox extends GameText {
                 speaker,
                 {
                     fontFamily: 'Special Elite',
-                    fontSize: '72px',
+                    fontSize: '70px',
                     color: '#43282b',
                 },
             )
@@ -52,6 +52,10 @@ export default class DialogueBox extends GameText {
         if (this.speakerLabel) this.speakerLabel.setDepth(11);
         this.setDepth(12);
 
+        this.bg.setScrollFactor(0);
+        this.speakerLabel.setScrollFactor(0);
+        this.setScrollFactor(0); 
+        
         this.setVisible(false);
         this.bg.setVisible(false);
         if (this.speakerLabel) this.speakerLabel.setVisible(false);
@@ -102,7 +106,10 @@ export default class DialogueBox extends GameText {
         if (this.typewriterEvent) {
             const full = this.typewriterEvent.args[0]; // stored full text
             this.stopTypewriter();
-            if(full) this.setText(full);
+            if(full) {
+                this.setText(full);
+                this.addClickPrompt();
+            }
         }
     }
 
@@ -128,6 +135,9 @@ export default class DialogueBox extends GameText {
             callback: () => {
                 charIndex++;
                 this.setText(fullText.slice(0, charIndex));
+                if (charIndex >= fullText.length) {
+                    this.addClickPrompt();
+                }
             },
         });
     }
@@ -145,5 +155,11 @@ export default class DialogueBox extends GameText {
         this.bg?.destroy();
         this.speakerLabel?.destroy();
         super.destroy(fromScene);
+    }
+
+    //prompt user to click to continue
+    addClickPrompt() {
+        const current = this.text;
+        this.setText(current + '\n(Click to continue)');
     }
 }
