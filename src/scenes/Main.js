@@ -224,6 +224,7 @@ export default class MainScene extends Phaser.Scene {
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
                         this.jurorSprites[i].setVisible(true);
+                        this.jurorStatus[i].show();
                     }
 
                     //this.testObjectives();
@@ -261,6 +262,7 @@ export default class MainScene extends Phaser.Scene {
                     this.game.audio.playSFX("gavel");
                     for (let i = 0; i < this.jurorSprites.length; i++) {
                         this.jurorSprites[i].setVisible(true);
+                        this.jurorStatus[i].setVisible(true);
                     }
 
                     //this.testObjectives();
@@ -317,6 +319,8 @@ export default class MainScene extends Phaser.Scene {
                     wordWrap: { width: 150 },
                 },
             );
+
+            newJurorLabel.setVisible(false);
 
             this.jurorStatus.push(newJurorLabel);
 
