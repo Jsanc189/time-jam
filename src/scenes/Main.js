@@ -376,6 +376,11 @@ export default class MainScene extends Phaser.Scene {
             this.gameStarting = false;
         }
 
+        if (this.registry.get('outOfTime') === true && this.ledger.discoveries.length === 0) {
+            this.gameLose();
+        }
+
+
     }
 
     evidenceFound() {
@@ -439,6 +444,8 @@ export default class MainScene extends Phaser.Scene {
 
             if (this.jurorsSwayed === this.jurorStatus.length) {
                 this.gameWin();
+            } else if (this.registry.get('outOfTime') === true) {
+                this.gameLose();
             }
         } else {
             // subtract a point
@@ -455,6 +462,24 @@ export default class MainScene extends Phaser.Scene {
     gameWin() {
         new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, 'SUCCESS!', {
             fontSize: '120px',
+        });
+
+        //delayed call to go back to credits after win
+        this.time.delayedCall(5000, () => {
+            this.scene.stop('MainScene');
+            this.registry.reset();
+            this.scene.remove('MainScene');
+            this.scene.start('CreditsScene');
+        });
+    }
+
+    gameLose() {
+        new GameText(this, this.cameras.main.centerX, this.cameras.main.centerY, 'OUT OF TIME!', {
+            fontSize: '120px',
+        });
+        this.time.delayedCall(5000, () => {
+            this.scene.stop('MainScene');
+            this.scene.start('CreditsScene');
         });
     }
 

@@ -148,7 +148,7 @@ export default class MapScene extends Phaser.Scene {
         this.registry.set('clockStartTime', 0); //start time in seconds
         this.registry.set('maxSeconds', 43200); //12 hours in seconds
         this.registry.set('taskTime', CLOCK_ITERATION_TIME); // 45 minutes in seconds
-        // this.registry.set('taskTime', 39600); //11 hours in seconds for testing
+        this.registry.set('taskTime', 39600); //11 hours in seconds for testing
 
         this.clock = new Clock(this, CLOCK_POSITIONX, CLOCK_POSITIONY, 'clock');
 
@@ -298,6 +298,9 @@ export default class MapScene extends Phaser.Scene {
                 const objective = this.currentHatch.getData('objective');
                 const floorFrames = this.currentHatch.getData('floorFrames')
                 const data = {label: label, objective: objective, floorFrames: floorFrames};
+                if (this.player.getFootsteps()) {
+                    this.player.getFootsteps().stop();
+                }
                 this.scene.sleep('MapScene');
                 this.scene.launch("HatchRoomScene", data);
                 const hatchSound = this.game.audio.playSFX('hatch');
